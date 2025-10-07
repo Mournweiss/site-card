@@ -1,0 +1,18 @@
+AllCops:
+    TargetRubyVersion: 3.3
+    NewCops: enable
+    Exclude:
+        - "vendor/**/*"
+        - "public/**/*"
+        - "bin/**/*"
+    DisplayCopNames: true
+    DisplayStyleGuide: true
+
+Layout/IndentationWidth:
+    Width: 4
+
+Layout/Tab:
+    Enabled: false
+
+Metrics/LineLength:
+    Max: 120

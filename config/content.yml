@@ -1,0 +1,29 @@
+home:
+    title: "Welcome to SiteCard"
+    subtitle: "Your customizable business card website."
+
+about:
+    name: "John Doe"
+    description: "Experienced web developer specializing in fullstack solutions."
+    skills:
+        - Ruby
+        - JavaScript
+        - CSS
+        - DevOps
+
+portfolio:
+    items:
+        - title: "Project 1"
+          description: "Short description of project 1."
+          image: "/static/portfolio1.jpg"
+        - title: "Project 2"
+          description: "Short description of project 2."
+          image: "/static/portfolio2.jpg"
+        - title: "Project 3"
+          description: "Short description of project 3."
+          image: "/static/portfolio3.jpg"
+
+contacts:
+    email: "john.doe@example.com"
+    phone: "+1 234 567 8900"
+    address: "123 Main St, City, Country"
