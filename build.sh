@@ -16,16 +16,18 @@ success() { echo -e "${COLOR_SUCCESS}$1${COLOR_RESET}"; }
 
 # Build container image
 build() {
-    info "Building site-card container image with Podman..."
-    podman build -t site-card . || error "Build failed"
+    local container_name="${CONTAINER_NAME:-site-card}"
+    info "Building $container_name container image with Podman..."
+    podman build -t "$container_name" . || error "Build failed"
     success "Image built successfully"
 }
 
 # Run container
 run() {
     local nginx_port="${NGINX_PORT:-8080}"
-    info "Running site-card container with Podman on port $nginx_port..."
-    podman run --rm -d -p "$nginx_port:$nginx_port" -e NGINX_PORT="$nginx_port" -e RACKUP_PORT="${RACKUP_PORT:-9292}" site-card || error "Container run failed"
+    local container_name="${CONTAINER_NAME:-site-card}"
+    info "Running $container_name container with Podman on port $nginx_port..."
+    podman run --rm -d -p "$nginx_port:$nginx_port" -e NGINX_PORT="$nginx_port" -e RACKUP_PORT="${RACKUP_PORT:-9292}" --name "$container_name" "$container_name" || error "Container run failed"
     success "Container started in detached mode"
 }
 
