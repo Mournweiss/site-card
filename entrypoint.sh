@@ -13,8 +13,8 @@ warn()    { printf "%b\n" "${COLOR_WARN}$1${COLOR_RESET}"; }
 error()   { printf "%b\n" "${COLOR_ERROR}$1${COLOR_RESET}" >&2; exit 1; }
 success() { printf "%b\n" "${COLOR_SUCCESS}$1${COLOR_RESET}"; }
 
-if [ ! -d /app/public/assets ] || [ -z "$(ls -A /app/public/assets 2>/dev/null)" ]; then
-    error "Frontend assets not found, please ensure assets are built via Rake/Vite"
+if [ ! -d ./public/assets ] || [ -z "$(ls -A ./public/assets 2>/dev/null)" ]; then
+    warn "./public/assets is missing or empty"
 fi
 
 if [ -f /app/config/nginx.conf ]; then

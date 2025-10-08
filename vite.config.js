@@ -5,6 +5,7 @@ export default defineConfig({
     root: "app/assets",
     build: {
         outDir: resolve(__dirname, "public/assets"),
+        assetsDir: ".",
         emptyOutDir: true,
         rollupOptions: {
             input: {
