@@ -14,9 +14,19 @@ warn()    { echo -e "${COLOR_WARN}$1${COLOR_RESET}"; }
 error()   { echo -e "${COLOR_ERROR}$1${COLOR_RESET}" >&2; exit 1; }
 success() { echo -e "${COLOR_SUCCESS}$1${COLOR_RESET}"; }
 
+# Remove old container if exists
+remove_container() {
+    local container_name="${CONTAINER_NAME:-site-card}"
+    if podman ps -a --format '{{.Names}}' | grep -q "^$container_name$"; then
+        warn "Removing existing container: $container_name"
+        podman rm -f "$container_name" || warn "Failed to remove container $container_name"
+    fi
+}
+
 # Build container image
 build() {
     local container_name="${CONTAINER_NAME:-site-card}"
+    remove_container
     info "Building $container_name container image with Podman..."
     podman build -t "$container_name" . || error "Build failed"
     success "Image built successfully"
