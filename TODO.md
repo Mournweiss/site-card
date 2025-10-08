@@ -8,7 +8,7 @@ Development roadmap
 
 ## Bug Fixes
 
--   [ ] Fix Nginx connection error
+-   [x] Fix Nginx connection error
 
 ## Refinements
 

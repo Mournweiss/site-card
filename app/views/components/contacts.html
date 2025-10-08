@@ -1,20 +1,65 @@
 <section class="my-5">
-    <h2>Contacts</h2>
-    <form class="row g-3">
-        <div class="col-md-6">
-            <label for="inputName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="inputName" placeholder="Your name">
-        </div>
-        <div class="col-md-6">
-            <label for="inputEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="inputEmail" placeholder="you@example.com">
-        </div>
-        <div class="col-12">
-            <label for="inputMessage" class="form-label">Message</label>
-            <textarea class="form-control" id="inputMessage" rows="4" placeholder="Your message"></textarea>
-        </div>
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Send</button>
-        </div>
-    </form>
+    <div class="container">
+        <h2 class="mb-4 text-center">Contact Me</h2>
+        <form class="row g-3 needs-validation" novalidate method="post" action="/contacts">
+            <div class="col-md-6">
+                <label for="inputName" class="form-label">Name</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputName"
+                    name="inputName"
+                    placeholder="Your name"
+                    required
+                />
+                <div class="invalid-feedback">Please enter your name.</div>
+            </div>
+            <div class="col-md-6">
+                <label for="inputEmail" class="form-label">Email</label>
+                <input
+                    type="email"
+                    class="form-control"
+                    id="inputEmail"
+                    name="inputEmail"
+                    placeholder="you@example.com"
+                    required
+                />
+                <div class="invalid-feedback">Please enter a valid email address.</div>
+            </div>
+            <div class="col-12">
+                <label for="inputMessage" class="form-label">Message</label>
+                <textarea
+                    class="form-control"
+                    id="inputMessage"
+                    name="inputMessage"
+                    rows="4"
+                    placeholder="Your message"
+                    required
+                ></textarea>
+                <div class="invalid-feedback">Please enter your message.</div>
+            </div>
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary px-5">Send</button>
+            </div>
+        </form>
+    </div>
 </section>
+<script>
+    (function () {
+        "use strict";
+        var forms = document.querySelectorAll(".needs-validation");
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener(
+                "submit",
+                function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add("was-validated");
+                },
+                false
+            );
+        });
+    })();
+</script>
