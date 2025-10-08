@@ -1,4 +1,4 @@
-<section class="my-5">
+<section id="contacts" class="py-5 bg-light">
     <div class="container">
         <h2 class="mb-4 text-center">Contact Me</h2>
         <form class="row g-3 needs-validation" novalidate method="post" action="/contacts">
@@ -44,22 +44,3 @@
         </form>
     </div>
 </section>
-<script>
-    (function () {
-        "use strict";
-        var forms = document.querySelectorAll(".needs-validation");
-        Array.prototype.slice.call(forms).forEach(function (form) {
-            form.addEventListener(
-                "submit",
-                function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add("was-validated");
-                },
-                false
-            );
-        });
-    })();
-</script>
