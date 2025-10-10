@@ -12,7 +12,10 @@ export default defineConfig({
                 "about-progress": resolve(__dirname, "app/assets/javascripts/about/progress.js"),
                 "about-avatar": resolve(__dirname, "app/assets/javascripts/about/avatar.js"),
                 "portfolio-showcase": resolve(__dirname, "app/assets/javascripts/portfolio/showcase.js"),
-                style: resolve(__dirname, "app/assets/stylesheets/custom.css"),
+                about: resolve(__dirname, "app/assets/stylesheets/about/about.css"),
+                portfolio: resolve(__dirname, "app/assets/stylesheets/portfolio/portfolio.css"),
+                contacts: resolve(__dirname, "app/assets/stylesheets/contacts/contacts.css"),
+                common: resolve(__dirname, "app/assets/stylesheets/common/common.css"),
             },
             output: {
                 entryFileNames: "[name].js",

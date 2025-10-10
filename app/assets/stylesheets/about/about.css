@@ -1,0 +1,60 @@
+.about-section {
+    scroll-margin-top: 100px;
+}
+.about-avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.about-avatar {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.08), 0 1.5px 6px rgba(0, 0, 0, 0.04);
+    border: 5px solid #fff;
+    margin-bottom: 0.5rem;
+    transition: box-shadow 0.3s;
+}
+.about-avatar:hover {
+    box-shadow: 0 10px 45px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.about-name h2,
+.about-name h3 {
+    margin: 0;
+    line-height: 1.2;
+}
+.about-title .badge {
+    font-size: 1.15rem;
+    letter-spacing: 0.08em;
+}
+.about-description {
+    font-size: 1.1rem;
+}
+.about-skill-label,
+.about-exp-label {
+    display: inline-block;
+    min-width: 120px;
+    font-weight: 700;
+    margin-right: 0.75rem;
+}
+.about-skill-bar,
+.about-exp-bar {
+    height: 1.35rem;
+    background: #eaf0fa;
+}
+.about-skill .progress-bar,
+.about-exp .progress-bar {
+    transition: width 1.3s cubic-bezier(0.57, 0.29, 0.82, 0.65);
+    font-weight: 500;
+}
+@media (max-width: 576px) {
+    .about-avatar {
+        width: 112px;
+        height: 112px;
+    }
+    .about-skill-label,
+    .about-exp-label {
+        min-width: 84px;
+        font-size: 0.95rem;
+    }
+}

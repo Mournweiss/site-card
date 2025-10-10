@@ -1,0 +1,107 @@
+.portfolio-section {
+    scroll-margin-top: 100px;
+}
+.portfolio-ribbon {
+    min-height: 400px;
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 1rem;
+}
+.portfolio-list {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    min-height: 340px;
+    margin-left: 3.5rem !important;
+    margin-right: 3.5rem !important;
+    cursor: grab;
+    user-select: none;
+    overflow-x: hidden !important;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    box-shadow: 0 7px 18px rgba(0, 50, 135, 0.08);
+    scrollbar-width: none;
+    transition: box-shadow 0.19s;
+    padding-bottom: 0.7rem;
+}
+.portfolio-list.is-dragging {
+    cursor: grabbing;
+}
+.portfolio-list::-webkit-scrollbar {
+    display: none;
+}
+.portfolio-card {
+    scroll-snap-align: start;
+    min-width: 320px;
+    max-width: 350px;
+    flex: 0 0 320px;
+    border-radius: 1.1rem;
+    background: #fff;
+    box-shadow: 0 3px 18px rgba(0, 0, 0, 0.08), 0 1.5px 6px rgba(0, 0, 0, 0.04);
+    transition: transform 0.17s cubic-bezier(0.61, 0.07, 0.78, 1.09), box-shadow 0.24s;
+}
+.portfolio-card:hover,
+.portfolio-card:focus-within {
+    transform: scale(1.045) translateY(-4px);
+    z-index: 1;
+    box-shadow: 0 8px 26px rgba(90, 120, 180, 0.16), 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+.portfolio-arrow {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.11), 0 0.7px 2px rgba(0, 0, 0, 0.08);
+    transition: background 0.13s, box-shadow 0.18s, transform 0.13s;
+    font-size: 2.1rem;
+    cursor: pointer;
+    opacity: 0.94;
+    user-select: none;
+}
+.portfolio-arrow:active,
+.portfolio-arrow:focus {
+    background: #ececec;
+    box-shadow: 0 0 0 3px #b8caff77;
+    outline: none;
+}
+.portfolio-arrow svg {
+    display: block;
+}
+.portfolio-stack .badge {
+    margin-right: 0.3em;
+    margin-bottom: 0.12em;
+    font-size: 0.91em;
+}
+@media (max-width: 768px) {
+    .portfolio-arrow {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+    }
+    .portfolio-list {
+        min-height: 240px;
+        margin: 1.2rem !important;
+    }
+    .portfolio-ribbon {
+        min-height: 270px;
+    }
+}
+@media (max-width: 630px) {
+    .portfolio-card {
+        min-width: 82vw;
+        max-width: 94vw;
+    }
+    .portfolio-list {
+        gap: 1rem;
+    }
+    .portfolio-arrows {
+        margin-bottom: -18px;
+    }
+}
