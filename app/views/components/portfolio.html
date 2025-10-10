@@ -1,34 +1,113 @@
-<section id="portfolio" class="py-5">
-    <div class="container">
+<section id="portfolio" class="portfolio-section py-5">
+    <div class="container position-relative">
         <h2 class="mb-4 text-center">Portfolio</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="/static/portfolio1.jpg" class="card-img-top" alt="Project 1" />
-                    <div class="card-body">
-                        <h5 class="card-title">Project 1</h5>
-                        <p class="card-text">Short description of project 1.</p>
+        <div class="portfolio-ribbon position-relative" role="region">
+            <button
+                class="portfolio-arrow portfolio-arrow-left btn btn-light shadow-sm position-absolute top-50 start-0 translate-middle-y"
+                type="button"
+                aria-label="Scroll left"
+                tabindex="0"
+                style="z-index: 3"
+            >
+                <svg width="44" height="44" viewBox="0 0 32 32">
+                    <path
+                        d="M20.7 6.7a1 1 0 010 1.4L13.4 16l7.3 7.9a1 1 0 01-1.4 1.4l-8-8.7a1 1 0 010-1.4l8-8.7a1 1 0 011.4 0z"
+                        fill="#222"
+                    />
+                </svg>
+            </button>
+            <div class="portfolio-list d-flex flex-row pb-4 gap-4 mx-5" style="overflow-x: hidden; min-height: 400px">
+                <div class="portfolio-card card flex-shrink-0 shadow-sm">
+                    <img src="/static/portfolio1.jpg" class="card-img-top" alt="AI SaaS Platform Screenshot" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">AI SaaS Platform</h5>
+                        <div class="portfolio-stack mb-2">
+                            <span class="badge bg-primary">Ruby on Rails</span>
+                            <span class="badge bg-warning text-dark">JS</span>
+                            <span class="badge bg-success">Kubernetes</span>
+                        </div>
+                        <p class="card-text">
+                            End-to-end SaaS solution with ML pipeline, robust API, and HA cloud deployment. Integrated
+                            with Stripe, OpenAI, and custom analytics.
+                        </p>
+                        <div class="mt-auto d-flex gap-2">
+                            <a href="#" class="btn btn-outline-dark btn-sm" tabindex="0" role="link">Demo</a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" tabindex="0" role="link">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-card card flex-shrink-0 shadow-sm">
+                    <img src="/static/portfolio2.jpg" class="card-img-top" alt="DevOps Dashboard Screenshot" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">DevOps Dashboard</h5>
+                        <div class="portfolio-stack mb-2">
+                            <span class="badge bg-info text-dark">React</span>
+                            <span class="badge bg-success">Docker</span>
+                            <span class="badge bg-secondary">Prometheus</span>
+                        </div>
+                        <p class="card-text">
+                            Realtime server analytics, auto-scaling controls, and visualization of containerized
+                            workloads with live event streaming.
+                        </p>
+                        <div class="mt-auto d-flex gap-2">
+                            <a href="#" class="btn btn-outline-dark btn-sm" tabindex="0" role="link">Demo</a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" tabindex="0" role="link">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-card card flex-shrink-0 shadow-sm">
+                    <img src="/static/portfolio3.jpg" class="card-img-top" alt="Smart CRM Screenshot" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Smart CRM</h5>
+                        <div class="portfolio-stack mb-2">
+                            <span class="badge bg-primary">Rails</span>
+                            <span class="badge bg-warning text-dark">Vue.js</span>
+                            <span class="badge bg-success">Redis</span>
+                        </div>
+                        <p class="card-text">
+                            Multi-tenant CRM, user workflows, live chat, role-based controls and seamless integration
+                            with social media/telephony providers.
+                        </p>
+                        <div class="mt-auto d-flex gap-2">
+                            <a href="#" class="btn btn-outline-dark btn-sm" tabindex="0" role="link">Demo</a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" tabindex="0" role="link">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-card card flex-shrink-0 shadow-sm">
+                    <img src="/static/portfolio4.jpg" class="card-img-top" alt="FinTech App Screenshot" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">FinTech App</h5>
+                        <div class="portfolio-stack mb-2">
+                            <span class="badge bg-primary">Elixir</span>
+                            <span class="badge bg-warning text-dark">Phoenix</span>
+                            <span class="badge bg-info text-dark">Postgres</span>
+                        </div>
+                        <p class="card-text">
+                            Secure multi-account platform with instant payments, antifraud, and advanced reporting
+                            dashboard for mobile/web.
+                        </p>
+                        <div class="mt-auto d-flex gap-2">
+                            <a href="#" class="btn btn-outline-dark btn-sm" tabindex="0" role="link">Demo</a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" tabindex="0" role="link">GitHub</a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="/static/portfolio2.jpg" class="card-img-top" alt="Project 2" />
-                    <div class="card-body">
-                        <h5 class="card-title">Project 2</h5>
-                        <p class="card-text">Short description of project 2.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="/static/portfolio3.jpg" class="card-img-top" alt="Project 3" />
-                    <div class="card-body">
-                        <h5 class="card-title">Project 3</h5>
-                        <p class="card-text">Short description of project 3.</p>
-                    </div>
-                </div>
-            </div>
+            <button
+                class="portfolio-arrow portfolio-arrow-right btn btn-light shadow-sm position-absolute top-50 end-0 translate-middle-y"
+                type="button"
+                aria-label="Scroll right"
+                tabindex="0"
+                style="z-index: 3"
+            >
+                <svg width="44" height="44" viewBox="0 0 32 32">
+                    <path
+                        d="M11.3 25.3a1 1 0 010-1.4L18.6 16l-7.3-7.9a1 1 0 011.4-1.4l8 8.7a1 1 0 010 1.4l-8 8.7a1 1 0 01-1.4 0z"
+                        fill="#222"
+                    />
+                </svg>
+            </button>
         </div>
     </div>
 </section>

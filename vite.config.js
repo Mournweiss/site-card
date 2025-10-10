@@ -9,8 +9,14 @@ export default defineConfig({
         emptyOutDir: true,
         rollupOptions: {
             input: {
-                main: resolve(__dirname, "app/assets/javascripts/custom.js"),
+                "about-progress": resolve(__dirname, "app/assets/javascripts/about/progress.js"),
+                "about-avatar": resolve(__dirname, "app/assets/javascripts/about/avatar.js"),
+                "portfolio-showcase": resolve(__dirname, "app/assets/javascripts/portfolio/showcase.js"),
                 style: resolve(__dirname, "app/assets/stylesheets/custom.css"),
+            },
+            output: {
+                entryFileNames: "[name].js",
+                assetFileNames: "[name].css",
             },
         },
     },
