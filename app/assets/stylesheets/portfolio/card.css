@@ -1,0 +1,21 @@
+.portfolio-card {
+    background: rgba(44, 44, 55, 0.84);
+    border-radius: 1.15rem;
+    box-shadow: none;
+    transition: box-shadow 0.19s, background 0.21s;
+}
+.portfolio-card .card-title,
+.portfolio-card .portfolio-stack,
+.portfolio-card .card-text {
+    color: #f0f2f4;
+}
+.portfolio-card:hover,
+.portfolio-card:focus-within {
+    background: rgba(44, 44, 55, 0.94);
+    box-shadow: 0 10px 45px rgba(24, 24, 38, 0.18);
+}
+.portfolio-stack .badge {
+    margin-right: 0.3em;
+    margin-bottom: 0.12em;
+    font-size: 0.91em;
+}

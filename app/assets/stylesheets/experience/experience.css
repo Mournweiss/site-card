@@ -1,0 +1,27 @@
+.experience-section {
+    width: 100%;
+    margin-bottom: 3.5rem;
+}
+.experience-chart {
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: center;
+}
+.chart-label {
+    font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
+    font-weight: 600;
+    font-size: 1.55rem;
+    color: #b0b9c9;
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.2em;
+    margin-top: 0.64em;
+    text-align: left;
+    padding-left: 0.1em;
+}
+@media (max-width: 600px) {
+    .chart-label {
+        text-align: center;
+        padding-left: 0;
+    }
+}

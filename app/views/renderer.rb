@@ -1,5 +1,5 @@
 class Renderer
-    COMPONENTS = %w[about.html portfolio.html contacts.html]
+    COMPONENTS = %w[avatar.html about.html experience.html skills.html portfolio.html contacts.html]
     COMPONENTS_PATH = File.expand_path('components', __dir__)
     LAYOUT_PATH = File.expand_path('layouts/application.html', __dir__)
 

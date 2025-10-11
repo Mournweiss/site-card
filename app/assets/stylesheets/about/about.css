@@ -1,60 +1,60 @@
 .about-section {
     scroll-margin-top: 100px;
 }
-.about-avatar-wrapper {
+.about-card {
+    background: transparent !important;
+    border-radius: 1.15rem;
+    box-shadow: 0 4px 28px 0 rgba(16, 20, 32, 0.06), 0 1.5px 8px 0 rgba(0, 0, 0, 0.03);
+    padding: 2.8rem 2.8rem 2rem 2.8rem;
+    margin-bottom: 2.5rem;
+    margin-top: 3.5rem;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.card-body {
+    padding: 0;
+}
+.about-me-grid {
+    margin-bottom: 2.8rem;
+}
+.about-me-cell {
+    background: transparent !important;
+    box-shadow: none;
+    border: none;
+    min-height: 110px;
+    min-width: 0;
+    height: 100%;
+    width: 100%;
+    padding: 0.55em 0.55em 0.46em 0.55em;
     display: flex;
-    justify-content: center;
     align-items: center;
+    gap: 0.78em;
+    text-align: left;
+    justify-content: flex-start;
 }
-.about-avatar {
-    width: 160px;
-    height: 160px;
-    object-fit: cover;
-    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.08), 0 1.5px 6px rgba(0, 0, 0, 0.04);
-    border: 5px solid #fff;
-    margin-bottom: 0.5rem;
-    transition: box-shadow 0.3s;
+.about-me-icon {
+    font-size: 2.09em;
+    color: #3985f2;
+    margin-right: 0.8em;
+    margin-left: 0.12em;
+    flex-shrink: 0;
+    align-self: center;
 }
-.about-avatar:hover {
-    box-shadow: 0 10px 45px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-.about-name h2,
-.about-name h3 {
-    margin: 0;
-    line-height: 1.2;
-}
-.about-title .badge {
-    font-size: 1.15rem;
-    letter-spacing: 0.08em;
-}
-.about-description {
-    font-size: 1.1rem;
-}
-.about-skill-label,
-.about-exp-label {
-    display: inline-block;
-    min-width: 120px;
+.about-me-title {
+    font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
     font-weight: 700;
-    margin-right: 0.75rem;
+    font-size: 1.45rem;
+    color: #fff;
+    line-height: 1.08;
+    letter-spacing: 0.01em;
+    margin-bottom: 1px;
 }
-.about-skill-bar,
-.about-exp-bar {
-    height: 1.35rem;
-    background: #eaf0fa;
-}
-.about-skill .progress-bar,
-.about-exp .progress-bar {
-    transition: width 1.3s cubic-bezier(0.57, 0.29, 0.82, 0.65);
-    font-weight: 500;
-}
-@media (max-width: 576px) {
-    .about-avatar {
-        width: 112px;
-        height: 112px;
-    }
-    .about-skill-label,
-    .about-exp-label {
-        min-width: 84px;
-        font-size: 0.95rem;
-    }
+.about-me-value {
+    font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
+    font-size: 1.15rem;
+    color: #737778;
+    font-weight: 400;
+    line-height: 1.18;
+    word-break: break-word;
 }

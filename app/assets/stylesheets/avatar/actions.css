@@ -1,0 +1,22 @@
+.actions .btn {
+    font-size: 1.08rem;
+    border-radius: 2em;
+}
+.actions .btn-outline-light {
+    color: #fff;
+    background: transparent;
+    border-color: #5c6bfd;
+    box-shadow: none;
+}
+.actions .btn-outline-light:hover {
+    background: #5c6bfd;
+    border-color: #5c6bfd;
+    color: #fff;
+}
+.actions .btn-secondary {
+    background: #292b32;
+    border: none;
+}
+.actions .btn-secondary:hover {
+    background: #3d3f46;
+}

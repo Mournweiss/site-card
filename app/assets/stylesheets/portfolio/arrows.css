@@ -1,0 +1,28 @@
+.portfolio-arrow {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.11), 0 0.7px 2px rgba(0, 0, 0, 0.08);
+    transition: background 0.13s, box-shadow 0.18s, transform 0.13s;
+    font-size: 2.1rem;
+    cursor: pointer;
+    opacity: 0.94;
+    user-select: none;
+}
+.portfolio-arrow:active,
+.portfolio-arrow:focus {
+    background: #ececec;
+    box-shadow: 0 0 0 3px #b8caff77;
+    outline: none;
+}
+.portfolio-arrow svg {
+    display: block;
+}
