@@ -20,3 +20,14 @@ body {
 .scroll-margin-y {
     scroll-margin-top: 100px;
 }
+.block-title {
+    color: #fff;
+    font-size: 2.08rem;
+    font-weight: 750;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.62em;
+    margin-top: 0;
+    font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
+    line-height: 1.11;
+    padding: 0;
+}
