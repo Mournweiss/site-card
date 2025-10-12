@@ -10,14 +10,14 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 "avatar-avatar": resolve(__dirname, "app/assets/javascripts/avatar/avatar.js"),
+                "avatar-base": resolve(__dirname, "app/assets/stylesheets/avatar/base.css"),
+                "avatar-image": resolve(__dirname, "app/assets/stylesheets/avatar/image.css"),
+                "avatar-info": resolve(__dirname, "app/assets/stylesheets/avatar/info.css"),
+                "avatar-buttons": resolve(__dirname, "app/assets/stylesheets/avatar/buttons.css"),
                 "experience-charts": resolve(__dirname, "app/assets/javascripts/experience/charts.js"),
                 "skills-charts": resolve(__dirname, "app/assets/javascripts/skills/charts.js"),
                 "portfolio-showcase": resolve(__dirname, "app/assets/javascripts/portfolio/showcase.js"),
                 about: resolve(__dirname, "app/assets/stylesheets/about/about.css"),
-                "avatar-layout": resolve(__dirname, "app/assets/stylesheets/avatar/layout.css"),
-                "avatar-avatar-css": resolve(__dirname, "app/assets/stylesheets/avatar/avatar.css"),
-                "avatar-profile": resolve(__dirname, "app/assets/stylesheets/avatar/profile.css"),
-                "avatar-actions": resolve(__dirname, "app/assets/stylesheets/avatar/actions.css"),
                 experience: resolve(__dirname, "app/assets/stylesheets/experience/experience.css"),
                 "portfolio-ribbon": resolve(__dirname, "app/assets/stylesheets/portfolio/ribbon.css"),
                 "portfolio-card": resolve(__dirname, "app/assets/stylesheets/portfolio/card.css"),

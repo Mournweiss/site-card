@@ -1,0 +1,84 @@
+.avatar-section {
+    background: none;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.avatar-card {
+    background: transparent;
+    border-radius: 2.45rem;
+    padding: 2.9rem 3.7rem 2.7rem 2.5rem;
+    max-width: 1240px;
+    min-width: 340px;
+    min-height: 560px;
+    display: flex;
+    align-items: center;
+    gap: 2.2rem;
+    margin: 0 auto;
+    position: relative;
+}
+.avatar-ring {
+    width: 477px;
+    height: 477px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    margin-right: 30px;
+    position: relative;
+    z-index: 2;
+}
+.avatar-ring::after {
+    content: none;
+}
+
+.avatar-image-wrapper {
+    width: 387px;
+    height: 387px;
+    flex: 0 0 387px;
+    background: none;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+@media (max-width: 900px) {
+    .avatar-card {
+        flex-direction: column;
+        align-items: center;
+        padding: 1.2rem 0.3rem 2rem 0.3rem;
+        gap: 1.2rem !important;
+        min-width: unset;
+        min-height: unset;
+        border-radius: 1.3rem;
+    }
+    .avatar-info {
+        max-width: 98vw;
+        align-items: center;
+        margin-left: 0;
+    }
+    .avatar-section {
+        min-height: 500px;
+    }
+    .avatar-actions {
+        flex-direction: column;
+        gap: 0.7rem;
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    .avatar-btn {
+        min-width: 140px;
+    }
+    .avatar-ring {
+        margin-bottom: 24px;
+        margin-right: 0;
+    }
+}

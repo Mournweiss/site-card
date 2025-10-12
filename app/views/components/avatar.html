@@ -1,30 +1,25 @@
-<div class="avatar-center w-100 d-flex justify-content-center align-items-center flex-column my-6 fadein-up">
-    <div class="avatar-row d-flex flex-column flex-md-row align-items-center justify-content-center">
-        <div class="avatar-wrapper">
-            <div
-                class="avatar rounded-circle shadow"
-                id="avatar"
-                role="img"
-                aria-label="Profile Photo"
-                style="width: 270px; height: 270px"
-            ></div>
-        </div>
-        <div
-            class="profile flex-grow-1 text-md-start text-center ms-md-4 w-100"
-            style="max-width: 420px; text-align: left"
-        >
-            <div class="title-section mb-2">
-                <div class="role text-muted fs-6">Frontend-developer</div>
-                <h1 id="about-heading" class="name fw-bold m-0">Alex Smith</h1>
+<div class="fadein-up">
+    <section id="avatar" class="avatar-section" tabindex="-1" aria-labelledby="avatar-heading">
+        <div class="avatar-card">
+            <div class="avatar-ring">
+                <div class="avatar-image-wrapper" data-name="Alex Smith">
+                    <img src="" alt="User avatar" class="avatar-img avatar-hidden" loading="lazy" />
+                    <div class="avatar-fallback" aria-label="A"></div>
+                </div>
             </div>
-            <div class="description lead mb-3">
-                Fusce tempor magna mi, non egestas velit ultricies nec. Aenean convallis, risus non condimentum gravida,
-                odio arcu cursus lorem, vel porta velit urna sed mi.
-            </div>
-            <div class="actions d-flex gap-3 justify-content-center justify-content-md-start mb-2 flex-wrap">
-                <a href="#" class="btn btn-outline-light px-4" id="download-cv-btn" role="button">Download CV</a>
-                <a href="#contacts" class="btn btn-secondary px-4" id="contact-btn" role="button">Contact</a>
+            <div class="avatar-info">
+                <div class="avatar-role">Frontend developer</div>
+                <h2 id="avatar-heading" class="avatar-name">Alex Smith</h2>
+                <div class="avatar-description">
+                    Fusce tempor magna mi, non egestas velit ultricies nec. Aenean convallis, risus non condimentum
+                    gravida, odio mauris ullamcorper felis, ut venenatis purus ex eu mi. Quisque imperdiet lacinia urna,
+                    a placerat sapien pretium eu.
+                </div>
+                <div class="avatar-actions">
+                    <a href="#" class="avatar-btn">Download CV</a>
+                    <a href="#" class="avatar-btn">Contact</a>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </div>

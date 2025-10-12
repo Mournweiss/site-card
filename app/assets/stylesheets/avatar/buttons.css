@@ -1,0 +1,46 @@
+.avatar-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1.28rem;
+    width: 100%;
+    margin-top: 18px;
+    align-items: center;
+    justify-content: flex-start;
+}
+.avatar-btn {
+    display: inline-block;
+    border-radius: 26px;
+    font-size: 1.08rem;
+    min-width: 154px;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    padding: 0.5em 1.78em;
+    border: 1.33px solid #454851;
+    background: #454851;
+    color: #fff;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 10px 0 rgba(80, 120, 200, 0.03) inset;
+    transition: background 0.13s, color 0.13s, box-shadow 0.21s;
+    outline: none;
+}
+.avatar-btn:hover,
+.avatar-btn:focus {
+    background: #636670;
+    color: #fff;
+    border-color: #636670;
+    box-shadow: 0 2px 38px 0 rgba(70, 70, 90, 0.06);
+}
+@media (max-width: 700px) {
+    .avatar-actions {
+        flex-direction: column;
+        gap: 0.76rem;
+        width: 100%;
+        justify-content: center;
+        margin-top: 12px;
+        align-items: center;
+    }
+    .avatar-btn {
+        min-width: 120px;
+    }
+}

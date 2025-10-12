@@ -1,0 +1,33 @@
+.avatar-img,
+.avatar-fallback {
+    width: 387px;
+    height: 387px;
+    border-radius: 50% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    object-fit: cover;
+    box-shadow: 0 0 0 0px #fff;
+    z-index: 2;
+    margin: 0 auto;
+    background-clip: border-box;
+    font-size: 0;
+}
+.avatar-fallback {
+    font-size: 11.9rem;
+    font-weight: 800;
+    line-height: 1;
+    background: #b1bad9 !important;
+    color: #364060;
+    letter-spacing: 2px;
+    user-select: none;
+    transition: background 0.38s;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    vertical-align: middle;
+}
+.avatar-hidden {
+    display: none;
+}

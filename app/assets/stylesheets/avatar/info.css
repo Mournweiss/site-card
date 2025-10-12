@@ -1,0 +1,41 @@
+.avatar-info {
+    min-width: 270px;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0.3rem;
+    margin-left: 8px;
+    margin-top: 6px;
+    position: relative;
+}
+.avatar-role {
+    font-size: 0.98rem;
+    color: #84b7ec;
+    margin-bottom: 3px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    margin-top: 0;
+    position: relative;
+    opacity: 0.86;
+    line-height: 1.25;
+}
+.avatar-name {
+    font-size: 2.45rem;
+    font-weight: 830;
+    color: #eef0fa;
+    margin-bottom: 5px;
+    font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+    line-height: 1.13;
+    letter-spacing: 0.01em;
+}
+.avatar-description {
+    color: #b1b8bf;
+    font-size: 1.09rem;
+    line-height: 1.54;
+    margin-bottom: 10px;
+    font-weight: 400;
+    max-width: 93%;
+    opacity: 0.88;
+}
