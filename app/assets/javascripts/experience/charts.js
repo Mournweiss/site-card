@@ -21,7 +21,8 @@
         ],
     };
     var radarOptions = {
-        responsive: true,
+        responsive: false,
+        maintainAspectRatio: false,
         plugins: {
             legend: { display: false },
             tooltip: { enabled: true },
@@ -38,6 +39,8 @@
     function renderRadar() {
         var radarCtx = document.getElementById("about-experience-radar");
         if (radarCtx && window.Chart) {
+            radarCtx.width = 1161;
+            radarCtx.height = 845;
             new Chart(radarCtx, { type: "radar", data: radarData, options: radarOptions });
         }
     }

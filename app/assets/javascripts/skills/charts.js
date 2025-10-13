@@ -13,6 +13,8 @@
             data: [50, 30, 20],
             labels: ["JavaScript", "Ruby", "Python"],
             colors: ["#4485FE", "#EA4F52", "#32DCB8"],
+            width: 378,
+            height: 378,
         },
         {
             id: "about-skill-chart-2",
@@ -20,6 +22,8 @@
             data: [40, 35, 15, 10],
             labels: ["Docker", "Kubernetes", "Webpack", "Vite"],
             colors: ["#2396ED", "#3759da", "#fbab1d", "#7ba9fa"],
+            width: 378,
+            height: 378,
         },
         {
             id: "about-skill-chart-3",
@@ -27,12 +31,16 @@
             data: [60, 30, 10],
             labels: ["CI/CD", "K8s Ops", "Monitoring"],
             colors: ["#5BFFD9", "#6a40c5", "#1e1b2d"],
+            width: 378,
+            height: 378,
         },
     ];
     function renderPies() {
         pieCharts.forEach(function (pcfg) {
             var c = document.getElementById(pcfg.id);
             if (c && window.Chart) {
+                c.width = pcfg.width;
+                c.height = pcfg.height;
                 new Chart(c, {
                     type: "doughnut",
                     data: {

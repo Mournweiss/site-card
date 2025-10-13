@@ -7,6 +7,10 @@
     display: flex;
     justify-content: center;
 }
+.experience-chart canvas {
+    display: block;
+    margin: 0 auto;
+}
 .chart-label {
     font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
     font-weight: 600;
