@@ -5,10 +5,10 @@
     background: transparent !important;
     border-radius: 1.15rem;
     box-shadow: 0 4px 28px 0 rgba(16, 20, 32, 0.06), 0 1.5px 8px 0 rgba(0, 0, 0, 0.03);
-    padding: 2.8rem 2.8rem 2rem 2.8rem;
+    padding: 3.8rem 3.8rem 3rem 3.8rem;
     margin-bottom: 2.5rem;
     margin-top: 3.5rem;
-    max-width: 1100px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -17,42 +17,47 @@
 }
 .about-me-grid {
     margin-bottom: 2.8rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .about-me-cell {
     background: transparent !important;
     box-shadow: none;
     border: none;
-    min-height: 110px;
-    min-width: 0;
+    min-height: 165px;
     height: 100%;
     width: 100%;
-    padding: 0.55em 0.55em 0.46em 0.55em;
+    max-width: 98%;
+    padding: 1.05em 1.05em 0.92em 1.05em;
     display: flex;
     align-items: center;
-    gap: 0.78em;
+    gap: 0.47em;
     text-align: left;
     justify-content: flex-start;
+    font-size: 1.72rem;
+    white-space: normal;
 }
 .about-me-icon {
-    font-size: 2.09em;
+    font-size: 3.15em;
     color: #3985f2;
-    margin-right: 0.8em;
-    margin-left: 0.12em;
+    margin-right: 0.15em;
+    margin-left: 0.05em;
     flex-shrink: 0;
     align-self: center;
 }
 .about-me-title {
     font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
     font-weight: 700;
-    font-size: 1.45rem;
+    font-size: 2.18rem;
     color: #fff;
     line-height: 1.08;
-    letter-spacing: 0.01em;
-    margin-bottom: 1px;
+    letter-spacing: 0.014em;
+    margin-bottom: 2px;
 }
 .about-me-value {
     font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
-    font-size: 1.15rem;
+    font-size: 1.75rem;
     color: #737778;
     font-weight: 400;
     line-height: 1.18;
