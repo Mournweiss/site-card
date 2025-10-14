@@ -1,110 +1,172 @@
 <section id="portfolio" tabindex="-1">
-    <div class="portfolio-ribbon ui-surface ui-surface--fullscreen fadein-up position-relative" role="region">
-        <button
-            class="portfolio-arrow portfolio-arrow-left btn btn-light shadow-sm position-absolute top-50 start-0 translate-middle-y"
-            type="button"
-            aria-label="Scroll left"
-            tabindex="0"
-            style="z-index: 3"
-        >
-            <svg width="44" height="44" viewBox="0 0 32 32">
-                <path
-                    d="M20.7 6.7a1 1 0 010 1.4L13.4 16l7.3 7.9a1 1 0 01-1.4 1.4l-8-8.7a1 1 0 010-1.4l8-8.7a1 1 0 011.4 0z"
-                    fill="#222"
-                />
-            </svg>
-        </button>
-        <div class="portfolio-list d-flex flex-row pb-4 gap-4 mx-5" style="overflow-x: hidden; min-height: 400px">
-            <div class="portfolio-card ui-surface fadein-up flex-shrink-0">
-                <img src="/static/portfolio1.jpg" class="card-img-top" alt="AI SaaS Platform Screenshot" />
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">AI SaaS Platform</h5>
-                    <div class="portfolio-stack mb-2">
-                        <span class="badge bg-primary">Ruby on Rails</span>
-                        <span class="badge bg-warning text-dark">JS</span>
-                        <span class="badge bg-success">Kubernetes</span>
+    <div class="fadein-up">
+        <div class="container">
+            <h2 class="block-title">Projects</h2>
+        </div>
+        <div class="portfolio-block-wrapper">
+            <div class="portfolio-container">
+                <div class="portfolio-rail" role="region">
+                    <div class="project-card">
+                        <div class="project-title">AI SaaS Platform</div>
+                        <div class="project-desc">
+                            End-to-end SaaS solution with ML pipeline, robust API, and HA cloud deployment. Integrated
+                            with Stripe, OpenAI, and custom analytics.
+                        </div>
+                        <div class="language-bar">
+                            <div
+                                class="language-bar-segment"
+                                style="width: 58%; background: #3572a5"
+                                title="Python"
+                            ></div>
+                            <div
+                                class="language-bar-segment"
+                                style="width: 32%; background: #701516"
+                                title="Ruby"
+                            ></div>
+                            <div
+                                class="language-bar-segment"
+                                style="width: 10%; background: #f1e05a"
+                                title="JavaScript"
+                            ></div>
+                        </div>
+                        <div class="language-legend">
+                            <span class="language-legend-item"
+                                ><span class="language-dot" style="background: #3572a5"></span>Python
+                                <span class="language-percent">58%</span></span
+                            >
+                            <span class="language-legend-item"
+                                ><span class="language-dot" style="background: #701516"></span>Ruby
+                                <span class="language-percent">32%</span></span
+                            >
+                            <span class="language-legend-item"
+                                ><span class="language-dot" style="background: #f1e05a"></span>JavaScript
+                                <span class="language-percent">10%</span></span
+                            >
+                        </div>
+                        <div class="tech-badges">
+                            <span class="tech-badge"><i class="bi bi-cpu"></i> PyTorch</span>
+                            <span class="tech-badge"><i class="bi bi-cloud"></i> AWS</span>
+                            <span class="tech-badge"><i class="bi bi-box"></i> Docker</span>
+                            <span class="tech-badge"><i class="bi bi-git"></i> FastAPI</span>
+                        </div>
                     </div>
-                    <p class="card-text">
-                        End-to-end SaaS solution with ML pipeline, robust API, and HA cloud deployment. Integrated with
-                        Stripe, OpenAI, and custom analytics.
-                    </p>
-                    <div class="mt-auto d-flex gap-2">
-                        <a href="#" class="btn btn-outline-dark btn-sm" tabindex="0" role="link">Demo</a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm" tabindex="0" role="link">GitHub</a>
+                    <div class="project-card">
+                        <div class="project-title">DevOps Dashboard</div>
+                        <div class="project-desc">
+                            Realtime server analytics, live container scaling charts, and full Kubernetes workload
+                            automation with Prometheus and Grafana integration.
+                        </div>
+                        <div class="language-bar">
+                            <div
+                                class="language-bar-segment"
+                                style="width: 40%; background: #563d7c"
+                                title="Kubernetes YML"
+                            ></div>
+                            <div
+                                class="language-bar-segment"
+                                style="width: 38%; background: #61dbfb"
+                                title="React"
+                            ></div>
+                            <div
+                                class="language-bar-segment"
+                                style="width: 22%; background: #f1502f"
+                                title="Dockerfile"
+                            ></div>
+                        </div>
+                        <div class="language-legend">
+                            <span class="language-legend-item"
+                                ><span class="language-dot" style="background: #563d7c"></span>Kubernetes YML
+                                <span class="language-percent">40%</span></span
+                            >
+                            <span class="language-legend-item"
+                                ><span class="language-dot" style="background: #61dbfb"></span>React
+                                <span class="language-percent">38%</span></span
+                            >
+                            <span class="language-legend-item"
+                                ><span class="language-dot" style="background: #f1502f"></span>Dockerfile
+                                <span class="language-percent">22%</span></span
+                            >
+                        </div>
+                        <div class="tech-badges">
+                            <span class="tech-badge"><i class="bi bi-stack"></i> Prometheus</span>
+                            <span class="tech-badge"><i class="bi bi-graph-up"></i> Grafana</span>
+                            <span class="tech-badge"><i class="bi bi-tools"></i> CI/CD</span>
+                            <span class="tech-badge"><i class="bi bi-terminal"></i> NGINX</span>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-title">Smart CRM</div>
+                        <div class="project-desc">
+                            Multi-tenant CRM, live chat, advanced analytics, role-based controls, social media and
+                            telephony integration for massive business user base.
+                        </div>
+                        <div class="language-bar">
+                            <div
+                                class="language-bar-segment"
+                                style="width: 48%; background: #701516"
+                                title="Ruby"
+                            ></div>
+                            <div
+                                class="language-bar-segment"
+                                style="width: 35%; background: #2b7489"
+                                title="TypeScript"
+                            ></div>
+                            <div
+                                class="language-bar-segment"
+                                style="width: 17%; background: #42a5f5"
+                                title="Vue.js"
+                            ></div>
+                        </div>
+                        <div class="language-legend">
+                            <span class="language-legend-item"
+                                ><span class="language-dot" style="background: #701516"></span>Ruby
+                                <span class="language-percent">48%</span></span
+                            >
+                            <span class="language-legend-item"
+                                ><span class="language-dot" style="background: #2b7489"></span>TypeScript
+                                <span class="language-percent">35%</span></span
+                            >
+                            <span class="language-legend-item"
+                                ><span class="language-dot" style="background: #42a5f5"></span>Vue.js
+                                <span class="language-percent">17%</span></span
+                            >
+                        </div>
+                        <div class="tech-badges">
+                            <span class="tech-badge"><i class="bi bi-telephone"></i> Twilio</span>
+                            <span class="tech-badge"><i class="bi bi-people"></i> OAuth</span>
+                            <span class="tech-badge"><i class="bi bi-bar-chart"></i> Sidekiq</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="portfolio-card ui-surface fadein-up flex-shrink-0">
-                <img src="/static/portfolio2.jpg" class="card-img-top" alt="DevOps Dashboard Screenshot" />
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">DevOps Dashboard</h5>
-                    <div class="portfolio-stack mb-2">
-                        <span class="badge bg-info text-dark">React</span>
-                        <span class="badge bg-success">Docker</span>
-                        <span class="badge bg-secondary">Prometheus</span>
-                    </div>
-                    <p class="card-text">
-                        Realtime server analytics, auto-scaling controls, and visualization of containerized workloads
-                        with live event streaming.
-                    </p>
-                    <div class="mt-auto d-flex gap-2">
-                        <a href="#" class="btn btn-outline-dark btn-sm" tabindex="0" role="link">Demo</a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm" tabindex="0" role="link">GitHub</a>
-                    </div>
-                </div>
-            </div>
-            <div class="portfolio-card ui-surface fadein-up flex-shrink-0">
-                <img src="/static/portfolio3.jpg" class="card-img-top" alt="Smart CRM Screenshot" />
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Smart CRM</h5>
-                    <div class="portfolio-stack mb-2">
-                        <span class="badge bg-primary">Rails</span>
-                        <span class="badge bg-warning text-dark">Vue.js</span>
-                        <span class="badge bg-success">Redis</span>
-                    </div>
-                    <p class="card-text">
-                        Multi-tenant CRM, user workflows, live chat, role-based controls and seamless integration with
-                        social media/telephony providers.
-                    </p>
-                    <div class="mt-auto d-flex gap-2">
-                        <a href="#" class="btn btn-outline-dark btn-sm" tabindex="0" role="link">Demo</a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm" tabindex="0" role="link">GitHub</a>
-                    </div>
-                </div>
-            </div>
-            <div class="portfolio-card ui-surface fadein-up flex-shrink-0">
-                <img src="/static/portfolio4.jpg" class="card-img-top" alt="FinTech App Screenshot" />
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">FinTech App</h5>
-                    <div class="portfolio-stack mb-2">
-                        <span class="badge bg-primary">Elixir</span>
-                        <span class="badge bg-warning text-dark">Phoenix</span>
-                        <span class="badge bg-info text-dark">Postgres</span>
-                    </div>
-                    <p class="card-text">
-                        Secure multi-account platform with instant payments, antifraud, and advanced reporting dashboard
-                        for mobile/web.
-                    </p>
-                    <div class="mt-auto d-flex gap-2">
-                        <a href="#" class="btn btn-outline-dark btn-sm" tabindex="0" role="link">Demo</a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm" tabindex="0" role="link">GitHub</a>
-                    </div>
+                <div class="portfolio-arrows">
+                    <button
+                        type="button"
+                        class="portfolio-arrow portfolio-arrow-left"
+                        aria-label="Scroll left"
+                        tabindex="0"
+                    >
+                        <svg width="44" height="44" viewBox="0 0 32 32">
+                            <path
+                                d="M20.7 6.7a1 1 0 010 1.4L13.4 16l7.3 7.9a1 1 0 01-1.4 1.4l-8-8.7a1 1 0 010-1.4l8-8.7a1 1 0 011.4 0z"
+                                fill="#fff"
+                            />
+                        </svg>
+                    </button>
+                    <button
+                        type="button"
+                        class="portfolio-arrow portfolio-arrow-right"
+                        aria-label="Scroll right"
+                        tabindex="0"
+                    >
+                        <svg width="44" height="44" viewBox="0 0 32 32">
+                            <path
+                                d="M11.3 25.3a1 1 0 010-1.4L18.6 16l-7.3-7.9a1 1 0 011.4-1.4l8 8.7a1 1 0 010 1.4l-8 8.7a1 1 0 01-1.4 0z"
+                                fill="#fff"
+                            />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
-        <button
-            class="portfolio-arrow portfolio-arrow-right btn btn-light shadow-sm position-absolute top-50 end-0 translate-middle-y"
-            type="button"
-            aria-label="Scroll right"
-            tabindex="0"
-            style="z-index: 3"
-        >
-            <svg width="44" height="44" viewBox="0 0 32 32">
-                <path
-                    d="M11.3 25.3a1 1 0 010-1.4L18.6 16l-7.3-7.9a1 1 0 011.4-1.4l8 8.7a1 1 0 010 1.4l-8 8.7a1 1 0 01-1.4 0z"
-                    fill="#222"
-                />
-            </svg>
-        </button>
     </div>
 </section>

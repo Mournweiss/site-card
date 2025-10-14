@@ -1,21 +1,22 @@
-.portfolio-card {
-    background: rgba(44, 44, 55, 0.84);
-    border-radius: 1.15rem;
-    box-shadow: none;
-    transition: box-shadow 0.19s, background 0.21s;
+.project-card {
+    background: rgba(37, 39, 54, 0.93);
+    border-radius: 1.63rem;
+    box-shadow: 0 8px 38px 0 rgba(26, 32, 88, 0.19);
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    width: 420px;
+    min-width: 420px;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    scroll-snap-align: start;
+    gap: 1.1rem;
+    position: relative;
+    transition: box-shadow 0.22s, background 0.18s, transform 0.12s;
 }
-.portfolio-card .card-title,
-.portfolio-card .portfolio-stack,
-.portfolio-card .card-text {
-    color: #f0f2f4;
-}
-.portfolio-card:hover,
-.portfolio-card:focus-within {
-    background: rgba(44, 44, 55, 0.94);
-    box-shadow: 0 10px 45px rgba(24, 24, 38, 0.18);
-}
-.portfolio-stack .badge {
-    margin-right: 0.3em;
-    margin-bottom: 0.12em;
-    font-size: 0.91em;
+.project-card:hover,
+.project-card:focus-within {
+    background: rgba(39, 44, 61, 0.99);
+    box-shadow: 0 12px 54px rgba(23, 37, 124, 0.25);
+    transform: translateY(-3px) scale(1.035);
 }

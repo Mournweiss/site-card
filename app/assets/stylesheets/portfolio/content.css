@@ -1,0 +1,85 @@
+.project-title {
+    font-size: 2rem;
+    font-weight: 750;
+    color: #e9edff;
+    margin-bottom: 0.47em;
+    margin-top: 0.1em;
+    letter-spacing: 0.007em;
+}
+.project-desc {
+    font-size: 1.07rem;
+    color: #c5cdf0;
+    line-height: 1.48;
+    margin-bottom: 1.02em;
+    font-weight: 400;
+}
+.language-bar {
+    display: flex;
+    width: 100%;
+    height: 0.75rem;
+    margin: 0.2em 0 0.22em 0;
+    border-radius: 7px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px 0 #22243c5a;
+}
+.language-bar-segment {
+    height: 100%;
+    display: inline-block;
+}
+.language-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1em 1.9em;
+    align-items: center;
+    font-size: 1.02rem;
+    margin-top: 0.19em;
+    margin-bottom: 0.53em;
+    color: #b2c3df;
+    font-weight: 500;
+}
+.language-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.43em;
+}
+.language-dot {
+    display: inline-block;
+    width: 0.92em;
+    height: 0.92em;
+    border-radius: 50%;
+    margin-right: 0.33em;
+    border: 2px solid #24263a;
+    box-shadow: 0 1px 3px #191a24cc;
+    vertical-align: middle;
+}
+.language-percent {
+    color: #97e4fe;
+    margin-left: 0.44em;
+    font-size: 0.98em;
+    letter-spacing: 0.01em;
+}
+.tech-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.48em 0.76em;
+    margin-top: 0.98em;
+    margin-bottom: 0.67em;
+}
+.tech-badge {
+    background: #2e3144;
+    color: #bcddff;
+    font-size: 0.97rem;
+    font-weight: 560;
+    padding: 0.4em 0.78em;
+    border-radius: 1.1em;
+    border: 1px solid #404664;
+    display: flex;
+    align-items: center;
+    gap: 0.42em;
+    transition: background 0.14s, color 0.14s;
+}
+.tech-badge i,
+.tech-badge svg {
+    font-size: 1.05em;
+    opacity: 0.9;
+}
