@@ -1,0 +1,16 @@
+.contacts-section {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 56px 0 77px 0;
+    background: none;
+}
+@media (max-width: 800px) {
+    .contacts-section {
+        padding: 27px 0 36px 0;
+    }
+}
+@media (max-width: 500px) {
+    .contacts-section {
+        padding: 16px 0 22px 0;
+    }
+}

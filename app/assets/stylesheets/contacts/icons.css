@@ -1,0 +1,93 @@
+.contacts-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3.2rem;
+    margin-top: 2.3rem;
+}
+
+.contacts-icon-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    background: none;
+    gap: 0;
+    outline: none;
+}
+
+.contacts-icon-circle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    border-radius: 50%;
+    min-width: unset;
+    min-height: unset;
+    width: auto;
+    height: auto;
+    font-size: 14em;
+    box-shadow: none;
+    background: none !important;
+    color: inherit;
+    transition: transform 0.13s;
+    margin-bottom: 0.23em;
+    margin-top: 0.23em;
+    cursor: pointer;
+    line-height: 1;
+}
+.contacts-icon-circle .bi {
+    vertical-align: bottom;
+    line-height: 1;
+    display: inline-block;
+}
+.contacts-icon-circle--telegram,
+.contacts-icon-circle--github,
+.contacts-icon-circle--email {
+    background: none !important;
+    color: inherit;
+}
+.contacts-icon-label {
+    margin-top: 0;
+    font-weight: 570;
+    color: #b3c4f7;
+    font-size: 1.45rem;
+    letter-spacing: 0.02em;
+    line-height: 1.18;
+    text-align: center;
+    user-select: text;
+}
+
+.contacts-icon-circle:hover,
+.contacts-icon-circle:focus-visible {
+    transform: scale(1.11);
+    outline: none;
+}
+.contacts-icon-link:active .contacts-icon-circle {
+    transform: scale(0.99);
+}
+.contacts-icon-link {
+    min-width: 66px;
+    min-height: 102px;
+}
+
+@media (max-width: 800px) {
+    .contacts-icons {
+        gap: 2.3rem;
+    }
+    .contacts-icon-circle {
+        font-size: 3.5em;
+    }
+}
+@media (max-width: 500px) {
+    .contacts-icons {
+        gap: 1.3rem;
+    }
+    .contacts-icon-circle {
+        font-size: 2.1em;
+    }
+    .contacts-icon-label {
+        font-size: 0.99rem;
+    }
+}

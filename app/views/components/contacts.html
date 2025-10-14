@@ -1,45 +1,45 @@
 <section id="contacts" tabindex="-1">
-    <div class="contacts-surface ui-surface ui-surface--fullscreen fadein-up mx-auto" style="max-width: 600px">
-        <form class="row g-3 needs-validation" novalidate method="post" action="/contacts">
-            <div class="col-md-6">
-                <label for="inputName" class="form-label">Name</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="inputName"
-                    name="inputName"
-                    placeholder="Your name"
-                    required
-                />
-                <div class="invalid-feedback">Please enter your name.</div>
+    <div class="fadein-up">
+        <div class="container">
+            <h2 class="block-title">Contacts</h2>
+        </div>
+        <div class="contacts-section">
+            <div class="contacts-icons">
+                <a
+                    class="contacts-icon-link contacts-icon-link--telegram"
+                    href="https://t.me/yourusername"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Telegram"
+                >
+                    <span class="contacts-icon-circle contacts-icon-circle--telegram">
+                        <i class="bi bi-telegram"></i>
+                    </span>
+                    <span class="contacts-icon-label">https://t.me/yourusername</span>
+                </a>
+                <a
+                    class="contacts-icon-link contacts-icon-link--github"
+                    href="https://github.com/yourusername"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="GitHub"
+                >
+                    <span class="contacts-icon-circle contacts-icon-circle--github">
+                        <i class="bi bi-github"></i>
+                    </span>
+                    <span class="contacts-icon-label">https://github.com/yourusername</span>
+                </a>
+                <a
+                    class="contacts-icon-link contacts-icon-link--email"
+                    href="mailto:john.doe@example.com"
+                    aria-label="E-mail"
+                >
+                    <span class="contacts-icon-circle contacts-icon-circle--email">
+                        <i class="bi bi-envelope"></i>
+                    </span>
+                    <span class="contacts-icon-label">john.doe@example.com</span>
+                </a>
             </div>
-            <div class="col-md-6">
-                <label for="inputEmail" class="form-label">Email</label>
-                <input
-                    type="email"
-                    class="form-control"
-                    id="inputEmail"
-                    name="inputEmail"
-                    placeholder="you@example.com"
-                    required
-                />
-                <div class="invalid-feedback">Please enter a valid email address.</div>
-            </div>
-            <div class="col-12">
-                <label for="inputMessage" class="form-label">Message</label>
-                <textarea
-                    class="form-control"
-                    id="inputMessage"
-                    name="inputMessage"
-                    rows="4"
-                    placeholder="Your message"
-                    required
-                ></textarea>
-                <div class="invalid-feedback">Please enter your message.</div>
-            </div>
-            <div class="col-12 text-center">
-                <button type="submit" class="btn btn-primary px-5">Send</button>
-            </div>
-        </form>
+        </div>
     </div>
 </section>
