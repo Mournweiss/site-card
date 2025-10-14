@@ -16,6 +16,7 @@ export default defineConfig({
                 "avatar-buttons": resolve(__dirname, "app/assets/stylesheets/avatar/buttons.css"),
                 "experience-charts": resolve(__dirname, "app/assets/javascripts/experience/charts.js"),
                 "skills-charts": resolve(__dirname, "app/assets/javascripts/skills/charts.js"),
+                "skills-base": resolve(__dirname, "app/assets/stylesheets/skills/base.css"),
                 "portfolio-rail": resolve(__dirname, "app/assets/stylesheets/portfolio/rail.css"),
                 "portfolio-arrows": resolve(__dirname, "app/assets/stylesheets/portfolio/arrows.css"),
                 "portfolio-card": resolve(__dirname, "app/assets/stylesheets/portfolio/card.css"),

@@ -1,0 +1,13 @@
+.skills-section {
+    margin-block: 100px 100px;
+}
+@media (max-width: 900px) {
+    .skills-section {
+        margin-block: 60px 80px;
+    }
+}
+@media (max-width: 600px) {
+    .skills-section {
+        margin-block: 38px 54px;
+    }
+}
