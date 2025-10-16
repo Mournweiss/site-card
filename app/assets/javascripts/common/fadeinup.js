@@ -12,7 +12,7 @@
                 }
             });
         },
-        { threshold: 0.3 }
+        { threshold: 0.4 }
     );
     fadeElems.forEach(el => obs.observe(el));
 })();

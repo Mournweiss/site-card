@@ -28,7 +28,9 @@ export default defineConfig({
                 common: resolve(__dirname, "app/assets/stylesheets/common/common.css"),
                 "common-fadeinup": resolve(__dirname, "app/assets/javascripts/common/fadeinup.js"),
                 "common-uisurface-contrast": resolve(__dirname, "app/assets/javascripts/common/uisurface-contrast.js"),
+                "common-scroll-center": resolve(__dirname, "app/assets/javascripts/common/scroll-center.js"),
                 "footer-base": resolve(__dirname, "app/assets/stylesheets/footer/base.css"),
+                "navbar-base": resolve(__dirname, "app/assets/stylesheets/navbar/base.css"),
             },
             output: {
                 entryFileNames: "[name].js",
