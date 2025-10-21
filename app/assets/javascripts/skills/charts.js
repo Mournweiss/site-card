@@ -6,41 +6,19 @@
         script.onload = callback;
         document.head.appendChild(script);
     }
-    var pieCharts = [
-        {
-            id: "about-skill-chart-1",
-            label: "Languages",
-            data: [50, 30, 20],
-            labels: ["JavaScript", "Ruby", "Python"],
-            colors: ["#4485FE", "#EA4F52", "#32DCB8"],
-            width: 378,
-            height: 378,
-        },
-        {
-            id: "about-skill-chart-2",
-            label: "Tools/Tech",
-            data: [40, 35, 15, 10],
-            labels: ["Docker", "Kubernetes", "Webpack", "Vite"],
-            colors: ["#2396ED", "#3759da", "#fbab1d", "#7ba9fa"],
-            width: 378,
-            height: 378,
-        },
-        {
-            id: "about-skill-chart-3",
-            label: "DevOps",
-            data: [60, 30, 10],
-            labels: ["CI/CD", "K8s Ops", "Monitoring"],
-            colors: ["#5BFFD9", "#6a40c5", "#1e1b2d"],
-            width: 378,
-            height: 378,
-        },
-    ];
+    var pieCharts;
+    try {
+        var el = document.getElementById("context-skills");
+        pieCharts = el ? JSON.parse(el.textContent) : [];
+    } catch (e) {
+        pieCharts = [];
+    }
     function renderPies() {
-        pieCharts.forEach(function (pcfg) {
+        (pieCharts || []).forEach(function (pcfg) {
             var c = document.getElementById(pcfg.id);
             if (c && window.Chart) {
-                c.width = pcfg.width;
-                c.height = pcfg.height;
+                c.width = pcfg.width || 378;
+                c.height = pcfg.height || 378;
                 new Chart(c, {
                     type: "doughnut",
                     data: {

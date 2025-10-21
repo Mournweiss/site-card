@@ -24,13 +24,13 @@ class SiteCardServlet
             @logger.info("GET #{request.path} -> single-page home")
             response.status = 200
             response['Content-Type'] = 'text/html; charset=utf-8'
-            response.body = [render_home]
+            response.body = render_home
         end
     end
 
     def do_POST(request, response)
         response.status = 405
-        response.body = ['<h1>405 Method Not Allowed</h1>']
+        response.body = '<h1>405 Method Not Allowed</h1>'
     end
 
     private

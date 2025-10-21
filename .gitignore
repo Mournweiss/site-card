@@ -18,6 +18,7 @@ public/assets/
 
 # IDE files
 .vscode/
+.prettierignore
 *.swp
 *.swo
 *~

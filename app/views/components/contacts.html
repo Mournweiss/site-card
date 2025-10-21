@@ -5,40 +5,14 @@
         </div>
         <div class="contacts-section">
             <div class="contacts-icons">
-                <a
-                    class="contacts-icon-link contacts-icon-link--telegram"
-                    href="https://t.me/yourusername"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Telegram"
-                >
-                    <span class="contacts-icon-circle contacts-icon-circle--telegram">
-                        <i class="bi bi-telegram"></i>
-                    </span>
-                    <span class="contacts-icon-label">https://t.me/yourusername</span>
-                </a>
-                <a
-                    class="contacts-icon-link contacts-icon-link--github"
-                    href="https://github.com/yourusername"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="GitHub"
-                >
-                    <span class="contacts-icon-circle contacts-icon-circle--github">
-                        <i class="bi bi-github"></i>
-                    </span>
-                    <span class="contacts-icon-label">https://github.com/yourusername</span>
-                </a>
-                <a
-                    class="contacts-icon-link contacts-icon-link--email"
-                    href="mailto:john.doe@example.com"
-                    aria-label="E-mail"
-                >
-                    <span class="contacts-icon-circle contacts-icon-circle--email">
-                        <i class="bi bi-envelope"></i>
-                    </span>
-                    <span class="contacts-icon-label">john.doe@example.com</span>
-                </a>
+                <% (data[:contacts] || []).each do |contact| %>
+                    <a class="contacts-icon-link contacts-icon-link--<%= contact.type %>"
+                       href="<%= contact.type == 'email' ? "mailto:#{contact.value}" : contact.value %>"
+                       target="_blank" rel="noopener noreferrer" aria-label="<%= contact.label || contact.type.capitalize %>">
+                        <span class="contacts-icon-circle contacts-icon-circle--<%= contact.type %>"><i class="bi bi-<%= contact.type %>"></i></span>
+                        <span class="contacts-icon-label"><%= contact.value %></span>
+                    </a>
+                <% end %>
             </div>
         </div>
     </div>

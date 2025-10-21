@@ -13,20 +13,49 @@ warn()    { printf "%b\n" "${COLOR_WARN}$1${COLOR_RESET}"; }
 error()   { printf "%b\n" "${COLOR_ERROR}$1${COLOR_RESET}" >&2; exit 1; }
 success() { printf "%b\n" "${COLOR_SUCCESS}$1${COLOR_RESET}"; }
 
-if [ ! -d ./public/assets ] || [ -z "$(ls -A ./public/assets 2>/dev/null)" ]; then
-    warn "./public/assets is missing or empty"
-fi
+check_env() {
+    : "${PGHOST?PGHOST is required}"
+    : "${PGPORT?PGPORT is required}"
+    : "${PGUSER?PGUSER is required}"
+    : "${PGPASSWORD?PGPASSWORD is required}"
+    : "${PGDATABASE?PGDATABASE is required}"
+    : "${NGINX_PORT?NGINX_PORT is required}"
+    : "${RACKUP_PORT?RACKUP_PORT is required}"
+    success "All required environment variables present"
+}
 
-if [ -f /app/config/nginx.conf ]; then
-    info "Generating nginx.conf from template with envsubst..."
-    envsubst '$NGINX_PORT $RACKUP_PORT' < /app/config/nginx.conf > /etc/nginx/nginx.conf || error "Failed to generate nginx.conf from template"
-else
-    error "nginx.conf not found in /app/config"
-fi
+asset_warn() {
+    if [ ! -d ./public/assets ] || [ -z "$(ls -A ./public/assets 2>/dev/null)" ]; then
+        warn "./public/assets is missing or empty"
+    fi
+}
 
-info "Starting nginx on port ${NGINX_PORT:-8080}..."
-nginx || error "Failed to start nginx"
-success "nginx started"
+setup_nginx() {
+    if [ -f /app/config/nginx.conf ]; then
+        info "Generating nginx.conf from template with envsubst..."
+        envsubst '$NGINX_PORT $RACKUP_PORT' < /app/config/nginx.conf > /etc/nginx/nginx.conf || error "Failed to generate nginx.conf from template"
+    else
+        error "nginx.conf not found in /app/config"
+    fi
+}
 
-info "Starting Ruby backend (bundle exec rackup config.ru) on port ${RACKUP_PORT:-9292}..."
-exec bundle exec rackup /app/config.ru -p "${RACKUP_PORT:-9292}"
+start_nginx() {
+    info "Starting nginx on port $NGINX_PORT..."
+    nginx || error "Failed to start nginx"
+    success "nginx started"
+}
+
+start_app() {
+    info "Starting Ruby backend (bundle exec rackup config.ru) on port $RACKUP_PORT..."
+    exec bundle exec rackup /app/config.ru -p "$RACKUP_PORT"
+}
+
+main() {
+    check_env
+    asset_warn
+    setup_nginx
+    start_nginx
+    start_app
+}
+
+main

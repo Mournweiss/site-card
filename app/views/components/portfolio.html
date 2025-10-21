@@ -6,163 +6,41 @@
         <div class="portfolio-block-wrapper">
             <div class="portfolio-container">
                 <div class="portfolio-rail" role="region">
-                    <div class="project-card">
-                        <div class="project-title">AI SaaS Platform</div>
-                        <div class="project-desc">
-                            End-to-end SaaS solution with ML pipeline, robust API, and HA cloud deployment. Integrated
-                            with Stripe, OpenAI, and custom analytics.
+                    <% (data[:portfolios] || []).each do |blk| %>
+                        <div class="project-card">
+                            <div class="project-title"><%= blk[:portfolio].title %></div>
+                            <div class="project-desc"><%= blk[:portfolio].description %></div>
+                            <div class="language-bar">
+                                <% blk[:languages].each do |lng| %>
+                                    <div class="language-bar-segment" style="width: <%= lng.percent %>% ; background: <%= lng.color %>" title="<%= lng.name %>"></div>
+                                <% end %>
+                            </div>
+                            <div class="language-legend">
+                                <% blk[:languages].each do |lng| %>
+                                    <span class="language-legend-item">
+                                        <span class="language-dot" style="background: <%= lng.color %>"></span>
+                                            <%= lng.name %>
+                                        <span class="language-percent"><%= lng.percent %>%</span>
+                                    </span>
+                                <% end %>
+                            </div>
+                            <div class="tech-badges">
+                                <% blk[:tech_badges].each do |badge| %>
+                                    <span class="tech-badge"><i class="bi <%= badge.icon %>"></i> <%= badge.name %></span>
+                                <% end %>
+                            </div>
                         </div>
-                        <div class="language-bar">
-                            <div
-                                class="language-bar-segment"
-                                style="width: 58%; background: #3572a5"
-                                title="Python"
-                            ></div>
-                            <div
-                                class="language-bar-segment"
-                                style="width: 32%; background: #701516"
-                                title="Ruby"
-                            ></div>
-                            <div
-                                class="language-bar-segment"
-                                style="width: 10%; background: #f1e05a"
-                                title="JavaScript"
-                            ></div>
-                        </div>
-                        <div class="language-legend">
-                            <span class="language-legend-item"
-                                ><span class="language-dot" style="background: #3572a5"></span>Python
-                                <span class="language-percent">58%</span></span
-                            >
-                            <span class="language-legend-item"
-                                ><span class="language-dot" style="background: #701516"></span>Ruby
-                                <span class="language-percent">32%</span></span
-                            >
-                            <span class="language-legend-item"
-                                ><span class="language-dot" style="background: #f1e05a"></span>JavaScript
-                                <span class="language-percent">10%</span></span
-                            >
-                        </div>
-                        <div class="tech-badges">
-                            <span class="tech-badge"><i class="bi bi-cpu"></i> PyTorch</span>
-                            <span class="tech-badge"><i class="bi bi-cloud"></i> AWS</span>
-                            <span class="tech-badge"><i class="bi bi-box"></i> Docker</span>
-                            <span class="tech-badge"><i class="bi bi-git"></i> FastAPI</span>
-                        </div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-title">DevOps Dashboard</div>
-                        <div class="project-desc">
-                            Realtime server analytics, live container scaling charts, and full Kubernetes workload
-                            automation with Prometheus and Grafana integration.
-                        </div>
-                        <div class="language-bar">
-                            <div
-                                class="language-bar-segment"
-                                style="width: 40%; background: #563d7c"
-                                title="Kubernetes YML"
-                            ></div>
-                            <div
-                                class="language-bar-segment"
-                                style="width: 38%; background: #61dbfb"
-                                title="React"
-                            ></div>
-                            <div
-                                class="language-bar-segment"
-                                style="width: 22%; background: #f1502f"
-                                title="Dockerfile"
-                            ></div>
-                        </div>
-                        <div class="language-legend">
-                            <span class="language-legend-item"
-                                ><span class="language-dot" style="background: #563d7c"></span>Kubernetes YML
-                                <span class="language-percent">40%</span></span
-                            >
-                            <span class="language-legend-item"
-                                ><span class="language-dot" style="background: #61dbfb"></span>React
-                                <span class="language-percent">38%</span></span
-                            >
-                            <span class="language-legend-item"
-                                ><span class="language-dot" style="background: #f1502f"></span>Dockerfile
-                                <span class="language-percent">22%</span></span
-                            >
-                        </div>
-                        <div class="tech-badges">
-                            <span class="tech-badge"><i class="bi bi-stack"></i> Prometheus</span>
-                            <span class="tech-badge"><i class="bi bi-graph-up"></i> Grafana</span>
-                            <span class="tech-badge"><i class="bi bi-tools"></i> CI/CD</span>
-                            <span class="tech-badge"><i class="bi bi-terminal"></i> NGINX</span>
-                        </div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-title">Smart CRM</div>
-                        <div class="project-desc">
-                            Multi-tenant CRM, live chat, advanced analytics, role-based controls, social media and
-                            telephony integration for massive business user base.
-                        </div>
-                        <div class="language-bar">
-                            <div
-                                class="language-bar-segment"
-                                style="width: 48%; background: #701516"
-                                title="Ruby"
-                            ></div>
-                            <div
-                                class="language-bar-segment"
-                                style="width: 35%; background: #2b7489"
-                                title="TypeScript"
-                            ></div>
-                            <div
-                                class="language-bar-segment"
-                                style="width: 17%; background: #42a5f5"
-                                title="Vue.js"
-                            ></div>
-                        </div>
-                        <div class="language-legend">
-                            <span class="language-legend-item"
-                                ><span class="language-dot" style="background: #701516"></span>Ruby
-                                <span class="language-percent">48%</span></span
-                            >
-                            <span class="language-legend-item"
-                                ><span class="language-dot" style="background: #2b7489"></span>TypeScript
-                                <span class="language-percent">35%</span></span
-                            >
-                            <span class="language-legend-item"
-                                ><span class="language-dot" style="background: #42a5f5"></span>Vue.js
-                                <span class="language-percent">17%</span></span
-                            >
-                        </div>
-                        <div class="tech-badges">
-                            <span class="tech-badge"><i class="bi bi-telephone"></i> Twilio</span>
-                            <span class="tech-badge"><i class="bi bi-people"></i> OAuth</span>
-                            <span class="tech-badge"><i class="bi bi-bar-chart"></i> Sidekiq</span>
-                        </div>
-                    </div>
+                    <% end %>
                 </div>
                 <div class="portfolio-arrows">
-                    <button
-                        type="button"
-                        class="portfolio-arrow portfolio-arrow-left"
-                        aria-label="Scroll left"
-                        tabindex="0"
-                    >
+                    <button type="button" class="portfolio-arrow portfolio-arrow-left" aria-label="Scroll left" tabindex="0">
                         <svg width="44" height="44" viewBox="0 0 32 32">
-                            <path
-                                d="M20.7 6.7a1 1 0 010 1.4L13.4 16l7.3 7.9a1 1 0 01-1.4 1.4l-8-8.7a1 1 0 010-1.4l8-8.7a1 1 0 011.4 0z"
-                                fill="#fff"
-                            />
+                            <path d="M20.7 6.7a1 1 0 010 1.4L13.4 16l7.3 7.9a1 1 0 01-1.4 1.4l-8-8.7a1 1 0 010-1.4l8-8.7a1 1 0 011.4 0z" fill="#fff" />
                         </svg>
                     </button>
-                    <button
-                        type="button"
-                        class="portfolio-arrow portfolio-arrow-right"
-                        aria-label="Scroll right"
-                        tabindex="0"
-                    >
+                    <button type="button" class="portfolio-arrow portfolio-arrow-right" aria-label="Scroll right" tabindex="0">
                         <svg width="44" height="44" viewBox="0 0 32 32">
-                            <path
-                                d="M11.3 25.3a1 1 0 010-1.4L18.6 16l-7.3-7.9a1 1 0 011.4-1.4l8 8.7a1 1 0 010 1.4l-8 8.7a1 1 0 01-1.4 0z"
-                                fill="#fff"
-                            />
+                            <path d="M11.3 25.3a1 1 0 010-1.4L18.6 16l-7.3-7.9a1 1 0 011.4-1.4l8 8.7a1 1 0 010 1.4l-8 8.7a1 1 0 01-1.4 0z" fill="#fff" />
                         </svg>
                     </button>
                 </div>

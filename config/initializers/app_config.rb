@@ -1,21 +1,16 @@
-require 'yaml'
 require 'dotenv/load'
 
 class AppConfig
-    attr_reader :content, :env, :port
+    attr_reader :env, :port
 
     def initialize
-        content_path = File.expand_path('../content.yml', __dir__)
-        unless File.exist?(content_path)
-            raise ConfigError, "Configuration file not found: #{content_path}. Please ensure config/content.yml exists."
-        end
-        begin
-            @content = YAML.load_file(content_path)
-        rescue StandardError => e
-            raise ConfigError, "Failed to load configuration file: #{content_path}. Error: #{e.message}"
-        end
         @env = load_env
-        @port = fetch_param('RACKUP_PORT', 9292).to_i # Now uses RACKUP_PORT
+        @port = fetch_param('RACKUP_PORT', 9292).to_i
+    end
+
+    def self.debug_mode
+        env_val = ENV['DEBUG']
+        env_val == 'true' || env_val == '1'
     end
 
     private

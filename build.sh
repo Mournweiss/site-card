@@ -14,36 +14,9 @@ warn()    { echo -e "${COLOR_WARN}$1${COLOR_RESET}"; }
 error()   { echo -e "${COLOR_ERROR}$1${COLOR_RESET}" >&2; exit 1; }
 success() { echo -e "${COLOR_SUCCESS}$1${COLOR_RESET}"; }
 
-# Remove old container if exists
-remove_container() {
-    local container_name="${CONTAINER_NAME:-site-card}"
-    if podman ps -a --format '{{.Names}}' | grep -q "^$container_name$"; then
-        warn "Removing existing container: $container_name"
-        podman rm -f "$container_name" || warn "Failed to remove container $container_name"
-    fi
-}
+compose_file="compose.yml"
+env_file=".env"
 
-# Build container image
-build() {
-    local container_name="${CONTAINER_NAME:-site-card}"
-    remove_container
-    info "Building $container_name container image with Podman..."
-    podman build -t "$container_name" . || error "Build failed"
-    success "Image built successfully"
-}
-
-# Run container
-run() {
-    local nginx_port="${NGINX_PORT:-8080}"
-    local container_name="${CONTAINER_NAME:-site-card}"
-    info "Running $container_name container with Podman on port $nginx_port..."
-    podman run --rm -d -p "$nginx_port:$nginx_port" \
-        -e NGINX_PORT="$nginx_port" -e RACKUP_PORT="${RACKUP_PORT:-9292}" \
-        --name "$container_name" "$container_name" || error "Container run failed"
-    success "Container started in detached mode"
-}
-
-# Create .env from .env.example
 make_env() {
     if [ -f .env ]; then
         warn ".env already exists, skipping creation"
@@ -57,11 +30,10 @@ make_env() {
     fi
 }
 
-# Main entrypoint
 main() {
     make_env
-    build
-    run
+    podman-compose --env-file "$env_file" -f "$compose_file" up --build -d
+    success "App started in detached mode"
 }
 
-main "$@"
+main

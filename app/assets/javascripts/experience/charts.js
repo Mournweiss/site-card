@@ -6,20 +6,13 @@
         script.onload = callback;
         document.head.appendChild(script);
     }
-    var radarData = {
-        labels: ["Frontend", "Backend", "DevOps", "Mobile", "Data Science", "UI/UX", "Project Mgmt."],
-        datasets: [
-            {
-                label: "Experience",
-                data: [95, 78, 60, 30, 40, 83, 69],
-                fill: true,
-                backgroundColor: "rgba(60,140,255,0.22)",
-                borderColor: "#54a3fa",
-                pointBackgroundColor: "#3c7fff",
-                tension: 0.4,
-            },
-        ],
-    };
+    var radarData;
+    try {
+        var el = document.getElementById("context-experience");
+        radarData = el ? JSON.parse(el.textContent) : {};
+    } catch (e) {
+        radarData = {};
+    }
     var radarOptions = {
         responsive: false,
         maintainAspectRatio: false,
@@ -38,7 +31,7 @@
     };
     function renderRadar() {
         var radarCtx = document.getElementById("about-experience-radar");
-        if (radarCtx && window.Chart) {
+        if (radarCtx && window.Chart && radarData && radarData.labels && radarData.datasets) {
             radarCtx.width = 1161;
             radarCtx.height = 845;
             new Chart(radarCtx, { type: "radar", data: radarData, options: radarOptions });

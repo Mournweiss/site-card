@@ -21,6 +21,6 @@ map '/' do
             res.status = 405
             res.write '<h1>405 Method Not Allowed</h1>'
         end
-        res.finish
+        [res.status, res.headers, [res.body.to_s]]
     }
 end

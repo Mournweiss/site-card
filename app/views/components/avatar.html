@@ -2,18 +2,16 @@
     <section id="avatar" class="avatar-section" tabindex="-1" aria-labelledby="avatar-heading">
         <div class="avatar-card">
             <div class="avatar-ring">
-                <div class="avatar-image-wrapper" data-name="Alex Smith">
+                <div class="avatar-image-wrapper" data-name="<%= data[:about].name %>">
                     <img src="" alt="User avatar" class="avatar-img avatar-hidden" loading="lazy" />
-                    <div class="avatar-fallback" aria-label="A"></div>
+                    <div class="avatar-fallback" aria-label="<%= data[:about].name.to_s[0].capitalize %>"></div>
                 </div>
             </div>
             <div class="avatar-info">
-                <div class="avatar-role">Frontend developer</div>
-                <h2 id="avatar-heading" class="avatar-name">Alex Smith</h2>
+                <div class="avatar-role">—</div>
+                <h2 id="avatar-heading" class="avatar-name"><%= data[:about].name %></h2>
                 <div class="avatar-description">
-                    Fusce tempor magna mi, non egestas velit ultricies nec. Aenean convallis, risus non condimentum
-                    gravida, odio mauris ullamcorper felis, ut venenatis purus ex eu mi. Quisque imperdiet lacinia urna,
-                    a placerat sapien pretium eu.
+                    <%= data[:about].description %>
                 </div>
                 <div class="avatar-actions">
                     <a href="#" class="avatar-btn">Download CV</a>
