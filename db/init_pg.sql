@@ -4,13 +4,28 @@ CREATE TABLE IF NOT EXISTS about (
     age INTEGER,
     location VARCHAR(128),
     education VARCHAR(128),
-    description TEXT,
-    timezone VARCHAR(64)
+    role VARCHAR(128),
+    languages TEXT,
+    description TEXT
 );
 
-INSERT INTO about (id, name, age, location, education, description, timezone)
-VALUES (1, 'John Doe', 29, 'Moscow', 'MSTU Bauman', 'Web developer', 'MSK (UTC+3)')
+INSERT INTO about (id, name, age, location, education, role, languages, description)
+VALUES (1, 'John Doe', 29, 'Moscow', 'MSTU Bauman', 'Web developer', 'English (C1), Russian (native)', 'Experienced web developer specializing in fullstack solutions.')
 ON CONFLICT (id) DO NOTHING;
+
+-- Work Experience: id, about_id, company, position, start_date, end_date (all TEXT except ref ids)
+CREATE TABLE IF NOT EXISTS careers (
+    id SERIAL PRIMARY KEY,
+    about_id INTEGER REFERENCES about(id) ON DELETE CASCADE,
+    company VARCHAR(128),
+    position VARCHAR(128),
+    start_date VARCHAR(32),
+    end_date VARCHAR(32)
+);
+INSERT INTO careers (about_id, company, position, start_date, end_date) VALUES
+    (1, 'Acme Corp', 'Senior Developer', '2018', '2022'),
+    (1, 'AcmeX', 'Lead Developer', '2022', 'present')
+ON CONFLICT DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS skill_groups (
     id SERIAL PRIMARY KEY,

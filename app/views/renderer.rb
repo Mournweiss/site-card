@@ -10,6 +10,7 @@ require_relative '../models/portfolio'
 require_relative '../models/portfolio_language'
 require_relative '../models/portfolio_tech_badge'
 require_relative '../models/contact'
+require_relative '../models/career'
 require_relative '../../config/initializers/pg_repository'
 
 class Renderer
@@ -71,7 +72,12 @@ class Renderer
             rescue Exception => e
                 raise BDError.new("DB fetch failed (about): #{e.message}", context: {component: 'about', original: e})
             end
-            ctx['about'] = { about: about }
+            begin
+                careers = (about && about.id) ? Career.all_by_about(conn, about.id) : []
+            rescue Exception => e
+                raise BDError.new("DB fetch failed (Career): #{e.message}", context: {component: 'career', original: e})
+            end
+            ctx['about'] = { about: about, languages: about.languages, careers: careers }
 
             ctx['avatar'] = { about: about }
 

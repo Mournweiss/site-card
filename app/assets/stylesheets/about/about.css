@@ -15,11 +15,16 @@
 .card-body {
     padding: 0;
 }
-.about-me-grid {
-    margin-bottom: 2.8rem;
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
+.about-me-section {
+}
+.about-me-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5em;
+    margin-bottom: 1.2em;
+}
+.about-me-row--indented {
+    padding-left: calc(50% / 3 + 0.75em);
 }
 .about-me-cell {
     background: transparent !important;
@@ -28,23 +33,50 @@
     min-height: 165px;
     height: 100%;
     width: 100%;
-    max-width: 98%;
+    flex: 1 1 0;
+    max-width: 480px;
     padding: 1.05em 1.05em 0.92em 1.05em;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: center;
     gap: 0.47em;
     text-align: left;
-    justify-content: flex-start;
     font-size: 1.72rem;
     white-space: normal;
+}
+@media (max-width: 1100px) {
+    .about-me-cell {
+        max-width: 220px;
+    }
+    .about-me-row--indented {
+        padding-left: calc(50% / 3 + 0.75em);
+    }
+}
+@media (max-width: 900px) {
+    .about-me-cell {
+        max-width: 150px;
+    }
+    .about-me-row--indented {
+        padding-left: calc(50% / 3 + 0.75em);
+    }
+}
+@media (max-width: 700px) {
+    .about-me-row,
+    .about-me-row--indented {
+        flex-direction: column;
+        padding-left: 0;
+        gap: 0.8em;
+    }
+    .about-me-cell {
+        max-width: 100%;
+    }
 }
 .about-me-icon {
     font-size: 3.15em;
     color: #3985f2;
-    margin-right: 0.15em;
-    margin-left: 0.05em;
+    margin-right: 0.6em;
+    margin-left: 0;
     flex-shrink: 0;
-    align-self: center;
 }
 .about-me-title {
     font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
