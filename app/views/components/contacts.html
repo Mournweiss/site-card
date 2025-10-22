@@ -9,7 +9,9 @@
                     <a class="contacts-icon-link contacts-icon-link--<%= contact.type %>"
                        href="<%= contact.type == 'email' ? "mailto:#{contact.value}" : contact.value %>"
                        target="_blank" rel="noopener noreferrer" aria-label="<%= contact.label || contact.type.capitalize %>">
-                        <span class="contacts-icon-circle contacts-icon-circle--<%= contact.type %>"><i class="bi bi-<%= contact.type %>"></i></span>
+                        <span class="contacts-icon-circle contacts-icon-circle--<%= contact.type %>">
+                            <i class="bi <%= contact.icon %>"></i>
+                        </span>
                         <span class="contacts-icon-label"><%= contact.value %></span>
                     </a>
                 <% end %>

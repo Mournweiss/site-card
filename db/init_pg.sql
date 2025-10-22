@@ -119,11 +119,12 @@ CREATE TABLE IF NOT EXISTS contacts (
     id SERIAL PRIMARY KEY,
     type VARCHAR(32),
     value VARCHAR(128),
-    label VARCHAR(64)
+    label VARCHAR(64),
+    icon VARCHAR(64)
 );
 
-INSERT INTO contacts (type, value, label) VALUES
-('telegram', 'https://t.me/yourusername', 'Telegram'),
-('github', 'https://github.com/yourusername', 'GitHub'),
-('email', 'john.doe@example.com', 'E-mail')
+INSERT INTO contacts (type, value, label, icon) VALUES
+('telegram', 'https://t.me/yourusername', 'Telegram', 'bi-telegram'),
+('github', 'https://github.com/yourusername', 'GitHub', 'bi-github'),
+('email', 'john.doe@example.com', 'E-mail', 'bi-envelope')
 ON CONFLICT DO NOTHING;

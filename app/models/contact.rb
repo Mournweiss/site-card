@@ -4,13 +4,14 @@ require_relative '../../lib/errors'
 class Contact
     TABLE = 'contacts'.freeze
 
-    attr_reader :id, :type, :value, :label
+    attr_reader :id, :type, :value, :label, :icon
 
     def initialize(attrs)
         @id = attrs['id']
         @type = attrs['type']
         @value = attrs['value']
         @label = attrs['label']
+        @icon = attrs['icon']
     end
 
     def self.all(conn)
