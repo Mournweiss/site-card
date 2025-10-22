@@ -13,7 +13,6 @@ INSERT INTO about (id, name, age, location, education, role, languages, descript
 VALUES (1, 'John Doe', 29, 'Moscow', 'MSTU Bauman', 'Web developer', 'English (C1), Russian (native)', 'Experienced web developer specializing in fullstack solutions.')
 ON CONFLICT (id) DO NOTHING;
 
--- Work Experience: id, about_id, company, position, start_date, end_date (all TEXT except ref ids)
 CREATE TABLE IF NOT EXISTS careers (
     id SERIAL PRIMARY KEY,
     about_id INTEGER REFERENCES about(id) ON DELETE CASCADE,
@@ -36,7 +35,8 @@ CREATE TABLE IF NOT EXISTS skills (
     id SERIAL PRIMARY KEY,
     group_id INTEGER REFERENCES skill_groups(id) ON DELETE CASCADE,
     name VARCHAR(64),
-    level INTEGER DEFAULT 0
+    level INTEGER DEFAULT 0,
+    color VARCHAR(16)
 );
 
 INSERT INTO skill_groups (id, name) VALUES
@@ -45,17 +45,17 @@ INSERT INTO skill_groups (id, name) VALUES
     (3, 'DevOps')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO skills (group_id, name, level) VALUES
-    (1, 'Ruby', 8),
-    (1, 'JavaScript', 7),
-    (1, 'Python', 6),
-    (2, 'Docker', 7),
-    (2, 'Kubernetes', 6),
-    (2, 'Webpack', 8),
-    (2, 'Vite', 5),
-    (3, 'CI/CD', 8),
-    (3, 'K8s Ops', 6),
-    (3, 'Monitoring', 5)
+INSERT INTO skills (group_id, name, level, color) VALUES
+    (1, 'Ruby', 8, '#701516'),
+    (1, 'JavaScript', 7, '#f1e05a'),
+    (1, 'Python', 6, '#3572a5'),
+    (2, 'Docker', 7, '#f1502f'),
+    (2, 'Kubernetes', 6, '#563d7c'),
+    (2, 'Webpack', 8, '#8ed6fb'),
+    (2, 'Vite', 5, '#fbab1d'),
+    (3, 'CI/CD', 8, '#4485FE'),
+    (3, 'K8s Ops', 6, '#32DCB8'),
+    (3, 'Monitoring', 5, '#2396ED')
 ON CONFLICT DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS experiences (

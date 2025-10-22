@@ -4,13 +4,14 @@ require_relative '../../lib/errors'
 class Skill
     TABLE = 'skills'.freeze
 
-    attr_reader :id, :group_id, :name, :level
+    attr_reader :id, :group_id, :name, :level, :color
 
     def initialize(attrs)
         @id = attrs['id']
         @group_id = attrs['group_id']
         @name = attrs['name']
         @level = attrs['level']
+        @color = attrs['color']
     end
 
     def self.all_by_group(conn, group_id)

@@ -10,7 +10,7 @@ Development roadmap
 
 -   [x] Fix Nginx connection error
 -   [x] Fix incorrect position display in Avatar section
--   [ ] Fix incorrect chart rendering in Skills section
+-   [x] Fix incorrect chart rendering in Skills section
 -   [ ] Fix incorrect e-mail icon display in Contacts section
 
 ## Refinements

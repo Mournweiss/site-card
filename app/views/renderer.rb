@@ -143,13 +143,14 @@ class Renderer
     def json_skills(ctx)
         groups = ctx[:skill_groups] || []
         piectx = []
-        groups.each do |h|
+        groups.each_with_index do |h, idx|
+            skill_colors = h[:skills].map { |s| s.color || '#888888' } # fallback is grey
             piectx << {
+                id: "about-skill-chart-#{idx+1}",
                 label: h[:group].name,
                 labels: h[:skills].map { |s| s.name },
                 data: h[:skills].map { |s| s.level },
-                colors: Array.new(h[:skills].length) { _color_for_skill },
-                # colors: ideally, fetch from DB or config - here, stub per PLAN.md
+                colors: skill_colors,
                 width: 378, height: 378
             }
         end
@@ -162,10 +163,6 @@ class Renderer
             labels: arr.map { |e| e.label },
             datasets: [{ label: "Experience", data: arr.map { |e| e.value }, fill: true, backgroundColor: "rgba(60,140,255,0.22)", borderColor: "#54a3fa", pointBackgroundColor: "#3c7fff", tension: 0.4 }]
         })
-    end
-
-    def _color_for_skill
-        ["#4485FE", "#EA4F52", "#32DCB8", "#2396ED", "#3759da", "#fbab1d", "#7ba9fa", "#5BFFD9", "#6a40c5", "#1e1b2d"].sample
     end
 
     def inject_into_layout(layout_html, sections_html)

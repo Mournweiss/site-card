@@ -1,18 +1,5 @@
 <div class="skills-section fadein-up">
     <h2 class="block-title" id="skills">Skills</h2>
-    <% (data[:skill_groups] || []).each do |group_block| %>
-        <div class="skills-group mb-3">
-            <h3 class="skills-group-title"><%= group_block[:group].name %></h3>
-            <ul class="skills-list">
-                <% group_block[:skills].each do |skill| %>
-                    <li class="skills-list-item d-flex align-items-center">
-                        <span class="skills-name flex-shrink-0"><%= skill.name %></span>&nbsp;—&nbsp;
-                        <span class="skills-level flex-shrink-0"><%= skill.level %></span>
-                    </li>
-                <% end %>
-            </ul>
-        </div>
-    <% end %>
     <div class="skills-charts d-flex flex-row gap-4 flex-wrap justify-content-center align-items-center">
         <div class="skill-pie">
             <canvas id="about-skill-chart-1" aria-label="Programming language skill distribution"></canvas>
