@@ -17,20 +17,32 @@ class SiteCardServlet
     def initialize(_server, config, logger)
         @config = config
         @logger = logger
+        require_relative 'admin_controller'
+        @admin_ctrl = AdminController.new(@config, @logger)
     end
-    
+
     def do_GET(request, response)
         with_error_handling(response, @logger) do
-            @logger.info("GET #{request.path} -> single-page home")
-            response.status = 200
-            response['Content-Type'] = 'text/html; charset=utf-8'
-            response.body = render_home
+            if request.path.start_with?('/admin')
+                @admin_ctrl.do_GET(request, response)
+            else
+                @logger.info("GET #{request.path} -> single-page home")
+                response.status = 200
+                response['Content-Type'] = 'text/html; charset=utf-8'
+                response.body = render_home
+            end
         end
     end
 
     def do_POST(request, response)
-        response.status = 405
-        response.body = '<h1>405 Method Not Allowed</h1>'
+        with_error_handling(response, @logger) do
+            if request.path.start_with?('/admin')
+                @admin_ctrl.do_POST(request, response)
+            else
+                response.status = 405
+                response.body = '<h1>405 Method Not Allowed</h1>'
+            end
+        end
     end
 
     private
