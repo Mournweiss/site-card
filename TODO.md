@@ -12,6 +12,7 @@ Development roadmap
 -   [x] Fix incorrect position display in Avatar section
 -   [x] Fix incorrect chart rendering in Skills section
 -   [x] Fix incorrect e-mail icon display in Contacts section
+-   [ ] Fix vertical page skalling to stop at the beginning of sections in app/assets/javascripts/common/scroll-center.js
 
 ## Refinements
 
@@ -24,3 +25,4 @@ Development roadmap
 -   [ ] Add ability to upload an avatar image via the UI
 -   [ ] Add modular project cards to the Portfolio section of two types - cards for IT projects and art cards
 -   [ ] Add ability to download the CV file by clicking on the button
+-   [ ] Add ability to generate a QR code redirecting to the home page
