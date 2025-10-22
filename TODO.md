@@ -19,3 +19,8 @@ Development roadmap
 -   [ ] Add ability to customize the site's content via the UI
 -   [ ] Add auto-detection of the current containerization engine (Podman, Docker) to build.sh
 -   [x] Add page content from the database
+-   [ ] Add ability to customize the color scheme of the page
+-   [ ] Add a form to send a message to the page owner
+-   [ ] Add ability to upload an avatar image via the UI
+-   [ ] Add modular project cards to the Portfolio section of two types - cards for IT projects and art cards
+-   [ ] Add ability to download the CV file by clicking on the button
