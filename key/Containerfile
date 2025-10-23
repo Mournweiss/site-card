@@ -29,7 +29,6 @@ ENV LD_LIBRARY_PATH=/usr/local/lib
 COPY --from=build /oqs-dist /usr/local
 
 WORKDIR /keygen
-COPY main.rb main.rb
 COPY src/ src/
 
-ENTRYPOINT ["ruby", "/keygen/main.rb"]
+ENTRYPOINT ["ruby", "/keygen/src/main.rb"]
