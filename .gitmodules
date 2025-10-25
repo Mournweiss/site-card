@@ -1,3 +1,4 @@
 [submodule "keygen"]
 	path = keygen
 	url = https://github.com/Mournweiss/PQC-Key-Generator.git
+	branch = main
