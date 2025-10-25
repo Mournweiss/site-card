@@ -29,7 +29,7 @@ end
 desc 'Show project info'
 task :info do
     begin
-        puts 'SiteCard project: modular Ruby backend, Vite frontend, Nginx as static server'
+        puts 'SiteCard project'
     rescue => e
         puts "Info task failed: #{e.message}"
         puts e.backtrace.join("\n")

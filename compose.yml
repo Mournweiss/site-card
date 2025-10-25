@@ -1,6 +1,7 @@
 services:
     db:
-        image: docker.io/library/postgres:14-alpine
+        build: services/db
+        image: ${CONTAINER_NAME:-site-card}-db:latest
         environment:
             POSTGRES_DB: ${PGDATABASE}
             POSTGRES_USER: ${PGUSER}
@@ -11,8 +12,7 @@ services:
         ports:
             - "${PGPORT:-5432}:5432"
         volumes:
-            - pgdata:/var/lib/postgresql/data
-            - ./db/init_pg.sql:/docker-entrypoint-initdb.d/init_pg.sql:ro
+            - ./services/db/pgdata:/var/lib/postgresql/data
         networks:
             - ${CONTAINER_NAME:-site-card}-net
         healthcheck:
@@ -23,7 +23,7 @@ services:
             start_period: 10s
 
     app:
-        build: .
+        build: services/card
         env_file:
             - .env
         ports:

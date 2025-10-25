@@ -45,7 +45,7 @@
         } else {
             dxInertia = 0;
             rafId = null;
-            scrollSnapToNearestCard(); // Snap after inertia ends
+            scrollSnapToNearestCard();
         }
     }
     rail.addEventListener("touchstart", function (e) {

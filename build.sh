@@ -17,6 +17,16 @@ success() { echo -e "${COLOR_SUCCESS}$1${COLOR_RESET}"; }
 compose_file="compose.yml"
 env_file=".env"
 
+init_submodules() {
+    if [ -f .gitmodules ]; then
+        info "Initializing git submodules..."
+        git submodule update --init --recursive && \
+            success "Submodules initialized" || warn "Failed to initialize submodules"
+    else
+        info ".gitmodules not found, skipping submodule init"
+    fi
+}
+
 make_env() {
     if [ -f .env ]; then
         warn ".env already exists, skipping creation"
@@ -31,7 +41,7 @@ make_env() {
 }
 
 generate_admin_key() {
-    der_path=$(./key/generate_key.sh | tail -n 1)
+    der_path=$(./keygen/generate_key.sh | tail -n 1)
     if [ ! -f "$der_path" ]; then
         error "Key DER file missing on host: $der_path"
     fi
@@ -45,6 +55,7 @@ generate_admin_key() {
 }
 
 main() {
+    init_submodules
     make_env
     generate_admin_key
     podman-compose --env-file "$env_file" -f "$compose_file" up --build -d

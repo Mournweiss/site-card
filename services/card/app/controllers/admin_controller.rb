@@ -55,15 +55,15 @@ class AdminController
             if verify_admin_key(admin_key)
                 token = create_admin_session
                 set_admin_cookie(response, token)
-                @logger.info('[Admin] Successful admin login')
+                @logger.info('Successful admin login')
                 redirect('/admin/panel', response)
             else
-                @logger.warn('[Admin] Failed admin login attempt')
+                @logger.warn('Failed admin login attempt')
                 render_login(response, 'Invalid key')
             end
         when '/admin/logout'
             clear_admin_cookie(response)
-            @logger.info('[Admin] Admin logout')
+            @logger.info('Admin logout')
             redirect('/', response)
         else
             response.status = 404
@@ -114,6 +114,7 @@ class AdminController
         return false unless cookie && @admin_sessions[cookie]
         was_at = @admin_sessions[cookie]
         return false unless was_at && Time.now.to_i - was_at < ADMIN_SESSION_TTL
+        # Extend session
         @admin_sessions[cookie] = Time.now.to_i
         true
     end
@@ -129,7 +130,6 @@ class AdminController
     def parse_cookie(request, key)
         cookies = (request.respond_to?(:cookies) ? request.cookies : nil)
         return cookies[key] if cookies&.key?(key)
-        # Fallback raw
         if request.header['cookie']
             request.header['cookie'][0].split(';').each do |c|
                 k, v = c.strip.split('=',2)
@@ -195,10 +195,10 @@ class AdminController
             end
         end
         if errs.empty?
-            @logger.info("[Admin] Bulk update successful: #{update_log}")
+            @logger.info("Bulk update successful: #{update_log}")
             api_json(response, {result: 'ok'}, 200)
         else
-            @logger.warn("[Admin] Bulk update errors: #{errs}")
+            @logger.warn("Bulk update errors: #{errs}")
             api_json(response, {result: 'partial', errors: errs}, 400)
         end
     rescue => e
@@ -270,7 +270,7 @@ class AdminController
             conn.with_connection do |db|
                 db.exec_params(sql, safe.values)
             end
-            @logger.info("[Admin] About updated: #{safe.keys}")
+            @logger.info("About updated: #{safe.keys}")
         else
             raise "Update for section #{section} is not implemented"
         end

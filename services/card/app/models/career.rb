@@ -1,4 +1,3 @@
-# Change Annotation: New model for structured work experience in resume profile (see PLAN.md 18).
 require 'pg'
 require_relative '../../lib/errors'
 
