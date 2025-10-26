@@ -61,14 +61,48 @@
     }
 }
 @media (max-width: 700px) {
+    .container > .about-card {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100vw !important;
+        left: 50%;
+        transform: translateX(-50%);
+        position: relative;
+        box-sizing: border-box;
+    }
+    .about-card {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        box-sizing: border-box;
+    }
+    .about-body,
+    .card-body.about-body {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        box-sizing: border-box;
+    }
+    .about-me-section,
     .about-me-row,
     .about-me-row--indented {
-        flex-direction: column;
-        padding-left: 0;
-        gap: 0.8em;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: 100%;
+        box-sizing: border-box;
     }
     .about-me-cell {
         max-width: 100%;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+        box-sizing: border-box;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
     }
 }
 .about-me-icon {

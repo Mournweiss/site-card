@@ -17,7 +17,6 @@
     scrollbar-width: thin;
     scrollbar-color: #383850 #23222f;
 }
-
 .portfolio-rail::-webkit-scrollbar {
     height: 12px;
     background: #23222f;
@@ -28,8 +27,17 @@
 }
 #portfolio,
 .portfolio-container {
-    width: 100vw !important;
-    max-width: 100vw !important;
+    width: 100vw;
+    max-width: 100vw;
     margin-left: 50%;
     transform: translateX(-50%);
+    box-sizing: border-box;
+    overflow-x: hidden;
+    padding-left: max(env(safe-area-inset-left), 0px);
+    padding-right: max(env(safe-area-inset-right), 0px);
+}
+
+html,
+body {
+    overflow-x: hidden !important;
 }

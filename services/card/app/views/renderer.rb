@@ -38,8 +38,7 @@ class Renderer
             {href: '#experience', label: 'Experience'},
             {href: '#skills', label: 'Skills'},
             {href: '#portfolio', label: 'Portfolio'},
-            {href: '#contacts', label: 'Contacts'},
-            {href: '/admin/auth', label: 'Log in'}
+            {href: '#contacts', label: 'Contacts'}
         ]
         erb_template.result_with_hash(nav_links: links)
     end

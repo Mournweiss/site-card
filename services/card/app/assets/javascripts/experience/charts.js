@@ -14,7 +14,7 @@
         radarData = {};
     }
     var radarOptions = {
-        responsive: false,
+        responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: { display: false },

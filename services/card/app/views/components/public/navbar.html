@@ -1,5 +1,8 @@
 <nav class="navbar" aria-label="Main navigation">
-    <ul class="navbar-list">
+    <button class="navbar-toggle d-lg-none" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navbar-list">
+        <span class="navbar-toggle-icon"></span>
+    </button>
+    <ul class="navbar-list" id="navbar-list">
         <% if defined?(nav_links) && nav_links.respond_to?(:each) %>
             <% nav_links.each do |l| %>
                 <li><a class="navbar-link" href="<%= l[:href] %>" aria-label="Go to <%= l[:label] %>"><%= l[:label] %></a></li>

@@ -29,3 +29,20 @@
         padding-left: 0;
     }
 }
+@media (max-width: 700px) {
+    .experience-chart canvas {
+        width: 95vw !important;
+        max-width: 350px;
+        min-width: 180px;
+        height: auto !important;
+        display: block;
+        margin: 0 auto;
+    }
+}
+@media (max-width: 440px) {
+    .experience-chart canvas {
+        width: 98vw !important;
+        max-width: 99vw;
+        min-width: 120px;
+    }
+}
