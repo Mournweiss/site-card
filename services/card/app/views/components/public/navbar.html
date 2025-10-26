@@ -1,0 +1,9 @@
+<nav class="navbar" aria-label="Main navigation">
+    <ul class="navbar-list">
+        <% if defined?(nav_links) && nav_links.respond_to?(:each) %>
+            <% nav_links.each do |l| %>
+                <li><a class="navbar-link" href="<%= l[:href] %>" aria-label="Go to <%= l[:label] %>"><%= l[:label] %></a></li>
+            <% end %>
+        <% end %>
+    </ul>
+</nav>

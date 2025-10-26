@@ -1,25 +1,39 @@
 require 'rack/request'
 require 'rack/response'
 require_relative './app/controllers/application_controller'
+require_relative './app/controllers/admin_controller'
 require_relative './config/initializers/app_config'
 require_relative './lib/logger'
 
 config = AppConfig.new
 logger = AppLogger.new
 
+site_controller = SiteCardServlet.new(nil, config, logger)
+admin_controller = SiteCardAdminServlet.new(config, logger)
+
 use Rack::CommonLogger, logger.instance_variable_get(:@logger)
 map '/' do
     run proc { |env|
         req = Rack::Request.new(env)
         res = Rack::Response.new
-        controller = SiteCardServlet.new(nil, config, logger)
-        if req.get?
-            controller.do_GET(req, res)
-        elsif req.post?
-            controller.do_POST(req, res)
+        if req.path.start_with?('/admin')
+            if req.get?
+                admin_controller.do_GET(req, res)
+            elsif req.post?
+                admin_controller.do_POST(req, res)
+            else
+                res.status = 405
+                res.write '<h1>405 Method Not Allowed</h1>'
+            end
         else
-            res.status = 405
-            res.write '<h1>405 Method Not Allowed</h1>'
+            if req.get?
+                site_controller.do_GET(req, res)
+            elsif req.post?
+                site_controller.do_POST(req, res)
+            else
+                res.status = 405
+                res.write '<h1>405 Method Not Allowed</h1>'
+            end
         end
         [res.status, res.headers, [res.body.to_s]]
     }

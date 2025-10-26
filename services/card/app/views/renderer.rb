@@ -14,19 +14,52 @@ require_relative '../models/career'
 require_relative '../../config/initializers/pg_repository'
 
 class Renderer
-    COMPONENTS = %w[avatar.html about.html experience.html skills.html portfolio.html contacts.html]
-    COMPONENTS_PATH = File.expand_path('components', __dir__)
-    LAYOUT_PATH = File.expand_path('layouts/application.html', __dir__)
-
-    def initialize(pg_repo = PGRepository.new)
-        @pg_repo = pg_repo
+    @repo_instance = nil
+    def self.pg_repository_instance
+        @repo_instance ||= PGRepository.new
     end
 
-    def render(contact_message: nil)
+    PUBLIC_COMPONENTS = %w[avatar.html about.html experience.html skills.html portfolio.html contacts.html]
+    ADMIN_COMPONENTS = %w[panel.html]
+    COMPONENTS_PATH_PUBLIC = File.expand_path('components/public', __dir__)
+    COMPONENTS_PATH_ADMIN  = File.expand_path('components/admin', __dir__)
+    LAYOUT_PATH = File.expand_path('layouts/application.html', __dir__)
+
+    def initialize(pg_repo = nil)
+        @pg_repo = pg_repo || self.class.pg_repository_instance
+    end
+
+    def render_navbar(nav_links: nil)
+        navbar_path = File.expand_path('components/public/navbar.html', __dir__)
+        erb_template = ERB.new(File.read(navbar_path))
+        links = nav_links || [
+            {href: '#avatar', label: 'Avatar'},
+            {href: '#about',  label: 'About'},
+            {href: '#experience', label: 'Experience'},
+            {href: '#skills', label: 'Skills'},
+            {href: '#portfolio', label: 'Portfolio'},
+            {href: '#contacts', label: 'Contacts'},
+            {href: '/admin/auth', label: 'Log in'}
+        ]
+        erb_template.result_with_hash(nav_links: links)
+    end
+
+    def render(contact_message: nil, mode: :public, nav_links: nil)
         begin
             data_ctx = load_data_context
-            sections_html = COMPONENTS.map { |file|
-                path = File.join(COMPONENTS_PATH, file)
+            case mode
+            when :admin
+                components = ADMIN_COMPONENTS
+                components_path = COMPONENTS_PATH_ADMIN
+            else
+                components = PUBLIC_COMPONENTS
+                components_path = COMPONENTS_PATH_PUBLIC
+            end
+
+            navbar_html = (mode == :public) ? render_navbar(nav_links: nav_links) : ''
+
+            sections_html = components.map { |file|
+                path = File.join(components_path, file)
                 section_name = file.gsub('.html', '')
                 begin
                     if File.exist?(path)
@@ -53,7 +86,7 @@ class Renderer
                 sections_html = sections_html.sub('</form>', "<div class=\"alert alert-info mt-3\">#{contact_message}</div></form>")
             end
             layout_html = File.exist?(LAYOUT_PATH) ? File.read(LAYOUT_PATH) : "<html><body>#{sections_html}</body></html>"
-            inject_into_layout(layout_html, sections_html)
+            inject_into_layout(layout_html, sections_html, navbar_html)
         rescue SiteCardError => e
             raise
         rescue Exception => e
@@ -144,7 +177,7 @@ class Renderer
         groups = ctx[:skill_groups] || []
         piectx = []
         groups.each_with_index do |h, idx|
-            skill_colors = h[:skills].map { |s| s.color || '#888888' } # fallback is grey
+            skill_colors = h[:skills].map { |s| s.color || '#888888' }
             piectx << {
                 id: "about-skill-chart-#{idx+1}",
                 label: h[:group].name,
@@ -165,8 +198,9 @@ class Renderer
         })
     end
 
-    def inject_into_layout(layout_html, sections_html)
-        layout_html.gsub(
+    def inject_into_layout(layout_html, sections_html, navbar_html = '')
+        layout_with_nav = navbar_html && !navbar_html.empty? ? layout_html.sub('<body>', "<body>\n#{navbar_html}") : layout_html
+        layout_with_nav.gsub(
             /<main class="container py-4">.*?<\/main>/m,
             "<main class=\"container py-4\">#{sections_html}</main>"
         )

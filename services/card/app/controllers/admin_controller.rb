@@ -4,8 +4,10 @@ require_relative '../../config/initializers/app_config'
 require_relative '../../lib/logger'
 require_relative '../../lib/errors'
 require_relative '../views/renderer'
+require_relative 'application_controller'
+require_relative '../../lib/cookie_manager'
 
-class AdminController
+class SiteCardAdminServlet < SiteCardServlet
     include ErrorHandler
 
     ADMIN_COOKIE = 'sitecard_admin'.freeze
@@ -16,78 +18,90 @@ class AdminController
     }.freeze
 
     def initialize(config, logger)
-        @config = config
-        @logger = logger
-        @renderer = Renderer.new
+        super(nil, config, logger)
         @admin_sessions = {}
     end
 
     def do_GET(request, response)
-        if request.path =~ %r{^/admin/api/(\w+)$}
-            return admin_api_get_section(Regexp.last_match(1), request, response)
-        end
-        case request.path
-        when '/admin/'
-            render_login(response, '')
-        when '/admin/panel'
-            if valid_admin_session?(request)
-                render_panel(response)
+        with_error_handling(response, @logger) do
+            @logger.info("do_GET path=#{request.path}")
+            case request.path
+            when '/admin/auth'
+                render_admin_auth(response, '')
+            when '/admin'
+                valid = valid_admin_session?(request)
+                @logger.info("GET /admin valid_admin_session?=#{valid}")
+                if valid
+                    render_admin_home(response)
+                else
+                    redirect('/admin/auth', response)
+                end
             else
-                redirect('/admin/', response)
+                if request.path.start_with?('/admin/api/')
+                    section = request.path.split('/').last
+                    admin_api_get_section(section, request, response)
+                    return
+                end
+                if request.path.start_with?('/admin/api')
+                    api_json(response, {error: 'Not found'}, 404)
+                    return
+                end
+                super if defined?(super)
             end
-        else
-            response.status = 404
-            response.body = '<h1>Not Found</h1>'
         end
     end
 
     def do_POST(request, response)
-        if request.path == '/admin/api/update'
-            return admin_api_update_sections(request, response)
-        end
-        case request.path
-        when '/admin/'
-            admin_key = (request.body.respond_to?(:read) ? URI.decode_www_form(request.body.read).to_h['admin_key'] : nil)
-            if !admin_key.is_a?(String) || admin_key.strip.empty?
-                render_login(response, 'Key required')
-                return
-            end
-            if verify_admin_key(admin_key)
-                token = create_admin_session
-                set_admin_cookie(response, token)
-                @logger.info('Successful admin login')
-                redirect('/admin/panel', response)
+        with_error_handling(response, @logger) do
+            if request.path == '/admin/auth'
+                admin_key = (request.body.respond_to?(:read) ? URI.decode_www_form(request.body.read).to_h['admin_key'] : nil)
+                if !admin_key.is_a?(String) || admin_key.strip.empty?
+                    render_admin_auth(response, 'Admin key required.')
+                    return
+                end
+                if verify_admin_key(admin_key)
+                    token = create_admin_session
+                    CookieManager.set_cookie(response, ADMIN_COOKIE, token, path: '/', max_age: ADMIN_SESSION_TTL, http_only: true, samesite: 'Strict')
+                    @logger.info("Successful admin login")
+                    redirect('/admin', response)
+                else
+                    @logger.warn('Failed admin login attempt')
+                    render_admin_auth(response, 'Invalid admin key')
+                end
+            elsif request.path == '/admin/api/update'
+                admin_api_update_sections(request, response)
+            elsif request.path == '/admin/logout'
+                token = CookieManager.get_cookie(request, ADMIN_COOKIE)
+                clear_admin_cookie(response)
+                @admin_sessions.delete(token) if @admin_sessions && token
+                @logger.info("Admin logged out")
+                redirect('/admin/auth', response)
             else
-                @logger.warn('Failed admin login attempt')
-                render_login(response, 'Invalid key')
+                if request.path.start_with?('/admin/api')
+                    api_json(response, {error: 'Not found'}, 404)
+                    return
+                end
+                super if defined?(super)
             end
-        when '/admin/logout'
-            clear_admin_cookie(response)
-            @logger.info('Admin logout')
-            redirect('/', response)
-        else
-            response.status = 404
-            response.body = '<h1>Not Found</h1>'
         end
     end
 
     private
 
-    def render_login(response, status_msg)
-        html = load_layout('layouts/admin.html').gsub('{{status_message}}', ERB::Util.html_escape(status_msg))
+    def render_admin_auth(response, status_msg)
+        path = File.join(Renderer::COMPONENTS_PATH_ADMIN, 'auth.html')
+        erb_template = ERB.new(File.read(path))
+        html = erb_template.result_with_hash(login_status_msg: status_msg)
         response.status = 200
         response['Content-Type'] = 'text/html; charset=utf-8'
         response.body = html
     end
 
-    def render_panel(response)
-        layout = load_layout('layouts/application.html')
-        # Panel section HTML
-        panel_html = load_layout('components/admin_panel.html')
-        injected = layout.gsub('<main class="container py-4"></main>', "<main class=\"container py-4\">#{panel_html}</main>")
+    def render_admin_home(response)
+        html = render_home(mode: :admin)
         response.status = 200
         response['Content-Type'] = 'text/html; charset=utf-8'
-        response.body = injected
+        response.body = html
     end
 
     def verify_admin_key(key)
@@ -110,38 +124,23 @@ class AdminController
     end
 
     def valid_admin_session?(request)
-        cookie = parse_cookie(request, ADMIN_COOKIE)
-        return false unless cookie && @admin_sessions[cookie]
-        was_at = @admin_sessions[cookie]
+        token = CookieManager.get_cookie(request, ADMIN_COOKIE)
+        return false unless token && @admin_sessions[token]
+        was_at = @admin_sessions[token]
         return false unless was_at && Time.now.to_i - was_at < ADMIN_SESSION_TTL
-        # Extend session
-        @admin_sessions[cookie] = Time.now.to_i
+        @admin_sessions[token] = Time.now.to_i
         true
     end
 
-    def set_admin_cookie(response, token)
-        response['Set-Cookie'] = "#{ADMIN_COOKIE}=#{token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=#{ADMIN_SESSION_TTL}"
-    end
-
     def clear_admin_cookie(response)
-        response['Set-Cookie'] = "#{ADMIN_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0"
-    end
-
-    def parse_cookie(request, key)
-        cookies = (request.respond_to?(:cookies) ? request.cookies : nil)
-        return cookies[key] if cookies&.key?(key)
-        if request.header['cookie']
-            request.header['cookie'][0].split(';').each do |c|
-                k, v = c.strip.split('=',2)
-                return v if k.strip == key
-            end
-        end
-        nil
+        CookieManager.clear_cookie(response, ADMIN_COOKIE, path: '/', http_only: true, samesite: 'Strict')
     end
 
     def redirect(url, response)
+        location = url.to_s.start_with?("/") ? url.to_s : "/"
+        @logger.info("HTTP 302 Redirect Location: #{location}")
         response.status = 302
-        response['Location'] = url
+        response['Location'] = location
         response.body = ''
     end
 
@@ -220,7 +219,7 @@ class AdminController
     end
 
     def fetch_about_data
-        conn = PGRepository.new
+        conn = Renderer.pg_repository_instance
         about = About.fetch(conn) || OpenStruct.new
         {
             name: about.name,
@@ -235,12 +234,12 @@ class AdminController
         fetch_about_data
     end
     def fetch_experience_data
-        conn = PGRepository.new
+        conn = Renderer.pg_repository_instance
         arr = Experience.all(conn)
         Hash[arr.map.with_index { |e,i| ["exp#{i+1}", e.label] }]
     end
     def fetch_skills_data
-        conn = PGRepository.new
+        conn = Renderer.pg_repository_instance
         groups = SkillGroup.all(conn)
         out = {}
         groups.each_with_index do |g,i|
@@ -249,12 +248,12 @@ class AdminController
         out
     end
     def fetch_portfolio_data
-        conn = PGRepository.new
+        conn = Renderer.pg_repository_instance
         arr = Portfolio.all(conn)
         Hash[arr.map {|p| [p.title, p.description] }]
     end
     def fetch_contacts_data
-        conn = PGRepository.new
+        conn = Renderer.pg_repository_instance
         arr = Contact.all(conn)
         Hash[arr.map {|c| [c.label, c.value] }]
     end
@@ -262,7 +261,7 @@ class AdminController
     def update_section(section, value_hash)
         case section
         when 'about'
-            conn = PGRepository.new
+            conn = Renderer.pg_repository_instance
             allowed = %w[name age location education description languages]
             safe = value_hash.select{|k,_| allowed.include?(k)}
             sets = safe.map{|k,v| "#{k}=$#{safe.keys.index(k)+1}"}
