@@ -31,6 +31,7 @@ export default defineConfig({
                 "common-uisurface-contrast": resolve(__dirname, "app/assets/javascripts/common/uisurface-contrast.js"),
                 "common-scroll-center": resolve(__dirname, "app/assets/javascripts/common/scroll-center.js"),
                 "footer-base": resolve(__dirname, "app/assets/stylesheets/footer/base.css"),
+                "footer-title": resolve(__dirname, "app/assets/javascripts/footer/title.js"),
                 "navbar-base": resolve(__dirname, "app/assets/stylesheets/navbar/base.css"),
                 "navbar-toggle": resolve(__dirname, "app/assets/javascripts/navbar/toggle.js"),
                 "admin-panel": resolve(__dirname, "app/assets/javascripts/admin/panel.js"),

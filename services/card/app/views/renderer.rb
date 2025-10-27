@@ -19,7 +19,7 @@ class Renderer
         @repo_instance ||= PGRepository.new
     end
 
-    PUBLIC_COMPONENTS = %w[avatar.html about.html experience.html skills.html portfolio.html contacts.html]
+    PUBLIC_COMPONENTS = %w[avatar.html about.html experience.html skills.html portfolio.html contacts.html footer.html]
     ADMIN_COMPONENTS = %w[panel.html]
     COMPONENTS_PATH_PUBLIC = File.expand_path('components/public', __dir__)
     COMPONENTS_PATH_ADMIN  = File.expand_path('components/admin', __dir__)
