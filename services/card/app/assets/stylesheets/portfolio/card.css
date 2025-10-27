@@ -1,4 +1,15 @@
+.project-card-link {
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+    transition: box-shadow 0.19s, transform 0.15s;
+}
+.project-card-link:focus,
+.project-card-link:hover {
+    outline: none;
+}
 .project-card {
+    flex-shrink: 0;
     background: rgba(37, 39, 54, 0.93);
     border-radius: 1.63rem;
     box-shadow: 0 8px 38px 0 rgba(26, 32, 88, 0.19);
@@ -12,11 +23,5 @@
     scroll-snap-align: start;
     gap: 1.1rem;
     position: relative;
-    transition: box-shadow 0.22s, background 0.18s, transform 0.12s;
-}
-.project-card:hover,
-.project-card:focus-within {
-    background: rgba(39, 44, 61, 0.99);
-    box-shadow: 0 12px 54px rgba(23, 37, 124, 0.25);
-    transform: translateY(-3px) scale(1.035);
+    transition: none;
 }

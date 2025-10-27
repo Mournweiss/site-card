@@ -7,7 +7,7 @@
             <div class="portfolio-container">
                 <div class="portfolio-rail" role="region">
                     <% (data[:portfolios] || []).each do |blk| %>
-                        <div class="project-card">
+                        <a href="<%= blk[:portfolio].url %>" target="_blank" rel="noopener noreferrer" class="project-card project-card-link" tabindex="0">
                             <div class="project-title"><%= blk[:portfolio].title %></div>
                             <div class="project-desc"><%= blk[:portfolio].description %></div>
                             <div class="language-bar">
@@ -19,7 +19,7 @@
                                 <% blk[:languages].each do |lng| %>
                                     <span class="language-legend-item">
                                         <span class="language-dot" style="background: <%= lng.color %>"></span>
-                                            <%= lng.name %>
+                                        <%= lng.name %>
                                         <span class="language-percent"><%= lng.percent %>%</span>
                                     </span>
                                 <% end %>
@@ -29,7 +29,7 @@
                                     <span class="tech-badge"><i class="bi <%= badge.icon %>"></i> <%= badge.name %></span>
                                 <% end %>
                             </div>
-                        </div>
+                        </a>
                     <% end %>
                 </div>
                 <div class="portfolio-arrows">

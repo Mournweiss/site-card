@@ -6,14 +6,14 @@ require_relative 'portfolio_tech_badge'
 class Portfolio
     TABLE = 'portfolios'.freeze
 
-    attr_reader :id, :title, :description, :image, :order_index
+    attr_reader :id, :title, :description, :order_index, :url
 
     def initialize(attrs)
         @id = attrs['id']
         @title = attrs['title']
         @description = attrs['description']
-        @image = attrs['image']
         @order_index = attrs['order_index']
+        @url = attrs['url']
     end
 
     def self.all(conn)

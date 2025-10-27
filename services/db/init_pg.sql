@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS portfolios (
     id SERIAL PRIMARY KEY,
     title VARCHAR(128),
     description TEXT,
-    image VARCHAR(256),
+    url TEXT NOT NULL,
     order_index INTEGER DEFAULT 0
 );
 
@@ -97,10 +97,10 @@ CREATE TABLE IF NOT EXISTS portfolio_tech_badges (
     icon VARCHAR(64)
 );
 
-INSERT INTO portfolios (id, title, description, image, order_index) VALUES
-(1, 'AI SaaS Platform', 'End-to-end SaaS solution with ML pipeline, robust API, and HA cloud deployment. Integrated with Stripe, OpenAI, and custom analytics.', '/static/portfolio1.jpg', 0),
-(2, 'DevOps Dashboard', 'Realtime server analytics, live container scaling charts, and full Kubernetes workload automation with Prometheus and Grafana integration.', '/static/portfolio2.jpg', 1),
-(3, 'Smart CRM', 'Multi-tenant CRM, live chat, advanced analytics, role-based controls, social media and telephony integration for massive business user base.', '/static/portfolio3.jpg', 2)
+INSERT INTO portfolios (id, title, description, url, order_index) VALUES
+(1, 'AI SaaS Platform', 'End-to-end SaaS solution with ML pipeline, robust API, and HA cloud deployment. Integrated with Stripe, OpenAI, and custom analytics.', 'https://github.com/example/ai-saas-platform', 0),
+(2, 'DevOps Dashboard', 'Realtime server analytics, live container scaling charts, and full Kubernetes workload automation with Prometheus and Grafana integration.', 'https://github.com/example/devops-dashboard', 1),
+(3, 'Smart CRM', 'Multi-tenant CRM, live chat, advanced analytics, role-based controls, social media and telephony integration for massive business user base.', 'https://github.com/example/smart-crm', 2)
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO portfolio_languages (portfolio_id, name, percent, color, order_index) VALUES

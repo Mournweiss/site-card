@@ -21,6 +21,7 @@ export default defineConfig({
                 "portfolio-arrows": resolve(__dirname, "app/assets/stylesheets/portfolio/arrows.css"),
                 "portfolio-card": resolve(__dirname, "app/assets/stylesheets/portfolio/card.css"),
                 "portfolio-content": resolve(__dirname, "app/assets/stylesheets/portfolio/content.css"),
+                "portfolio-showcase": resolve(__dirname, "app/assets/javascripts/portfolio/showcase.js"),
                 about: resolve(__dirname, "app/assets/stylesheets/about/about.css"),
                 experience: resolve(__dirname, "app/assets/stylesheets/experience/experience.css"),
                 "contacts-base": resolve(__dirname, "app/assets/stylesheets/contacts/base.css"),
