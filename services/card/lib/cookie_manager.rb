@@ -32,4 +32,8 @@ module CookieManager
     def self.all_cookies(request)
         request.respond_to?(:cookies) ? request.cookies : {}
     end
+
+    def self.user_cookie_consent?(request)
+        !!(get_cookie(request, 'sitecard_cookie_consent') == '1')
+    end
 end

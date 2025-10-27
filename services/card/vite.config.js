@@ -35,6 +35,8 @@ export default defineConfig({
                 "navbar-base": resolve(__dirname, "app/assets/stylesheets/navbar/base.css"),
                 "navbar-toggle": resolve(__dirname, "app/assets/javascripts/navbar/toggle.js"),
                 "admin-panel": resolve(__dirname, "app/assets/javascripts/admin/panel.js"),
+                "cookie-notice": resolve(__dirname, "app/assets/javascripts/cookie/notice.js"),
+                "cookie-notice-style": resolve(__dirname, "app/assets/stylesheets/cookie/notice.css"),
             },
             output: {
                 entryFileNames: "[name].js",
