@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "notification-bot"
+version = "0.1.0"
+description = "Notification telegram bot service for SiteCard project"
+authors = ["Maxim Selin <selinmax05@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-telegram-bot = "22.5"
+grpcio = "1.76.0"
+protobuf = "6.33.0"
+structlog = "25.5.0"
+
+[tool.poetry.group.dev.dependencies]
+grpcio-tools = "1.76.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

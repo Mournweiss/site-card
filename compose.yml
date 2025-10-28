@@ -1,7 +1,7 @@
 services:
     db:
         build: services/db
-        image: ${CONTAINER_NAME:-site-card}-db:latest
+        image: ${PROJECT_NAME:-site-card}-db:latest
         environment:
             POSTGRES_DB: ${PGDATABASE}
             POSTGRES_USER: ${PGUSER}
@@ -14,7 +14,7 @@ services:
         volumes:
             - ./services/db/pgdata:/var/lib/postgresql/data
         networks:
-            - ${CONTAINER_NAME:-site-card}-net
+            - ${PROJECT_NAME:-site-card}-net
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U $PGUSER -d $PGDATABASE"]
             interval: 10s
@@ -27,19 +27,31 @@ services:
         env_file:
             - .env
         ports:
-            - "${NGINX_PORT}:8080"
+            - "${NGINX_PORT:-8080}:8080"
         depends_on:
             db:
                 condition: service_healthy
         restart: unless-stopped
-        image: ${CONTAINER_NAME:-site-card}-app:latest
-        container_name: ${CONTAINER_NAME:-site-card}-app
+        image: ${PROJECT_NAME:-site-card}-app:latest
+        container_name: ${PROJECT_NAME:-site-card}-app
         networks:
-            - ${CONTAINER_NAME:-site-card}-net
+            - ${PROJECT_NAME:-site-card}-net
+
+    notification-bot:
+        build: services/notification-bot
+        env_file:
+            - .env
+        ports:
+            - "${NOTIFICATION_BOT_PORT:-50051}:50051"
+        restart: unless-stopped
+        image: ${PROJECT_NAME:-site-card}-notification-bot:latest
+        container_name: ${PROJECT_NAME:-site-card}-notification-bot
+        networks:
+            - ${PROJECT_NAME:-site-card}-net
 
 volumes:
     pgdata:
 
 networks:
-    ${CONTAINER_NAME:-site-card}-net:
+    ${PROJECT_NAME:-site-card}-net:
         driver: bridge

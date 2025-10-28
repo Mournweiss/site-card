@@ -1,0 +1,11 @@
+FROM docker.io/library/python:3.11-slim
+WORKDIR /app
+
+COPY pyproject.toml ./
+RUN pip install poetry && poetry install --no-root
+
+COPY . .
+
+RUN poetry run python -m grpc_tools.protoc -I./proto-context --python_out=src --grpc_python_out=src ./proto-context/service.proto
+
+ENTRYPOINT ["poetry", "run", "python", "src/main.py"]

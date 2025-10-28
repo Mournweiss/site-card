@@ -18,7 +18,7 @@ Development roadmap
 
 -   [x] Add option to specify the container name
 -   [ ] Add ability to customize the site's content via the UI
--   [ ] Add auto-detection of the current containerization engine (Podman, Docker) to build.sh
+-   [x] Add auto-detection of the current containerization engine (Podman, Docker) to build.sh
 -   [x] Add page content from the database
 -   [x] Add ability to customize the color scheme of the page
 -   [ ] Add a form to send a message to the page owner

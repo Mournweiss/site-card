@@ -3,6 +3,9 @@ require_relative '../../config/initializers/app_config'
 require_relative '../../lib/logger'
 require_relative '../views/renderer'
 require_relative '../../lib/errors'
+require 'grpc'
+require_relative '../../../proto-context/service_pb'
+require_relative '../../../proto-context/service_services_pb'
 
 RENDERER_INSTANCE = Renderer.new
 
@@ -53,8 +56,21 @@ class SiteCardServlet
                 unless email.match?(/^[^@\s]+@[^@\s\.]+\.[^@\.\s]+$/)
                     return respond_json(response, { error: "Invalid email format" }, 400)
                 end
-                @logger.info("Contact message received from #{email} (#{name})")
-                respond_json(response, { success: true, status: "received" }, 200)
+                admin_key = ENV['ADMIN_KEY']
+                grpc_host = ENV['NOTIFICATION_GRPC_HOST'] || 'notification-bot:50051'
+                stub = Notification::NotificationDelivery::Stub.new(grpc_host, :this_channel_is_insecure)
+                grpc_req = Notification::ContactMessageRequest.new(admin_key: admin_key, name: name, email: email, body: body)
+                begin
+                    grpc_resp = stub.deliver_contact_message(grpc_req)
+                    if grpc_resp.success
+                        respond_json(response, { success: true, status: "received" }, 200)
+                    else
+                        respond_json(response, { error: grpc_resp.error_message || "Notification delivery failed" }, 500)
+                    end
+                rescue StandardError => e
+                    @logger.error("gRPC notify failed: #{e.class} #{e.message}")
+                    respond_json(response, { error: "Notification service unavailable" }, 503)
+                end
             rescue => e
                 @logger.error("Contact message handling error: #{e.class} #{e.message}")
                 respond_json(response, { error: "Internal error occurred" }, 500)
