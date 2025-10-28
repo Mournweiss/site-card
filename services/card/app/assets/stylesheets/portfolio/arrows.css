@@ -16,9 +16,9 @@
     height: 70px;
     border-radius: 50%;
     border: none;
-    background: rgba(35, 36, 58, 0.95);
-    color: #fff;
-    box-shadow: 0 4px 32px 0 rgba(30, 31, 41, 0.21);
+    background: var(--color-portfolio-arrow-bg);
+    color: var(--color-portfolio-arrow-icon);
+    box-shadow: var(--color-portfolio-arrow-shadow);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -40,12 +40,12 @@
     right: 0.8rem;
 }
 .portfolio-arrow:focus-visible {
-    box-shadow: 0 0 0 3px #547ffe55, 0 2px 18px 0 rgba(93, 136, 255, 0.19);
+    box-shadow: var(--color-portfolio-arrow-shadow);
 }
 .portfolio-arrow:hover,
 .portfolio-arrow:active {
-    background: #36395add;
-    color: #c9d2ff;
+    background: var(--color-portfolio-arrow-hover);
+    color: var(--color-portfolio-arrow-icon-hover);
     opacity: 1;
 }
 .portfolio-arrow[disabled] {

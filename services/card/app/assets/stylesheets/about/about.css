@@ -107,7 +107,7 @@
 }
 .about-me-icon {
     font-size: 3.15em;
-    color: #3985f2;
+    color: var(--color-icon);
     margin-right: 0.6em;
     margin-left: 0;
     flex-shrink: 0;
@@ -116,7 +116,7 @@
     font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
     font-weight: 700;
     font-size: 2.18rem;
-    color: #fff;
+    color: var(--color-fg);
     line-height: 1.08;
     letter-spacing: 0.014em;
     margin-bottom: 2px;
@@ -124,8 +124,19 @@
 .about-me-value {
     font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
     font-size: 1.75rem;
-    color: #737778;
+    color: var(--color-text);
     font-weight: 400;
     line-height: 1.18;
     word-break: break-word;
+}
+body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+}
+.about-card,
+.about-me-section,
+.about-me-row,
+.about-me-cell {
+    background: transparent !important;
+    color: var(--color-fg);
 }

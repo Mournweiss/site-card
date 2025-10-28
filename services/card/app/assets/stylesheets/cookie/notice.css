@@ -10,8 +10,8 @@
     margin: 0 auto 2.3vh auto;
     padding: 1.12em 2.15em 1.08em 2.15em;
     border-radius: 100vw;
-    background: rgba(35, 36, 42, 0.93);
-    color: #f2f7ff;
+    background: var(--color-surface);
+    color: var(--color-fg);
     font-size: 1.09em;
     letter-spacing: 0.015em;
     transition: opacity 0.18s cubic-bezier(0.39, 0.57, 0.8, 0.6), transform 0.25s cubic-bezier(0.39, 0.57, 0.8, 0.6),
@@ -48,13 +48,13 @@
     min-width: 0;
 }
 #cookie-notice a {
-    color: #7fb5fc;
+    color: var(--color-primary);
     text-decoration: underline;
     transition: color 0.13s;
 }
 #cookie-notice a:hover,
 #cookie-notice a:focus {
-    color: #cedbfa;
+    color: var(--color-accent);
 }
 @media (max-width: 545px) {
     #cookie-notice {

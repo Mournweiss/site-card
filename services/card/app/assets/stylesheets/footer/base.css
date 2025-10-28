@@ -19,6 +19,10 @@ footer {
     font-size: 1em;
     color: #aac7ef;
 }
+.footer-title,
+.footer-link {
+    color: var(--color-accent);
+}
 .footer-github-link {
     display: inline-flex;
     align-items: center;

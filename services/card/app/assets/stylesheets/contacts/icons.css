@@ -68,3 +68,10 @@
     min-width: 66px;
     min-height: 102px;
 }
+.contacts-icon {
+    color: var(--color-accent);
+    background: var(--color-bg);
+}
+.contacts-icon--primary {
+    color: var(--color-primary);
+}

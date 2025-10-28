@@ -5,8 +5,9 @@
     z-index: 100;
     border-radius: 2em;
     padding: 0.55em 1.55em;
-    background: rgba(37, 39, 54, 0.93);
-    box-shadow: 0 8px 48px 0 #151c2c37, 0 1.5px 8px 0 #151c361a;
+    background: var(--color-surface);
+    color: var(--color-btn-bg-hover);
+    box-shadow: 0 8px 48px 0 var(--color-shadow), 0 1.5px 8px 0 var(--color-shadow-hover);
     display: flex;
     align-items: center;
     min-width: 285px;
@@ -26,7 +27,7 @@
     display: inline-block;
     border-radius: 1.4em;
     background: none;
-    color: #e9eefe;
+    color: var(--color-fg);
     padding: 0.39em 1.09em;
     font-size: 1.19em;
     font-weight: 560;
@@ -41,16 +42,15 @@
 }
 .navbar-link:hover,
 .navbar-link:focus-visible {
-    background: rgba(39, 44, 61, 0.99);
-    color: #b5daff;
-    text-decoration: underline;
-    outline: 2px solid #81aeff55;
+    background: var(--color-btn-bg);
+    color: var(--color-fg);
+    text-decoration: none;
 }
 .navbar-link:active,
 .navbar-link[aria-current="true"] {
-    background: #3e6090d7;
-    color: #b7e3ff;
-    text-decoration: underline;
+    background: var(--color-btn-bg-hover);
+    color: var(--color-fg);
+    text-decoration: none;
 }
 .navbar-toggle {
     display: none;
@@ -60,15 +60,15 @@
     margin-right: 0.2em;
     margin-left: 0.2em;
     font-size: 2em;
-    color: #f5fcff;
+    color: var(--color-white);
     cursor: pointer;
 }
 .navbar-toggle-icon {
     display: block;
     width: 1.9em;
     height: 0.22em;
-    background-color: #e9eefe;
-    box-shadow: 0 0.6em #e9eefe, 0 1.2em #e9eefe;
+    background-color: var(--color-white);
+    box-shadow: 0 0.6em var(--color-white), 0 1.2em var(--color-white);
     border-radius: 2px;
     position: relative;
     margin: 0.47em 0;
@@ -99,9 +99,9 @@
         right: 0;
         padding: 0.28em 0.71em;
         margin: 0;
-        background: rgba(37, 39, 54, 0.93);
+        background: var(--color-surface);
         border-radius: 2em;
-        box-shadow: 0 8px 28px 0 #151c2c17, 0 1.5px 8px 0 #151c361a;
+        box-shadow: 0 8px 28px 0 var(--color-shadow), 0 1.5px 8px 0 var(--color-shadow-hover);
         font-size: 1.35em;
         min-width: unset;
         min-height: unset;
@@ -117,8 +117,8 @@
         display: block;
         width: 1.15em;
         height: 0.15em;
-        background-color: #e9eefe;
-        box-shadow: 0 0.45em #e9eefe, 0 0.9em #e9eefe;
+        background-color: var(--color-white);
+        box-shadow: 0 0.45em var(--color-white), 0 0.9em var(--color-white);
         border-radius: 1.2px;
         margin: 0.18em 0;
     }
@@ -134,8 +134,8 @@
         min-width: 165px;
         max-width: 94vw;
         margin-left: auto;
-        background: rgba(30, 33, 43, 0.97);
-        box-shadow: 0 10px 36px #161b295a;
+        background: var(--color-surface);
+        box-shadow: 0 10px 36px var(--color-shadow-hover);
         border-radius: 1.2em;
         padding: 0.6em 0.7em 0.5em 1.3em;
         z-index: 1099;

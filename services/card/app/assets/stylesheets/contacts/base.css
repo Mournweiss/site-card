@@ -2,7 +2,8 @@
     max-width: 480px;
     margin: 0 auto;
     padding: 56px 0 77px 0;
-    background: none;
+    color: var(--color-fg);
+    background: var(--color-bg);
 }
 @media (max-width: 800px) {
     .contacts-section {

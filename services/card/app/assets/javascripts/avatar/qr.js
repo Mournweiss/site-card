@@ -2,14 +2,17 @@ import QRCode from "qrcode";
 
 function generateQRCodeCanvas(el, url) {
     if (!el) return;
+    const rootStyle = getComputedStyle(document.documentElement);
+    const qrDark = rootStyle.getPropertyValue("--color-accent") || "#a8b8e2";
+    const qrLight = rootStyle.getPropertyValue("--color-surface").trim() || "#23242a";
     QRCode.toCanvas(
         el,
         url,
         {
             width: 480,
             color: {
-                dark: "#a8b8e2",
-                light: "#0000",
+                dark: qrDark.trim(),
+                light: qrLight,
             },
         },
         function (error) {
@@ -92,7 +95,8 @@ function showQRPopup(url) {
     label.style.marginTop = "1.1em";
     label.style.textAlign = "center";
     label.style.fontSize = "1.08em";
-    label.style.color = "#a9b8e3";
+    const rootStyle = getComputedStyle(document.documentElement);
+    label.style.color = rootStyle.getPropertyValue("--color-accent") || "#a9b8e3";
     label.textContent = "Scan to open homepage of this site";
     modal.appendChild(label);
 

@@ -83,3 +83,13 @@
     font-size: 1.05em;
     opacity: 0.9;
 }
+.portfolio-content {
+    background: var(--color-surface);
+    color: var(--color-fg);
+}
+.portfolio-label-main {
+    color: var(--color-accent);
+}
+.portfolio-link {
+    color: var(--color-primary);
+}

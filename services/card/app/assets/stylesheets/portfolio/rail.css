@@ -11,7 +11,7 @@
     margin-left: auto;
     margin-right: auto;
     position: relative;
-    background: none;
+    background: var(--color-bg);
     border: none;
     scrollbar-width: none;
     -ms-overflow-style: none;

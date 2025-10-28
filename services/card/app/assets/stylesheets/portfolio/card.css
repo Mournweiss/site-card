@@ -10,7 +10,7 @@
 }
 .project-card {
     flex-shrink: 0;
-    background: rgba(37, 39, 54, 0.93);
+    background: var(--color-surface);
     border-radius: 1.63rem;
     box-shadow: 0 8px 38px 0 rgba(26, 32, 88, 0.19);
     padding: 2.5rem 2.5rem 2rem 2.5rem;

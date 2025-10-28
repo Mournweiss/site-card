@@ -23,6 +23,12 @@
     text-align: left;
     padding-left: 0.1em;
 }
+.experience-label {
+    color: var(--color-accent);
+}
+.experience-details {
+    color: var(--color-fg);
+}
 @media (max-width: 600px) {
     .chart-label {
         text-align: center;

@@ -11,3 +11,12 @@
         margin-block: 38px 54px;
     }
 }
+.skills-chart-label {
+    color: var(--color-primary);
+}
+.skills-chart-bg {
+    background: var(--color-bg);
+}
+.skills-chart-accent {
+    color: var(--color-accent);
+}
