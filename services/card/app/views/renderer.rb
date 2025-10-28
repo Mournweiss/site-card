@@ -11,6 +11,7 @@ require_relative '../models/portfolio_language'
 require_relative '../models/portfolio_tech_badge'
 require_relative '../models/contact'
 require_relative '../models/career'
+require_relative '../models/avatar'
 require_relative '../../config/initializers/pg_repository'
 
 class Renderer
@@ -100,9 +101,14 @@ class Renderer
         @pg_repo.with_connection do |conn|
 
             begin
-                about = About.fetch(conn) || OpenStruct.new(name: '', age: '', location: '', education: '', description: '', timezone: '')
+                about = About.fetch(conn) || OpenStruct.new(age: '', location: '', education: '', languages: '')
             rescue Exception => e
                 raise BDError.new("DB fetch failed (about): #{e.message}", context: {component: 'about', original: e})
+            end
+            begin
+                avatar = Avatar.fetch(conn) || OpenStruct.new(name: '', role: '', description: '')
+            rescue Exception => e
+                raise BDError.new("DB fetch failed (avatar): #{e.message}", context: {component: 'avatar', original: e})
             end
             begin
                 careers = (about && about.id) ? Career.all_by_about(conn, about.id) : []
@@ -110,8 +116,7 @@ class Renderer
                 raise BDError.new("DB fetch failed (Career): #{e.message}", context: {component: 'career', original: e})
             end
             ctx['about'] = { about: about, languages: about.languages, careers: careers }
-
-            ctx['avatar'] = { about: about }
+            ctx['avatar'] = { avatar: avatar, img_src: avatar.image_url }
 
             begin
                 skill_groups = SkillGroup.all(conn) || []

@@ -2,16 +2,16 @@
     <section id="avatar" class="avatar-section" tabindex="-1" aria-labelledby="avatar-heading">
         <div class="avatar-card">
             <div class="avatar-ring">
-                <div class="avatar-image-wrapper" data-name="<%= data[:about].name %>">
-                    <img src="" alt="User avatar" class="avatar-img avatar-hidden" loading="lazy" />
-                    <div class="avatar-fallback" aria-label="<%= data[:about].name.to_s[0].capitalize %>"></div>
+                <div class="avatar-image-wrapper" data-name="<%= data[:avatar].name %>">
+                    <img src="<%= data[:img_src] || '' %>" alt="User avatar" class="avatar-img" loading="lazy" />
+                    <div class="avatar-fallback" aria-label="<%= data[:avatar].name.to_s[0].capitalize %>"></div>
                 </div>
             </div>
             <div class="avatar-info">
-                <div class="avatar-role" style="color: #5bbcff; font-weight: 600; font-size: 1.1em; letter-spacing: 0.02em; margin-bottom: 0.25em;"> <%= data[:about].role %></div>
-                <h2 id="avatar-heading" class="avatar-name"><%= data[:about].name %></h2>
+                <div class="avatar-role" style="color: #5bbcff; font-weight: 600; font-size: 1.1em; letter-spacing: 0.02em; margin-bottom: 0.25em;"> <%= data[:avatar].role %></div>
+                <h2 id="avatar-heading" class="avatar-name"><%= data[:avatar].name %></h2>
                 <div class="avatar-description">
-                    <%= data[:about].description %>
+                    <%= data[:avatar].description %>
                 </div>
                 <div class="avatar-actions">
                     <a href="#" class="avatar-btn">Download CV</a>

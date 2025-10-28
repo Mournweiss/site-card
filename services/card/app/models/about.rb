@@ -4,16 +4,13 @@ require_relative '../../lib/errors'
 class About
     TABLE = 'about'.freeze
 
-    attr_reader :id, :name, :age, :location, :education, :description, :role, :languages
+    attr_reader :id, :age, :location, :education, :languages
 
     def initialize(attrs)
         @id = attrs['id']
-        @name = attrs['name']
         @age = attrs['age']
         @location = attrs['location']
         @education = attrs['education']
-        @role = attrs.key?('role') ? attrs['role'] : ''
-        @description = attrs['description']
         @languages = attrs['languages'] || ''
     end
 

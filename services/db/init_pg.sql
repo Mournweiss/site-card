@@ -1,16 +1,23 @@
-CREATE TABLE IF NOT EXISTS about (
+CREATE TABLE IF NOT EXISTS avatars (
     id SERIAL PRIMARY KEY,
     name VARCHAR(128),
+    role VARCHAR(128),
+    description TEXT,
+    image_ext VARCHAR(8)
+);
+INSERT INTO avatars (id, name, role, description, image_ext) VALUES
+    (1, 'John Doe', 'Web developer', 'Experienced web developer specializing in fullstack solutions.', NULL)
+ON CONFLICT (id) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS about (
+    id SERIAL PRIMARY KEY,
     age INTEGER,
     location VARCHAR(128),
     education VARCHAR(128),
-    role VARCHAR(128),
-    languages TEXT,
-    description TEXT
+    languages TEXT
 );
-
-INSERT INTO about (id, name, age, location, education, role, languages, description)
-VALUES (1, 'John Doe', 29, 'Moscow', 'MSTU Bauman', 'Web developer', 'English (C1), Russian (native)', 'Experienced web developer specializing in fullstack solutions.')
+INSERT INTO about (id, age, location, education, languages)
+VALUES (1, 29, 'Moscow', 'MSTU Bauman', 'English (C1), Russian (native)')
 ON CONFLICT (id) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS careers (

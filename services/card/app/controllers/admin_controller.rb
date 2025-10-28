@@ -52,6 +52,9 @@ class SiteCardAdminServlet < SiteCardServlet
     end
 
     def do_POST(request, response)
+        if request.path == '/admin/api/avatar/upload'
+            return handle_avatar_upload(request, response)
+        end
         with_error_handling(response, @logger) do
             if request.path == '/admin/auth'
                 admin_key = (request.body.respond_to?(:read) ? URI.decode_www_form(request.body.read).to_h['admin_key'] : nil)
@@ -272,6 +275,45 @@ class SiteCardAdminServlet < SiteCardServlet
             @logger.info("About updated: #{safe.keys}")
         else
             raise "Update for section #{section} is not implemented"
+        end
+    end
+
+    def handle_avatar_upload(request, response)
+        unless valid_admin_session?(request)
+            return api_json(response, {error:'Unauthorized'}, 401)
+        end
+        boundary = Rack::Multipart::Parser.get_boundary(request)
+        unless boundary
+            return api_json(response, {error:'No boundary provided'}, 400)
+        end
+        tempfile_path, filename, ext = nil, nil, nil
+        begin
+            parser = Rack::Multipart::Parser.new(request.env)
+            file_params = parser.parse
+            file = file_params.dig('avatar_file')
+            unless file && file[:tempfile]
+                return api_json(response, {error:'No file uploaded (avatar_file)'}, 400)
+            end
+            filename = file[:filename]
+            ext = File.extname(filename).delete_prefix('.').downcase
+            allowed_exts = %w[jpg jpeg png]
+            unless allowed_exts.include?(ext)
+                return api_json(response, {error:'Unsupported format'}, 400)
+            end
+            images_dir = File.expand_path('../../app/assets/images', __dir__)
+            allowed_exts.each do |e|
+                old_path = File.join(images_dir, "avatar.#{e}")
+                File.delete(old_path) if File.exist?(old_path)
+            end
+            dest_path = File.join(images_dir, "avatar.#{ext}")
+            File.open(dest_path, 'wb') { |f| f.write(file[:tempfile].read) }
+            conn = Renderer.pg_repository_instance
+            conn.with_connection do |db|
+                db.exec_params('UPDATE avatars SET image_ext=$1 WHERE id=1', [ext])
+            end
+            api_json(response, {result:'ok', ext: ext}, 200)
+        rescue => e
+            api_error(response, e)
         end
     end
 end
