@@ -1,0 +1,12 @@
+<form class="popup-message-form">
+    <label for="popup-msg-name">Name</label>
+    <input type="text" id="popup-msg-name" name="name" placeholder="Your name" maxlength="64" required autocomplete="name" />
+    <label for="popup-msg-email">Email</label>
+    <input type="email" id="popup-msg-email" name="email" maxlength="128" placeholder="your@email.com" required autocomplete="email" />
+    <label for="popup-msg-body">Message</label>
+    <textarea id="popup-msg-body" name="body" placeholder="Your message here..." maxlength="1200" rows="6" required></textarea>
+    <div class="popup-form-error" id="popup-msg-error"></div>
+    <div class="popup-form-success" id="popup-msg-success"></div>
+    <div class="popup-form-loading" id="popup-msg-loading" style="display:none;">Sending...</div>
+    <button class="sitecard-btn" type="submit" id="popup-msg-send-btn">Send</button>
+</form>

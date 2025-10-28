@@ -94,6 +94,14 @@ class Renderer
         end
     end
 
+    def render_component(component, data = {})
+        fname = component.to_s.gsub(/[^a-zA-Z0-9_]/, '') + '.html'
+        allowed = PUBLIC_COMPONENTS + Dir.entries(COMPONENTS_PATH_PUBLIC).select{|f| f.match?(/^[a-z0-9_]+\.html$/i) }
+        path = File.join(COMPONENTS_PATH_PUBLIC, fname)
+        raise "Component not found" unless allowed.include?(fname) && File.exist?(path)
+        ERB.new(File.read(path)).result_with_hash(data: data)
+    end
+
     private
 
     def load_data_context

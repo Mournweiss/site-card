@@ -17,6 +17,7 @@ export default defineConfig({
                 "avatar-buttons": resolve(__dirname, "app/assets/stylesheets/avatar/buttons.css"),
                 "avatar-cv": resolve(__dirname, "app/assets/javascripts/avatar/cv.js"),
                 "avatar-qr": resolve(__dirname, "app/assets/javascripts/avatar/qr.js"),
+                "contacts-message": resolve(__dirname, "app/assets/javascripts/contacts/message.js"),
                 "experience-charts": resolve(__dirname, "app/assets/javascripts/experience/charts.js"),
                 "skills-charts": resolve(__dirname, "app/assets/javascripts/skills/charts.js"),
                 "skills-base": resolve(__dirname, "app/assets/stylesheets/skills/base.css"),
