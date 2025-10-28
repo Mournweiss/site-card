@@ -16,6 +16,7 @@ export default defineConfig({
                 "avatar-info": resolve(__dirname, "app/assets/stylesheets/avatar/info.css"),
                 "avatar-buttons": resolve(__dirname, "app/assets/stylesheets/avatar/buttons.css"),
                 "avatar-cv": resolve(__dirname, "app/assets/javascripts/avatar/cv.js"),
+                "avatar-qr": resolve(__dirname, "app/assets/javascripts/avatar/qr.js"),
                 "experience-charts": resolve(__dirname, "app/assets/javascripts/experience/charts.js"),
                 "skills-charts": resolve(__dirname, "app/assets/javascripts/skills/charts.js"),
                 "skills-base": resolve(__dirname, "app/assets/stylesheets/skills/base.css"),
@@ -39,6 +40,7 @@ export default defineConfig({
                 "admin-panel": resolve(__dirname, "app/assets/javascripts/admin/panel.js"),
                 "cookie-notice": resolve(__dirname, "app/assets/javascripts/cookie/notice.js"),
                 "cookie-notice-style": resolve(__dirname, "app/assets/stylesheets/cookie/notice.css"),
+                popup: resolve(__dirname, "app/assets/stylesheets/common/popup.css"),
             },
             output: {
                 entryFileNames: "[name].js",

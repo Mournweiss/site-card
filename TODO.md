@@ -25,4 +25,4 @@ Development roadmap
 -   [ ] Add ability to upload an avatar image via the UI
 -   [ ] Add modular project cards to the Portfolio section of two types - cards for IT projects and art cards
 -   [x] Add ability to download the CV file by clicking on the button
--   [ ] Add ability to generate a QR code redirecting to the home page
+-   [x] Add ability to generate a QR code redirecting to the home page

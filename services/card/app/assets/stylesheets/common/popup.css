@@ -1,0 +1,83 @@
+/* Universal Popup CSS: for any modal/popup dialog in SiteCard (QR, alerts, etc.) */
+#popup-backdrop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(23, 24, 29, 0.78);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.24s;
+    backdrop-filter: blur(3px);
+    opacity: 1;
+}
+#popup-backdrop[hidden] {
+    opacity: 0;
+    pointer-events: none;
+}
+#popup-modal {
+    background: #23242a;
+    border-radius: 1.6em;
+    box-shadow: 0 12px 54px -8px rgba(30, 40, 60, 0.19);
+    max-width: 164.5vw;
+    min-width: 586px;
+    max-height: 164.5vh;
+    min-height: 297.5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.1em 2.2em 2.6em 2.2em;
+    position: relative;
+    overflow: visible;
+    gap: 1.3em 0;
+}
+.popup-close {
+    position: absolute;
+    top: 1.2em;
+    right: 1.5em;
+    background: transparent;
+    border: none;
+    color: #b5b5c5;
+    font-size: 2em;
+    cursor: pointer;
+    z-index: 3100;
+    padding: 0.12em 0.23em;
+    border-radius: 50%;
+    transition: background 0.14s;
+    line-height: 1;
+}
+.popup-close:hover,
+.popup-close:focus {
+    background: rgba(100, 100, 120, 0.2);
+    color: #fff;
+}
+#popup-modal img,
+#popup-modal canvas {
+    max-width: 300px;
+    max-height: 300px;
+    display: block;
+    margin: 0 auto;
+}
+@media (max-width: 480px) {
+    #popup-modal {
+        max-width: 171.5vw;
+        min-width: 154vw;
+        max-height: 246.75vh;
+        min-height: 223.125px;
+        padding: 1.1em 0.6em 1.9em 0.6em;
+    }
+    .popup-close {
+        top: 0.6em;
+        right: 0.8em;
+        font-size: 1.4em;
+    }
+    #popup-modal img,
+    #popup-modal canvas {
+        max-width: 92vw;
+    }
+}
