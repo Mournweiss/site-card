@@ -24,5 +24,5 @@ Development roadmap
 -   [ ] Add a form to send a message to the page owner
 -   [ ] Add ability to upload an avatar image via the UI
 -   [ ] Add modular project cards to the Portfolio section of two types - cards for IT projects and art cards
--   [ ] Add ability to download the CV file by clicking on the button
+-   [x] Add ability to download the CV file by clicking on the button
 -   [ ] Add ability to generate a QR code redirecting to the home page

@@ -25,8 +25,15 @@ export function initAvatarComponent(el) {
     fallback.setAttribute("aria-label", initial === "?" ? "Avatar fallback: unknown" : `Avatar fallback: ${initial}`);
     fallback.style.background = getPastelColor(name);
 
-    let hasImage = img && img.src && img.src.length > 6;
-    if (hasImage) {
+    let imgOk = img && img.src && img.src.length > 6 && img.src.match(/\.(png|jpe?g)$/i);
+    if (imgOk) {
+        img.classList.remove("d-none");
+        fallback.classList.add("d-none");
+    } else {
+        img.classList.add("d-none");
+        fallback.classList.remove("d-none");
+    }
+    if (img) {
         img.onerror = function () {
             img.classList.add("d-none");
             fallback.classList.remove("d-none");
@@ -35,12 +42,25 @@ export function initAvatarComponent(el) {
             img.classList.remove("d-none");
             fallback.classList.add("d-none");
         };
-    } else {
-        img.classList.add("d-none");
-        fallback.classList.remove("d-none");
     }
 }
+window.initAvatarComponent = initAvatarComponent;
 
 window.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".avatar-image-wrapper").forEach(wrapper => initAvatarComponent(wrapper));
+    document.querySelectorAll(".avatar-image-wrapper").forEach(wrapper => {
+        try {
+            initAvatarComponent(wrapper);
+        } catch (e) {
+            console.error("Avatar init failed", e);
+        }
+    });
+});
+
+import { initAvatarCvDownload } from "./cv.js";
+window.addEventListener("DOMContentLoaded", () => {
+    try {
+        initAvatarCvDownload(document.getElementById("avatar-cv-download-btn"));
+    } catch (e) {
+        console.error("[CV Downloader initialization failed:", e);
+    }
 });
