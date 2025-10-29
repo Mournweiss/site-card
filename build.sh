@@ -147,7 +147,7 @@ clean_proto_contexts() {
             rm -rf "$proto_dir" || error "Failed to remove $proto_dir"
         fi
     done
-    success "Proto contexts cleaned."
+    success "Proto contexts cleaned"
 }
 
 copy_proto_contexts() {

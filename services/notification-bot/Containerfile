@@ -4,8 +4,11 @@ WORKDIR /app
 COPY pyproject.toml ./
 RUN pip install poetry && poetry install --no-root
 
+COPY proto-context/ ./proto_context/
+
+ENV PYTHONPATH="/app/proto_context:${PYTHONPATH}"
+
 COPY . .
+RUN chmod +x entrypoint.sh
 
-RUN poetry run python -m grpc_tools.protoc -I./proto-context --python_out=src --grpc_python_out=src ./proto-context/service.proto
-
-ENTRYPOINT ["poetry", "run", "python", "src/main.py"]
+ENTRYPOINT ["./entrypoint.sh"]

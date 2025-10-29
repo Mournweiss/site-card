@@ -4,8 +4,18 @@ require_relative '../../lib/logger'
 require_relative '../views/renderer'
 require_relative '../../lib/errors'
 require 'grpc'
-require_relative '../../../proto-context/service_pb'
-require_relative '../../../proto-context/service_services_pb'
+
+PROTO_ROOT = File.expand_path('proto-context', Dir.pwd)
+$LOAD_PATH.unshift(PROTO_ROOT)
+begin
+    require 'service_pb'
+    require 'service_services_pb'
+rescue LoadError => e
+    STDERR.puts "[FATAL] Failed to load gRPC Ruby proto files: #{e.message}"
+    STDERR.puts "[FATAL] Checked LOAD_PATH: #{$LOAD_PATH.inspect}"
+    STDERR.puts "[FATAL] Please verify proto Ruby file generation and permissions (ls -l, readable by app user)."
+    exit(2)
+end
 
 RENDERER_INSTANCE = Renderer.new
 

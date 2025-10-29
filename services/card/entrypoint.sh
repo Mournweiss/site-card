@@ -30,6 +30,21 @@ asset_warn() {
     fi
 }
 
+protoc_gen() {
+    if ! command -v protoc >/dev/null 2>&1; then
+        error "protoc not found"
+    fi
+    info "Generating Ruby gRPC files from proto-context/service.proto..."
+    protoc --proto_path=./proto-context --ruby_out=./proto-context --grpc_out=./proto-context --plugin=protoc-gen-grpc=$(which grpc_tools_ruby_protoc_plugin) ./proto-context/service.proto || error "protoc generation failed"
+    if [ "${DEBUG:-}" = "true" ]; then
+        ls -l ./proto-context
+    fi
+    if [ ! -s ./proto-context/service_pb.rb ] || [ ! -s ./proto-context/service_services_pb.rb ]; then
+        error "gRPC Ruby files not generated"
+    fi
+    success "Ruby gRPC files generated"
+}
+
 setup_nginx() {
     if [ -f /app/config/nginx.conf ]; then
         info "Generating nginx.conf from template with envsubst..."
@@ -53,6 +68,7 @@ start_app() {
 main() {
     check_env
     asset_warn
+    protoc_gen
     setup_nginx
     start_nginx
     start_app

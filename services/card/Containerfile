@@ -1,21 +1,23 @@
-FROM docker.io/library/node:20-alpine AS assets
+FROM docker.io/library/node:20-slim AS assets
 WORKDIR /build
 COPY package.json vite.config.js ./
 COPY app/assets ./app/assets
 RUN npm install && npm run build
 
-FROM docker.io/library/ruby:3.3-alpine AS backend
+FROM docker.io/library/ruby:3.3-slim AS backend
 WORKDIR /app
 COPY Gemfile ./
 
-RUN apk add --no-cache nginx build-base gettext && gem install bundler && bundle install
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends nginx build-essential gettext protobuf-compiler protobuf-compiler-grpc && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN gem install bundler grpc grpc-tools && bundle install
 COPY . .
 
 COPY --from=assets /build/public/assets ./public/assets
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-EXPOSE 9292
 
 ENTRYPOINT ["/entrypoint.sh"]
