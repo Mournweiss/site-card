@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS avatars (
     image_ext VARCHAR(8)
 );
 INSERT INTO avatars (id, name, role, description, image_ext) VALUES
-    (1, 'John Doe', 'Web developer', 'Experienced web developer specializing in fullstack solutions.', NULL)
+    (1, 'Anton Chekhov', 'Fullstack developer', 'Vivamus, moriendum est. Non scholae, sed vitae discimus. Tempora mutantur, nos et mutamur in illis. Carpe diem, quam minimum credula postero. Audaces fortuna iuvat. Cogito, ergo sum.', NULL)
 ON CONFLICT (id) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS about (
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS skills (
 INSERT INTO skill_groups (id, name) VALUES
     (1, 'Languages'),
     (2, 'Tools/Tech'),
-    (3, 'DevOps')
+    (3, 'Operating Systems')
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO skills (group_id, name, level, color) VALUES
@@ -60,9 +60,13 @@ INSERT INTO skills (group_id, name, level, color) VALUES
     (2, 'Kubernetes', 6, '#563d7c'),
     (2, 'Webpack', 8, '#8ed6fb'),
     (2, 'Vite', 5, '#fbab1d'),
-    (3, 'CI/CD', 8, '#4485FE'),
-    (3, 'K8s Ops', 6, '#32DCB8'),
-    (3, 'Monitoring', 5, '#2396ED')
+    (3, 'Linux', 9, '#1793d1'),
+    (3, 'Windows', 8, '#00adef'),
+    (3, 'macOS', 7, '#999999'),
+    (3, 'BSD', 5, '#e6002e'),
+    (3, 'Unix', 6, '#92b300'),
+    (3, 'Android', 7, '#a4c639'),
+    (3, 'iOS', 6, '#5fc9f8')
 ON CONFLICT DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS experiences (
@@ -105,15 +109,15 @@ CREATE TABLE IF NOT EXISTS portfolio_tech_badges (
 );
 
 INSERT INTO portfolios (id, title, description, url, order_index) VALUES
-(1, 'AI SaaS Platform', 'End-to-end SaaS solution with ML pipeline, robust API, and HA cloud deployment. Integrated with Stripe, OpenAI, and custom analytics.', 'https://github.com/example/ai-saas-platform', 0),
-(2, 'DevOps Dashboard', 'Realtime server analytics, live container scaling charts, and full Kubernetes workload automation with Prometheus and Grafana integration.', 'https://github.com/example/devops-dashboard', 1),
-(3, 'Smart CRM', 'Multi-tenant CRM, live chat, advanced analytics, role-based controls, social media and telephony integration for massive business user base.', 'https://github.com/example/smart-crm', 2)
+(1, 'AI SaaS Platform', 'Carpe diem. Qui non proficit, deficit. Scientia potentia est. Ars longa, vita brevis. Fortes fortuna adiuvat. Experientia docet. Non solum nobis nati sumus. Laborare est orare. Docendo discimus. Nemo solus satis sapit.', 'https://github.com/example/ai-saas-platform', 0),
+(2, 'DevOps Dashboard', 'Audentes fortuna iuvat. Acta, non verba. Per aspera ad astra. Nil desperandum. Festina lente. Mens sana in corpore sano. Malum consilium est quod mutari non potest. Age quod agis. Virtutis fortuna comes. Discere est vivere.', 'https://github.com/example/devops-dashboard', 1),
+(3, 'Smart CRM', 'Alea iacta est. Dura lex, sed lex. Verba volant, scripta manent. Non progredi est regredi. Tempus fugit. Faber est suae quisque fortunae. Consuetudo est altera natura. In vino veritas. Barba non facit philosophum. Qui quaerit, invenit.', 'https://github.com/example/smart-crm', 2)
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO portfolio_languages (portfolio_id, name, percent, color, order_index) VALUES
 (1, 'Python', 58, '#3572a5', 0), (1, 'Ruby', 32, '#701516', 1), (1, 'JavaScript', 10, '#f1e05a', 2),
-(2, 'Kubernetes YML', 40, '#563d7c', 0), (2, 'React', 38, '#61dbfb', 1), (2, 'Dockerfile', 22, '#f1502f', 2),
-(3, 'Ruby', 48, '#701516', 0), (3, 'TypeScript', 35, '#2b7489', 1), (3, 'Vue.js', 17, '#42a5f5', 2)
+(2, 'Go', 40, '#1290B1', 0), (2, 'Rust', 38, '#CD8B6F', 1), (2, 'Dockerfile', 22, '#334348', 2),
+(3, 'Ruby', 48, '#701516', 0), (3, 'TypeScript', 35, '#2b7489', 1), (3, 'Shell', 17, '#76BA47', 2)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO portfolio_tech_badges (portfolio_id, name, icon) VALUES
@@ -131,7 +135,7 @@ CREATE TABLE IF NOT EXISTS contacts (
 );
 
 INSERT INTO contacts (type, value, label, icon) VALUES
-('telegram', 'https://t.me/yourusername', 'Telegram', 'bi-telegram'),
-('github', 'https://github.com/yourusername', 'GitHub', 'bi-github'),
-('email', 'john.doe@example.com', 'E-mail', 'bi-envelope')
+('telegram', 'https://t.me/example', 'Telegram', 'bi-telegram'),
+('github', 'https://github.com/example', 'GitHub', 'bi-github'),
+('email', 'anton.chekhov@example.com', 'E-mail', 'bi-envelope')
 ON CONFLICT DO NOTHING;

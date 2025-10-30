@@ -16,9 +16,9 @@
     height: 70px;
     border-radius: 50%;
     border: none;
-    background: var(--color-portfolio-arrow-bg);
-    color: var(--color-portfolio-arrow-icon);
-    box-shadow: var(--color-portfolio-arrow-shadow);
+    background: var(--color-btn-bg);
+    color: var(--color-white);
+    box-shadow: 0 2px 10px 0 var(--color-shadow) inset;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -40,12 +40,12 @@
     right: 0.8rem;
 }
 .portfolio-arrow:focus-visible {
-    box-shadow: var(--color-portfolio-arrow-shadow);
+    box-shadow: 0 2px 38px 0 var(--color-shadow-hover);
 }
 .portfolio-arrow:hover,
 .portfolio-arrow:active {
-    background: var(--color-portfolio-arrow-hover);
-    color: var(--color-portfolio-arrow-icon-hover);
+    background: var(--color-btn-bg-hover);
+    color: var(--color-white);
     opacity: 1;
 }
 .portfolio-arrow[disabled] {
