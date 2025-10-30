@@ -7,6 +7,7 @@ class Config:
     notification_bot_token: str
     notification_bot_port: int = 50051
     debug: bool = False
+    domain: str = ""
 
     @staticmethod
     def from_env():
@@ -23,13 +24,23 @@ class Config:
 
         notification_bot_port = int(os.environ.get("NOTIFICATION_BOT_PORT", 50051))
         debug = os.environ.get("DEBUG", "false").lower() == "true"
-        
+        domain = os.environ.get("DOMAIN", "")
+
         if missing:
             raise RuntimeError(f"Missing config envs: {', '.join(missing)}")
-            
+
         return Config(
             admin_key=admin_key,
             notification_bot_token=bot_token,
             notification_bot_port=notification_bot_port,
-            debug=debug
+            debug=debug,
+            domain=domain
         )
+
+    @property
+    def webapp_url(self):
+
+        if self.domain:
+            return f"https://{self.domain}/auth/notification"
+
+        return ""

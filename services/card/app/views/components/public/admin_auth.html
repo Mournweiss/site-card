@@ -1,7 +1,7 @@
 <div class="d-flex min-vh-100 align-items-center justify-content-center bg-dark">
     <div class="card admin-auth-card shadow-lg rounded-4 p-4 w-100" style="max-width: 410px; min-width: 290px; background: #232630; border: none;">
         <h2 class="mb-4 text-center fs-3 fw-bold text-light">Admin Login</h2>
-        <form method="POST" action="/admin/auth" autocomplete="off">
+        <form method="POST" action="<%= defined?(form_action) ? form_action : '/auth/admin' %>" autocomplete="off">
             <div class="mb-3">
                 <label for="admin_key" class="form-label text-light">Admin Key</label>
                 <input type="password"

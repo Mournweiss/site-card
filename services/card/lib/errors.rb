@@ -17,6 +17,7 @@ class BDError < SiteCardError; end
 class DataConsistencyError < SiteCardError; end
 class RenderError < SiteCardError; end
 class TemplateError < SiteCardError; end
+class VerificationError < SiteCardError; end
 
 module ErrorHandler
     def with_error_handling(response, logger)

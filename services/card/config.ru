@@ -12,6 +12,23 @@ site_controller = SiteCardServlet.new(nil, config, logger)
 admin_controller = SiteCardAdminServlet.new(config, logger)
 
 use Rack::CommonLogger, logger.instance_variable_get(:@logger)
+
+map '/auth' do
+    run proc { |env|
+        req = Rack::Request.new(env)
+        res = Rack::Response.new
+        if req.get?
+            admin_controller.do_GET(req, res)
+        elsif req.post?
+            admin_controller.do_POST(req, res)
+        else
+            res.status = 405
+            res.write '<h1>405 Method Not Allowed</h1>'
+        end
+        [res.status, res.headers, [res.body.to_s]]
+    }
+end
+
 map '/' do
     run proc { |env|
         req = Rack::Request.new(env)

@@ -11,9 +11,9 @@ begin
     require 'service_pb'
     require 'service_services_pb'
 rescue LoadError => e
-    STDERR.puts "[FATAL] Failed to load gRPC Ruby proto files: #{e.message}"
-    STDERR.puts "[FATAL] Checked LOAD_PATH: #{$LOAD_PATH.inspect}"
-    STDERR.puts "[FATAL] Please verify proto Ruby file generation and permissions (ls -l, readable by app user)."
+    STDERR.puts "Failed to load gRPC Ruby proto files: #{e.message}"
+    STDERR.puts "Checked LOAD_PATH: #{$LOAD_PATH.inspect}"
+    STDERR.puts "Please verify proto Ruby file generation and permissions"
     exit(2)
 end
 
@@ -66,10 +66,9 @@ class SiteCardServlet
                 unless email.match?(/^[^@\s]+@[^@\s\.]+\.[^@\.\s]+$/)
                     return respond_json(response, { error: "Invalid email format" }, 400)
                 end
-                admin_key = ENV['ADMIN_KEY']
-                grpc_host = ENV['NOTIFICATION_GRPC_HOST'] || 'notification-bot:50051'
+                grpc_host = @config.notification_grpc_host
                 stub = Notification::NotificationDelivery::Stub.new(grpc_host, :this_channel_is_insecure)
-                grpc_req = Notification::ContactMessageRequest.new(admin_key: admin_key, name: name, email: email, body: body)
+                grpc_req = Notification::ContactMessageRequest.new(name: name, email: email, body: body)
                 begin
                     grpc_resp = stub.deliver_contact_message(grpc_req)
                     if grpc_resp.success

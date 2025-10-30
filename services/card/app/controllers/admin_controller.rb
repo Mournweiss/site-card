@@ -6,6 +6,10 @@ require_relative '../../lib/errors'
 require_relative '../views/renderer'
 require_relative 'application_controller'
 require_relative '../../lib/cookie_manager'
+require 'openssl'
+require 'base64'
+require 'cgi'
+require 'json'
 
 class SiteCardAdminServlet < SiteCardServlet
     include ErrorHandler
@@ -25,65 +29,36 @@ class SiteCardAdminServlet < SiteCardServlet
     def do_GET(request, response)
         with_error_handling(response, @logger) do
             @logger.info("do_GET path=#{request.path}")
-            case request.path
-            when '/admin/auth'
-                render_admin_auth(response, '')
-            when '/admin'
+            if request.path == '/auth' || request.path == '/auth/'
+                @logger.info("Redirected /auth/ to /auth/admin")
+                redirect('/auth/admin', response)
+            elsif request.path == '/auth/admin'
+                render_admin_auth_form(response, '', '/auth/admin')
+            elsif request.path == '/auth/notification'
+                render_notification_auth_miniapp(response)
+            elsif request.path == '/admin'
                 valid = valid_admin_session?(request)
                 @logger.info("GET /admin valid_admin_session?=#{valid}")
                 if valid
                     render_admin_home(response)
                 else
-                    redirect('/admin/auth', response)
+                    redirect('/auth/admin', response)
                 end
             else
-                if request.path.start_with?('/admin/api/')
-                    section = request.path.split('/').last
-                    admin_api_get_section(section, request, response)
-                    return
-                end
-                if request.path.start_with?('/admin/api')
-                    api_json(response, {error: 'Not found'}, 404)
-                    return
-                end
                 super if defined?(super)
             end
         end
     end
 
     def do_POST(request, response)
-        if request.path == '/admin/api/avatar/upload'
-            return handle_avatar_upload(request, response)
-        end
         with_error_handling(response, @logger) do
-            if request.path == '/admin/auth'
-                admin_key = (request.body.respond_to?(:read) ? URI.decode_www_form(request.body.read).to_h['admin_key'] : nil)
-                if !admin_key.is_a?(String) || admin_key.strip.empty?
-                    render_admin_auth(response, 'Admin key required.')
-                    return
-                end
-                if verify_admin_key(admin_key)
-                    token = create_admin_session
-                    CookieManager.set_cookie(response, ADMIN_COOKIE, token, path: '/', max_age: ADMIN_SESSION_TTL, http_only: true, samesite: 'Strict')
-                    @logger.info("Successful admin login")
-                    redirect('/admin', response)
-                else
-                    @logger.warn('Failed admin login attempt')
-                    render_admin_auth(response, 'Invalid admin key')
-                end
-            elsif request.path == '/admin/api/update'
-                admin_api_update_sections(request, response)
+            if request.path == '/auth/admin'
+                handle_admin_login(request, response)
+            elsif request.path == '/auth/notification'
+                handle_notification_auth(request, response)
             elsif request.path == '/admin/logout'
-                token = CookieManager.get_cookie(request, ADMIN_COOKIE)
-                clear_admin_cookie(response)
-                @admin_sessions.delete(token) if @admin_sessions && token
-                @logger.info("Admin logged out")
-                redirect('/admin/auth', response)
+                handle_admin_logout(request, response)
             else
-                if request.path.start_with?('/admin/api')
-                    api_json(response, {error: 'Not found'}, 404)
-                    return
-                end
                 super if defined?(super)
             end
         end
@@ -91,13 +66,92 @@ class SiteCardAdminServlet < SiteCardServlet
 
     private
 
-    def render_admin_auth(response, status_msg)
-        path = File.join(Renderer::COMPONENTS_PATH_ADMIN, 'auth.html')
+    def render_admin_auth_form(response, status_msg, form_action)
+        path = File.join(Renderer::COMPONENTS_PATH_PUBLIC, 'admin_auth.html')
         erb_template = ERB.new(File.read(path))
-        html = erb_template.result_with_hash(login_status_msg: status_msg)
+        html = erb_template.result_with_hash(login_status_msg: status_msg, form_action: form_action)
         response.status = 200
         response['Content-Type'] = 'text/html; charset=utf-8'
         response.body = html
+    end
+
+    def render_notification_auth_miniapp(response)
+        path = File.join(Renderer::COMPONENTS_PATH_PUBLIC, 'notification_auth.html')
+        html = File.read(path)
+        response.status = 200
+        response['Content-Type'] = 'text/html; charset=utf-8'
+        response.body = html
+    end
+
+    def handle_admin_login(request, response)
+        admin_key = (request.body.respond_to?(:read) ? URI.decode_www_form(request.body.read).to_h['admin_key'] : nil)
+        if !admin_key.is_a?(String) || admin_key.strip.empty?
+            render_admin_auth_form(response, 'Admin key required.', '/auth/admin')
+            return
+        end
+        if verify_admin_key(admin_key)
+            token = create_admin_session
+            CookieManager.set_cookie(response, ADMIN_COOKIE, token, path: '/', max_age: ADMIN_SESSION_TTL, http_only: true, samesite: 'Strict')
+            @logger.info("Successful admin login")
+            redirect('/admin', response)
+        else
+            @logger.warn('Failed admin login attempt')
+            render_admin_auth_form(response, 'Invalid admin key', '/auth/admin')
+        end
+    end
+
+    def handle_admin_logout(request, response)
+        token = CookieManager.get_cookie(request, ADMIN_COOKIE)
+        CookieManager.clear_cookie(response, ADMIN_COOKIE, path: '/', http_only: true, samesite: 'Strict')
+        @admin_sessions.delete(token) if @admin_sessions && token
+        @logger.info("Admin logged out")
+        redirect('/auth/admin', response)
+    end
+
+    def handle_notification_auth(request, response)
+        fields = request.body.respond_to?(:read) ? URI.decode_www_form(request.body.read).to_h : {}
+        admin_key = fields['admin_key']
+        init_data = fields['init_data']
+        begin
+            tg_user = verify_notification_webapp_init_data!(init_data)
+            @logger.info("Telegram WebApp user verified", tg_user_id: tg_user[:user_id], username: tg_user[:username])
+        rescue VerificationError => e
+            @logger.warn("Telegram init_data verification failed", error: e.message)
+            response.status = 401
+            response.body = 'Telegram user verification failed.'
+            return
+        end
+        unless admin_key.is_a?(String) && !admin_key.strip.empty?
+            response.status = 400
+            response.body = 'Admin key required.'
+            return
+        end
+        if verify_admin_key(admin_key)
+            begin
+                require 'grpc'
+                grpc_host = @config.notification_grpc_host
+                stub = Notification::NotificationDelivery::Stub.new(grpc_host, :this_channel_is_insecure)
+                grpc_req = Notification::WebappUserAuthRequest.new(user_id: tg_user[:user_id], username: tg_user[:username] || "")
+                grpc_resp = stub.authorize_webapp_user(grpc_req)
+                if grpc_resp.success
+                    @logger.info("Notification-bot: user authorized via gRPC", tg_user_id: tg_user[:user_id], username: tg_user[:username])
+                    response.status = 200
+                    response.body = '<div class="success">Notification authorization successful!</div>'
+                else
+                    @logger.warn("Notification-bot: user gRPC authorization failed", error: grpc_resp.error_message)
+                    response.status = 401
+                    response.body = grpc_resp.error_message || 'gRPC authorization failed.'
+                end
+            rescue => e
+                @logger.error("Notification-bot gRPC error", error: e.message)
+                response.status = 502
+                response.body = 'Notification service unavailable.'
+            end
+        else
+            @logger.warn('Failed notification-bot MiniApp admin key verify', tg_user_id: tg_user[:user_id])
+            response.status = 401
+            response.body = 'Invalid admin key.'
+        end
     end
 
     def render_admin_home(response)
@@ -135,10 +189,6 @@ class SiteCardAdminServlet < SiteCardServlet
         true
     end
 
-    def clear_admin_cookie(response)
-        CookieManager.clear_cookie(response, ADMIN_COOKIE, path: '/', http_only: true, samesite: 'Strict')
-    end
-
     def redirect(url, response)
         location = url.to_s.start_with?("/") ? url.to_s : "/"
         @logger.info("HTTP 302 Redirect Location: #{location}")
@@ -147,173 +197,33 @@ class SiteCardAdminServlet < SiteCardServlet
         response.body = ''
     end
 
-    def load_layout(rel_path)
-        pth = File.expand_path("../views/#{rel_path}", __dir__)
-        File.read(pth)
-    end
+    def verify_notification_webapp_init_data!(init_data_str)
+        token = @config.notification_bot_token
+        raise VerificationError, 'Server is misconfigured: no bot token available' unless token
+        raise VerificationError, 'No init_data received' unless init_data_str.is_a?(String) && !init_data_str.empty?
 
-    def admin_api_get_section(section, request, response)
-        unless valid_admin_session?(request)
-            return api_json(response, {error:'Unauthorized'}, 401)
-        end
-        data = case section
-        when 'about'
-            fetch_about_data
-        when 'avatar'
-            fetch_avatar_data
-        when 'experience'
-            fetch_experience_data
-        when 'skills'
-            fetch_skills_data
-        when 'portfolio'
-            fetch_portfolio_data
-        when 'contacts'
-            fetch_contacts_data
-        else
-            return api_json(response, {error:'Unknown section'}, 400)
-        end
-        api_json(response, data, 200)
-    rescue => e
-        api_error(response, e)
-    end
+        data = CGI.parse(init_data_str)
+        auth_date = data['auth_date']&.first
+        raise VerificationError, 'Missing auth_date' unless auth_date
 
-    def admin_api_update_sections(request, response)
-        unless valid_admin_session?(request)
-            return api_json(response, {error:'Unauthorized'}, 401)
-        end
-        body = request.body.read
-        payload = JSON.parse(body) rescue nil
-        return api_json(response, {error:'Bad JSON'}, 400) unless payload.is_a?(Hash)
-        errs = []
-        update_log = {}
-        %w[about avatar experience skills portfolio contacts].each do |sec|
-            next unless payload[sec].is_a?(Hash)
-            begin
-                update_section(sec, payload[sec])
-                update_log[sec] = 'ok'
-            rescue => e
-                errs << {section: sec, msg: e.message}
-                update_log[sec] = "error: #{e.class}"
-            end
-        end
-        if errs.empty?
-            @logger.info("Bulk update successful: #{update_log}")
-            api_json(response, {result: 'ok'}, 200)
-        else
-            @logger.warn("Bulk update errors: #{errs}")
-            api_json(response, {result: 'partial', errors: errs}, 400)
-        end
-    rescue => e
-        api_error(response, e)
-    end
+        hash = data['hash']&.first
+        raise VerificationError, 'Missing hash' unless hash
 
-    def api_json(response, obj, code=200)
-        response.status = code
-        response['Content-Type'] = 'application/json; charset=utf-8'
-        response.body = JSON.generate(obj)
-    end
+        check_str = data.keys.reject { |k| k == 'hash' }.sort.map { |k| "#{k}=#{data[k].first}" }.join("\n")
+        secret = OpenSSL::Digest::SHA256.digest(token)
+        my_hash = OpenSSL::HMAC.hexdigest('SHA256', secret, check_str)
 
-    def api_error(response, err)
-        if AppConfig.debug_mode
-            api_json(response, {error: err.message, backtrace: err.backtrace}, 500)
-        else
-            api_json(response, {error:'Internal error'}, 500)
+        unless my_hash == hash
+            raise VerificationError, 'Invalid notification WebApp signature'
         end
-    end
 
-    def fetch_about_data
-        conn = Renderer.pg_repository_instance
-        about = About.fetch(conn) || OpenStruct.new
-        {
-            name: about.name,
-            age: about.age,
-            location: about.location,
-            education: about.education,
-            description: about.description,
-            languages: about.languages
-        }
-    end
-    def fetch_avatar_data
-        fetch_about_data
-    end
-    def fetch_experience_data
-        conn = Renderer.pg_repository_instance
-        arr = Experience.all(conn)
-        Hash[arr.map.with_index { |e,i| ["exp#{i+1}", e.label] }]
-    end
-    def fetch_skills_data
-        conn = Renderer.pg_repository_instance
-        groups = SkillGroup.all(conn)
-        out = {}
-        groups.each_with_index do |g,i|
-            out["#{g.name}"] = (Skill.all_by_group(conn, g.id) || []).map(&:name).join(', ')
+        if (Time.now.to_i - auth_date.to_i).abs > 86400
+            raise VerificationError, 'Notification WebApp init_data too old'
         end
-        out
-    end
-    def fetch_portfolio_data
-        conn = Renderer.pg_repository_instance
-        arr = Portfolio.all(conn)
-        Hash[arr.map {|p| [p.title, p.description] }]
-    end
-    def fetch_contacts_data
-        conn = Renderer.pg_repository_instance
-        arr = Contact.all(conn)
-        Hash[arr.map {|c| [c.label, c.value] }]
-    end
 
-    def update_section(section, value_hash)
-        case section
-        when 'about'
-            conn = Renderer.pg_repository_instance
-            allowed = %w[name age location education description languages]
-            safe = value_hash.select{|k,_| allowed.include?(k)}
-            sets = safe.map{|k,v| "#{k}=$#{safe.keys.index(k)+1}"}
-            sql = "UPDATE about SET #{sets.join(", ")} WHERE id=(SELECT id FROM about LIMIT 1)"
-            conn.with_connection do |db|
-                db.exec_params(sql, safe.values)
-            end
-            @logger.info("About updated: #{safe.keys}")
-        else
-            raise "Update for section #{section} is not implemented"
-        end
-    end
-
-    def handle_avatar_upload(request, response)
-        unless valid_admin_session?(request)
-            return api_json(response, {error:'Unauthorized'}, 401)
-        end
-        boundary = Rack::Multipart::Parser.get_boundary(request)
-        unless boundary
-            return api_json(response, {error:'No boundary provided'}, 400)
-        end
-        tempfile_path, filename, ext = nil, nil, nil
-        begin
-            parser = Rack::Multipart::Parser.new(request.env)
-            file_params = parser.parse
-            file = file_params.dig('avatar_file')
-            unless file && file[:tempfile]
-                return api_json(response, {error:'No file uploaded (avatar_file)'}, 400)
-            end
-            filename = file[:filename]
-            ext = File.extname(filename).delete_prefix('.').downcase
-            allowed_exts = %w[jpg jpeg png]
-            unless allowed_exts.include?(ext)
-                return api_json(response, {error:'Unsupported format'}, 400)
-            end
-            images_dir = File.expand_path('../../app/assets/images', __dir__)
-            allowed_exts.each do |e|
-                old_path = File.join(images_dir, "avatar.#{e}")
-                File.delete(old_path) if File.exist?(old_path)
-            end
-            dest_path = File.join(images_dir, "avatar.#{ext}")
-            File.open(dest_path, 'wb') { |f| f.write(file[:tempfile].read) }
-            conn = Renderer.pg_repository_instance
-            conn.with_connection do |db|
-                db.exec_params('UPDATE avatars SET image_ext=$1 WHERE id=1', [ext])
-            end
-            api_json(response, {result:'ok', ext: ext}, 200)
-        rescue => e
-            api_error(response, e)
-        end
+        user_json = data['user']&.first
+        user = user_json ? JSON.parse(user_json) : nil
+        raise VerificationError, 'Missing user data' unless user && user['id']
+        { user_id: user['id'].to_i, username: user['username'], full_user: user }
     end
 end

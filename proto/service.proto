@@ -4,16 +4,26 @@ package notification;
 
 service NotificationDelivery {
     rpc DeliverContactMessage (ContactMessageRequest) returns (ContactMessageResponse);
+    rpc AuthorizeWebappUser (WebappUserAuthRequest) returns (WebappUserAuthResponse);
 }
 
 message ContactMessageRequest {
-    string admin_key = 1;
-    string name = 2;
-    string email = 3;
-    string body = 4;
+    string name = 1;
+    string email = 2;
+    string body = 3;
 }
 
 message ContactMessageResponse {
+    bool success = 1;
+    string error_message = 2;
+}
+
+message WebappUserAuthRequest {
+    int64 user_id = 1;
+    string username = 2;
+}
+
+message WebappUserAuthResponse {
     bool success = 1;
     string error_message = 2;
 }

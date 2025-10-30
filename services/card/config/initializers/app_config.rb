@@ -1,11 +1,13 @@
 require 'dotenv/load'
 
 class AppConfig
-    attr_reader :env, :port
+    attr_reader :env, :port, :notification_grpc_host, :notification_bot_token
 
     def initialize
         @env = load_env
         @port = fetch_param('RACKUP_PORT', 9292).to_i
+        @notification_grpc_host = fetch_param('NOTIFICATION_GRPC_HOST', 'notification-bot:50051')
+        @notification_bot_token = fetch_param('NOTIFICATION_BOT_TOKEN', nil)
     end
 
     def self.debug_mode
