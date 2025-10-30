@@ -24,6 +24,7 @@ class Renderer
     ADMIN_COMPONENTS = %w[panel.html]
     COMPONENTS_PATH_PUBLIC = File.expand_path('components/public', __dir__)
     COMPONENTS_PATH_ADMIN  = File.expand_path('components/admin', __dir__)
+    COMPONENTS_PATH_AUTH   = File.expand_path('components/auth', __dir__)
     LAYOUT_PATH = File.expand_path('layouts/application.html', __dir__)
 
     def initialize(pg_repo = nil)
