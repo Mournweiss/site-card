@@ -1,21 +1,31 @@
-<div class="d-flex min-vh-100 align-items-center justify-content-center bg-dark">
-    <div class="card admin-auth-card shadow-lg rounded-4 p-4 w-100" style="max-width: 410px; min-width: 290px; background: #232630; border: none;">
-        <h2 class="mb-4 text-center fs-3 fw-bold text-light">Admin Login</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Authorization</title>
+    <link rel="stylesheet" href="/assets/common.css">
+    <link rel="stylesheet" href="/assets/auth-base.css">
+</head>
+<body>
+<div class="auth-center">
+    <div class="auth-box">
+        <h2 style="text-align:center;">Admin Login</h2>
         <form method="POST" action="<%= defined?(form_action) ? form_action : '/auth/admin' %>" autocomplete="off">
-            <div class="mb-3">
-                <label for="admin_key" class="form-label text-light">Admin Key</label>
+            <div>
                 <input type="password"
                        name="admin_key"
                        id="admin_key"
-                       class="form-control form-control-lg bg-dark text-light border-secondary shadow-none"
                        placeholder="Enter your admin key"
                        required autofocus
                        autocomplete="off">
             </div>
             <% if defined?(login_status_msg) && login_status_msg && !login_status_msg.empty? %>
-                <div class="alert alert-danger mb-3 py-2 px-3 text-center" role="alert"><%= ERB::Util.html_escape(login_status_msg) %></div>
+                <div class="auth-msg auth-error"><%= ERB::Util.html_escape(login_status_msg) %></div>
             <% end %>
-            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold mt-2">Login</button>
+            <button type="submit" class="sitecard-btn">Login</button>
         </form>
     </div>
 </div>
+</body>
+</html>

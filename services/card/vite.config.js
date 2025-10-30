@@ -42,6 +42,8 @@ export default defineConfig({
                 "cookie-notice": resolve(__dirname, "app/assets/javascripts/cookie/notice.js"),
                 "cookie-notice-style": resolve(__dirname, "app/assets/stylesheets/cookie/notice.css"),
                 popup: resolve(__dirname, "app/assets/stylesheets/common/popup.css"),
+                "auth-base": resolve(__dirname, "app/assets/stylesheets/auth/base.css"),
+                "auth-webapp": resolve(__dirname, "app/assets/javascripts/auth/webapp.js"),
             },
             output: {
                 entryFileNames: "[name].js",

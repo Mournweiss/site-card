@@ -1,0 +1,54 @@
+.auth-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.auth-box {
+    background: var(--color-surface);
+    padding: 2em;
+    border-radius: 1em;
+    max-width: 350px;
+    width: 100%;
+    box-shadow: 0 4px 24px var(--color-shadow);
+}
+
+.auth-box h2 {
+    color: var(--color-fg);
+    text-align: center;
+    font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
+    font-size: 2.08rem;
+    font-weight: 750;
+    letter-spacing: 0.01em;
+    margin-bottom: 1em;
+    margin-top: 0;
+    line-height: 1.11;
+    padding: 0;
+}
+
+.auth-box input[type="password"] {
+    width: 100%;
+    padding: 0.7em;
+    margin-bottom: 1em;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg);
+    border-radius: 0.4em;
+}
+
+.auth-box .sitecard-btn {
+    width: 100%;
+    margin-top: 0.2em;
+}
+
+.auth-msg {
+    text-align: center;
+    margin-bottom: 1em;
+}
+.auth-error {
+    color: var(--color-error);
+}
+.auth-success {
+    color: var(--color-success);
+}

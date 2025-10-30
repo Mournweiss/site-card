@@ -3,52 +3,21 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Notification-Bot Authorization</title>
-    <style>
-        body { background: #20232b; color: #fff; font-family: sans-serif; }
-        .centered { display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .box { background: #292d36; padding: 2em; border-radius: 1em; max-width: 350px; width: 100%; box-shadow: 0 4px 24px #0002; }
-        input { width: 100%; padding: .7em; margin-bottom: 1em; background: #22252b; border: 1px solid #444; color: #fff; border-radius: .4em; }
-        button { width: 100%; padding: .7em; background: #3574ec; color: white; border: none; border-radius: .4em; font-weight: bold; cursor: pointer; }
-        .msg { text-align: center; margin-bottom: 1em; }
-        .error { color: #ef5959; }
-        .success { color: #00cc88; }
-    </style>
+    <title>WebApp Authorization</title>
+    <link rel="stylesheet" href="/assets/common.css">
+    <link rel="stylesheet" href="/assets/auth-base.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-<div class="centered">
-    <form id="authForm" class="box" autocomplete="off">
-        <h2 style="text-align:center;">Authorize Notification</h2>
-        <div class="msg" id="formMsg"></div>
+<div class="auth-center">
+    <form id="authForm" class="auth-box" autocomplete="off">
+        <h2 style="text-align:center;">WebApp Authorization</h2>
+        <div class="auth-msg" id="formMsg"></div>
         <input type="password" id="adminKey" name="admin_key" placeholder="Enter admin key" required autocomplete="off" autofocus />
         <input type="hidden" id="initData" name="init_data" />
-        <button type="submit">Authorize</button>
+        <button class="sitecard-btn" type="submit">Authorize</button>
     </form>
 </div>
-<script>
-    let tg = window.Telegram?.WebApp;
-    document.getElementById('initData').value = tg?.initData || '';
-
-    document.getElementById('authForm').onsubmit = async (e) => {
-        e.preventDefault();
-        let form = e.target;
-        let data = new FormData(form);
-        document.getElementById('formMsg').textContent = 'Processing...';
-        try {
-            let resp = await fetch('/auth/notification', {
-                method: 'POST',
-                body: data
-            });
-            let text = await resp.text();
-            document.getElementById('formMsg').innerHTML = text.includes('success') ?
-                '<span class="success">Authorization successful!</span>' :
-                '<span class="error">' + text.replace(/<[^>]*>?/gm, '') + '</span>';
-            if(resp.ok && tg) tg.close();
-        } catch (err) {
-            document.getElementById('formMsg').textContent = 'Error: ' + (err.message || err);
-        }
-    };
-</script>
+<script type="module" src="/assets/auth-webapp.js"></script>
 </body>
 </html>
