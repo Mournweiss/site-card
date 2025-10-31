@@ -11,7 +11,7 @@ ABOUT_TEXT = (
     "*Notification-Bot for SiteCard platform*\n\n"
     "Delivers contact form notifications.\n"
     f"\n*Python*: `{platform.python_version()}` | *PTB*: `{telegram.__version__}` "
-    "\n\nSupported commands: /start, /about\n"
+    "\n\nSupported commands: /start, /about, /logout\n"
     "Source & docs: [GitHub](https://github.com/Mournweiss/site-card)"
 )
 

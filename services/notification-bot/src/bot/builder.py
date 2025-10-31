@@ -1,5 +1,5 @@
 from telegram.ext import ApplicationBuilder, CommandHandler
-from .commands import start_handler, about_handler
+from .commands import start_handler, about_handler, logout_handler, build_logout_callback_handler
 from src.logger import get_logger
 from src.handlers import user_auth_manager
 
@@ -13,7 +13,12 @@ def build_application(config, user_auth_manager_instance=None):
 
     application.add_handler(CommandHandler("start", start_handler))
     logger.info("Registered /start handler")
+
     application.add_handler(CommandHandler("about", about_handler))
     logger.info("Registered /about handler")
+
+    application.add_handler(CommandHandler("logout", logout_handler))
+    application.add_handler(build_logout_callback_handler())
+    logger.info("Registered /logout handler and callback handler")
 
     return application

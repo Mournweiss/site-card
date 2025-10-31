@@ -5,8 +5,8 @@ from src.logger import get_logger
 from ..errors import NotificationException
 
 class NotificationHandler:
+
     def __init__(self, application, user_auth_manager):
-        
         self.application = application
         self.user_auth_manager = user_auth_manager
         self.send_queue = Queue()
