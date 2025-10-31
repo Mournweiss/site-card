@@ -13,6 +13,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN gem install bundler grpc grpc-tools && bundle install
+
+RUN mkdir -p /userdata
 COPY . .
 
 COPY --from=assets /build/public/assets ./public/assets

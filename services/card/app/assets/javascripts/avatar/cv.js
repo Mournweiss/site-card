@@ -1,7 +1,7 @@
 export function initAvatarCvDownload(buttonOrSelector, options = {}) {
     const btn = typeof buttonOrSelector === "string" ? document.querySelector(buttonOrSelector) : buttonOrSelector;
     if (!btn) return;
-    const filePath = options.filePath || "/assets/files/CV.pdf";
+    const filePath = options.filePath || "/userdata/CV.pdf";
     const fallbackName = options.fallbackName || "CV.pdf";
 
     async function handleDownload() {

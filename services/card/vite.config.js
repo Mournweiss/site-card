@@ -1,6 +1,5 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
-import { viteStaticCopy } from "vite-plugin-static-copy";
 
 export default defineConfig({
     root: "app/assets",
@@ -51,26 +50,6 @@ export default defineConfig({
             },
         },
     },
-    plugins: [
-        viteStaticCopy({
-            targets: [
-                {
-                    src: resolve(__dirname, "app/assets/images/*"),
-                    dest: "images",
-                    globOptions: {
-                        failOnEmpty: false,
-                    },
-                },
-                {
-                    src: resolve(__dirname, "app/assets/files/*"),
-                    dest: "files",
-                    globOptions: {
-                        failOnEmpty: false,
-                    },
-                },
-            ],
-        }),
-    ],
     server: {
         open: false,
     },

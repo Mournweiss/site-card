@@ -8,8 +8,7 @@
         "preview": "vite preview"
     },
     "devDependencies": {
-        "vite": "7.1.9",
-        "vite-plugin-static-copy": "3.1.4"
+        "vite": "7.1.9"
     },
     "dependencies": {
         "qrcode": "1.5.4"

@@ -16,7 +16,7 @@ class Avatar
 
     def image_url
         return nil unless %w[png jpg jpeg].include?(@image_ext)
-        "/assets/images/avatar.#{@image_ext}"
+        "/userdata/avatar.#{@image_ext}"
     end
 
     def self.fetch(conn)
