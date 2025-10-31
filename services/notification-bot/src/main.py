@@ -3,7 +3,7 @@ import threading
 from src.config import Config
 from src.errors import NotificationException
 from src.clients import NotificationUserRepository
-from src.handlers.auth import UserAuthManager, user_auth_manager as global_user_auth_manager
+from src.handlers import UserAuthManager, user_auth_manager as global_user_auth_manager
 from src.bot import build_application
 from src.api import serve as serve_grpc
 import atexit
@@ -27,10 +27,14 @@ def main():
         user_repo.close()
 
     atexit.register(close_repo)
+    application = build_application(config, global_user_auth_manager)
 
-    application = build_application(config)
     from src.handlers import NotificationHandler
-    handler = NotificationHandler(application)
+    handler = NotificationHandler(application, global_user_auth_manager)
+    application.bot_data["notification_handler"] = handler
+
+    import asyncio
+    application.job_queue.run_once(lambda ctx: asyncio.create_task(handler.start_worker()), 0)
 
     grpc_thread = threading.Thread(target=serve_grpc, args=(config, handler), daemon=True)
     grpc_thread.start()

@@ -9,24 +9,9 @@ from ..handlers import user_auth_manager
 logger = logging.getLogger(__name__)
 
 class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
+
     def __init__(self, handler):
         self.handler = handler
-
-    def Notify(self, request, context):
-
-        try:
-            self.handler.handle_notification(request)
-            return service_pb2.NotifyResponse(success=True)
-
-        except NotificationException as e:
-            context.set_code(grpc.StatusCode.INTERNAL)
-            context.set_details(str(e))
-            return service_pb2.NotifyResponse(success=False, error=str(e))
-
-        except Exception as e:
-            context.set_code(grpc.StatusCode.UNKNOWN)
-            context.set_details(str(e))
-            return service_pb2.NotifyResponse(success=False, error='Internal error')
 
     def AuthorizeWebappUser(self, request, context):
         user_id = getattr(request, 'user_id', None)
@@ -43,6 +28,34 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
         except Exception as ex:
             context.set_code(grpc.StatusCode.UNKNOWN)
             return service_pb2.WebappUserAuthResponse(success=False, error_message=str(ex))
+
+    def DeliverContactMessage(self, request, context):
+        name = getattr(request, 'name', None)
+        email = getattr(request, 'email', None)
+        body = getattr(request, 'body', None)
+        logger.info(f"gRPC DeliverContactMessage called", extra={"contact_name": name, "contact_email": email})
+
+        if not (name and email and body):
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_details("Missing required fields (name, email, body)")
+            return service_pb2.ContactMessageResponse(success=False, error_message="Missing required fields (name, email, body)")
+
+        try:
+            self.handler.deliver_contact_message(name, email, body)
+            logger.info("Notification delivered successfully", extra={"contact_name": name, "contact_email": email})
+            return service_pb2.ContactMessageResponse(success=True, error_message="")
+
+        except NotificationException as e:
+            logger.error(f"Business error while delivering contact message: {e}", exc_info=True)
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_details(str(e))
+            return service_pb2.ContactMessageResponse(success=False, error_message=str(e))
+
+        except Exception as ex:
+            logger.error(f"Internal error in DeliverContactMessage: {ex}", exc_info=True)
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details("Internal error")
+            return service_pb2.ContactMessageResponse(success=False, error_message="Internal server error")
 
 def serve(config, handler):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

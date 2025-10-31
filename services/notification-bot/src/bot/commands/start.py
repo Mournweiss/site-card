@@ -9,13 +9,15 @@ def get_webapp_url(config):
 
 async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
+    username = update.effective_user.username
     config = context.bot_data.get("config")
     WEBAPP_URL = get_webapp_url(config)
-    logger.info("/start received - sending WebApp button", user_id=user_id, webapp_url=WEBAPP_URL)
+    logger.info("/start received - sent WebApp button", extra={"log_user_id": user_id, "webapp_url": WEBAPP_URL})
     button = KeyboardButton(text="Authorize via WebApp", web_app=WebAppInfo(url=WEBAPP_URL))
     keyboard = ReplyKeyboardMarkup([[button]], resize_keyboard=True)
     welcome = (
         "Welcome to Notification-Bot.\n"
         "Please authorize using the button below."
     )
+
     await update.message.reply_text(welcome, reply_markup=keyboard)

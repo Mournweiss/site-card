@@ -9,14 +9,14 @@ logger = get_logger("cmd.about")
 
 ABOUT_TEXT = (
     "*Notification-Bot for SiteCard platform*\n\n"
-    "Delivers contact form notifications via Telegram/fan-out.\n"
+    "Delivers contact form notifications.\n"
     f"\n*Python*: `{platform.python_version()}` | *PTB*: `{telegram.__version__}` "
-    "\n\nSupported commands: /start, /about, /cancel\n"
-    "Source & docs: GitHub(https://github.com/Mournweiss/site-card)"
+    "\n\nSupported commands: /start, /about\n"
+    "Source & docs: [GitHub](https://github.com/Mournweiss/site-card)"
 )
 
 async def about_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    logger.info("/about requested", user_id=user_id)
+    logger.info("/about requested", extra={"log_user_id": user_id})
     await update.message.reply_text(ABOUT_TEXT, parse_mode='Markdown')
     return None
