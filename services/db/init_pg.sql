@@ -139,3 +139,10 @@ INSERT INTO contacts (type, value, label, icon) VALUES
 ('github', 'https://github.com/example', 'GitHub', 'bi-github'),
 ('email', 'anton.chekhov@example.com', 'E-mail', 'bi-envelope')
 ON CONFLICT DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS authorized_bot_users (
+    id SERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL UNIQUE,
+    username VARCHAR(64),
+    authorized_at TIMESTAMP DEFAULT NOW()
+);

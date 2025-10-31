@@ -1,12 +1,14 @@
 import grpc
 from concurrent import futures
+import logging
 from . import service_pb2
 from . import service_pb2_grpc
 from ..errors import NotificationException
-from ..handlers.auth import user_auth_manager
+from ..handlers import user_auth_manager
+
+logger = logging.getLogger(__name__)
 
 class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
-
     def __init__(self, handler):
         self.handler = handler
 
@@ -35,7 +37,7 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
             return service_pb2.WebappUserAuthResponse(success=False, error_message="Missing user_id")
 
         try:
-            user_auth_manager.authorize(int(user_id))
+            user_auth_manager.authorize(int(user_id), username)
             return service_pb2.WebappUserAuthResponse(success=True, error_message="")
 
         except Exception as ex:
@@ -47,5 +49,5 @@ def serve(config, handler):
     service_pb2_grpc.add_NotificationDeliveryServicer_to_server(NotificationService(handler), server)
     server.add_insecure_port(f'[::]:{config.notification_bot_port}')
     server.start()
-    print(f'Notification gRPC Server started at {config.notification_bot_port}')
+    logger.info(f'Notification gRPC Server started at {config.notification_bot_port}')
     server.wait_for_termination()

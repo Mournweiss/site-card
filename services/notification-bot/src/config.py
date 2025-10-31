@@ -8,6 +8,11 @@ class Config:
     notification_bot_port: int = 50051
     debug: bool = False
     domain: str = ""
+    pg_host: str = "localhost"
+    pg_port: int = 5432
+    pg_user: str = "postgres"
+    pg_password: str = "postgres"
+    pg_database: str = "sitecard"
 
     @staticmethod
     def from_env():
@@ -25,6 +30,23 @@ class Config:
         notification_bot_port = int(os.environ.get("NOTIFICATION_BOT_PORT", 50051))
         debug = os.environ.get("DEBUG", "false").lower() == "true"
         domain = os.environ.get("DOMAIN", "")
+        pg_host = os.environ.get("PGHOST", "localhost")
+        pg_port = int(os.environ.get("PGPORT", 5432))
+        pg_user = os.environ.get("PGUSER", "postgres")
+        pg_password = os.environ.get("PGPASSWORD", "postgres")
+        pg_database = os.environ.get("PGDATABASE", "sitecard")
+
+        if not pg_host:
+            missing.append("PGHOST")
+
+        if not pg_user:
+            missing.append("PGUSER")
+
+        if not pg_password:
+            missing.append("PGPASSWORD")
+
+        if not pg_database:
+            missing.append("PGDATABASE")
 
         if missing:
             raise RuntimeError(f"Missing config envs: {', '.join(missing)}")
@@ -34,13 +56,18 @@ class Config:
             notification_bot_token=bot_token,
             notification_bot_port=notification_bot_port,
             debug=debug,
-            domain=domain
+            domain=domain,
+            pg_host=pg_host,
+            pg_port=pg_port,
+            pg_user=pg_user,
+            pg_password=pg_password,
+            pg_database=pg_database,
         )
 
     @property
     def webapp_url(self):
 
         if self.domain:
-            return f"https://{self.domain}/auth/notification"
+            return f"https://{self.domain}/auth/webapp"
 
         return ""

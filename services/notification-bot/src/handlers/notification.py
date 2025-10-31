@@ -6,6 +6,8 @@ class NotificationHandler:
         self.application = application
 
     def deliver_contact_message(self, name: str, email: str, body: str):
+        from src.handlers import user_auth_manager
+        user_ids = user_auth_manager.get_all_authorized_user_ids()
 
         if not all([name, email, body]):
             raise NotificationException("All contact fields are required")
@@ -14,9 +16,6 @@ class NotificationHandler:
             raise NotificationException("Invalid email format")
 
         msg = self._render_message(name, email, body)
-
-        from src.handlers.auth import user_auth_manager
-        user_ids = user_auth_manager.get_all_authorized_user_ids()
 
         for uid in user_ids:
 
