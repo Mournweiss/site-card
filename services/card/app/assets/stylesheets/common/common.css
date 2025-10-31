@@ -14,6 +14,7 @@
     --color-shadow-hover: rgba(70, 70, 90, 0.06);
     --color-avatar-fallback-bg: #b1bad9;
     --color-avatar-fallback-fg: #364060;
+    --color-avatar-border: #bbbbbb;
     --color-icon: #3985f2;
     --color-text: #868b8c;
 }
