@@ -9,3 +9,4 @@ gem 'pg', '~> 1.5'
 gem 'grpc', '~> 1.76'
 gem "grpc-tools", "~> 1.76"
 gem "google-protobuf", "~> 3.25.8"
+gem 'base64', '~> 0.1.0'
