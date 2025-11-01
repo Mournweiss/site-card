@@ -66,13 +66,12 @@
     margin-bottom: 0.67em;
 }
 .tech-badge {
-    background: #2e3144;
-    color: #bcddff;
+    background: var(--color-border);
+    color: var(--color-fg);
     font-size: 0.97rem;
     font-weight: 560;
     padding: 0.4em 0.78em;
     border-radius: 1.1em;
-    border: 1px solid #404664;
     display: flex;
     align-items: center;
     gap: 0.42em;

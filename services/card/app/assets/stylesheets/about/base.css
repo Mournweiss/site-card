@@ -44,23 +44,7 @@
     font-size: 1.72rem;
     white-space: normal;
 }
-@media (max-width: 1100px) {
-    .about-me-cell {
-        max-width: 220px;
-    }
-    .about-me-row--indented {
-        padding-left: calc(50% / 3 + 0.75em);
-    }
-}
-@media (max-width: 900px) {
-    .about-me-cell {
-        max-width: 150px;
-    }
-    .about-me-row--indented {
-        padding-left: calc(50% / 3 + 0.75em);
-    }
-}
-@media (max-width: 700px) {
+@media (max-width: 1200px) {
     .container > .about-card {
         padding-left: 0 !important;
         padding-right: 0 !important;
