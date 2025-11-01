@@ -33,6 +33,7 @@ export default defineConfig({
                 "common-fadeinup": resolve(__dirname, "app/assets/javascripts/common/fadeinup.js"),
                 "common-uisurface-contrast": resolve(__dirname, "app/assets/javascripts/common/uisurface-contrast.js"),
                 "common-scroll-center": resolve(__dirname, "app/assets/javascripts/common/scroll-center.js"),
+                "common-popup": resolve(__dirname, "app/assets/javascripts/common/popup.js"),
                 "footer-base": resolve(__dirname, "app/assets/stylesheets/footer/base.css"),
                 "footer-title": resolve(__dirname, "app/assets/javascripts/footer/title.js"),
                 "navbar-base": resolve(__dirname, "app/assets/stylesheets/navbar/base.css"),

@@ -1,3 +1,5 @@
+import { openPopup, closePopup } from "../common/popup.js";
+
 async function createMessagePopupMarkup() {
     const res = await fetch("/public/component/message_form");
     if (!res.ok) throw new Error("Cannot load form template");
@@ -8,36 +10,24 @@ async function createMessagePopupMarkup() {
 }
 
 async function showMessagePopup() {
-    let root = document.getElementById("contacts-message-popup-root");
-    if (!root) return;
-    root.innerHTML = "";
-    const backdrop = document.createElement("div");
-    backdrop.id = "popup-backdrop";
-    backdrop.tabIndex = -1;
-    const modal = document.createElement("div");
-    modal.id = "popup-modal";
-    const close = document.createElement("button");
-    close.className = "popup-close";
-    close.innerHTML = "&times;";
-    close.type = "button";
-    close.addEventListener("click", closeMessagePopup);
-    modal.appendChild(close);
-
-    createMessagePopupMarkup().then(form => {
-        modal.appendChild(form);
-        backdrop.appendChild(modal);
-        root.appendChild(backdrop);
-        setTimeout(() => close.focus(), 250);
-        window.addEventListener("keydown", escHandler, true);
-
-        form.addEventListener("submit", async function (e) {
+    const form = await createMessagePopupMarkup();
+    const contentHtml = `
+        <button class="popup-close" type="button">&times;</button>
+        ${form.outerHTML}
+    `;
+    openPopup(contentHtml);
+    const closeBtn = document.querySelector(".popup-close");
+    closeBtn.addEventListener("click", closePopup);
+    const insertedForm = document.querySelector("#popup-modal form");
+    if (insertedForm) {
+        insertedForm.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const name = form.elements["name"].value.trim();
-            const email = form.elements["email"].value.trim();
-            const body = form.elements["body"].value.trim();
-            const errorDiv = form.querySelector("#popup-msg-error");
-            const successDiv = form.querySelector("#popup-msg-success");
-            const loadingDiv = form.querySelector("#popup-msg-loading");
+            const name = insertedForm.elements["name"].value.trim();
+            const email = insertedForm.elements["email"].value.trim();
+            const body = insertedForm.elements["body"].value.trim();
+            const errorDiv = insertedForm.querySelector("#popup-msg-error");
+            const successDiv = insertedForm.querySelector("#popup-msg-success");
+            const loadingDiv = insertedForm.querySelector("#popup-msg-loading");
             errorDiv.textContent = "";
             successDiv.textContent = "";
             loadingDiv.style.display = "none";
@@ -61,23 +51,14 @@ async function showMessagePopup() {
                     throw new Error(data.error || "Sending failed, try again later");
                 }
                 successDiv.textContent = "Message sent successfully!";
-                form.reset();
+                insertedForm.reset();
             } catch (err) {
                 errorDiv.textContent = err.message || "Error occurred";
             } finally {
                 loadingDiv.style.display = "none";
             }
         });
-    });
-}
-
-function closeMessagePopup() {
-    let root = document.getElementById("contacts-message-popup-root");
-    if (root) root.innerHTML = "";
-    window.removeEventListener("keydown", escHandler, true);
-}
-function escHandler(e) {
-    if (e.key === "Escape") closeMessagePopup();
+    }
 }
 
 export function initContactsMessageBtn() {
