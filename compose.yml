@@ -1,7 +1,7 @@
 services:
-    db:
-        build: services/db
-        image: ${PROJECT_NAME:-site-card}-db:latest
+    db-service:
+        build: services/db-service
+        image: ${PROJECT_NAME:-site-card}-db-service:latest
         environment:
             POSTGRES_DB: ${PGDATABASE}
             POSTGRES_USER: ${PGUSER}
@@ -12,7 +12,7 @@ services:
         ports:
             - "${PGPORT:-5432}:5432"
         volumes:
-            - ./services/db/pgdata:/var/lib/postgresql/data
+            - ./services/db-service/pgdata:/var/lib/postgresql/data
         networks:
             - ${PROJECT_NAME:-site-card}-net
         healthcheck:
@@ -22,18 +22,18 @@ services:
             retries: 5
             start_period: 10s
 
-    app:
-        build: services/card
+    app-service:
+        build: services/app-service
         env_file:
             - .env
         ports:
             - "${NGINX_PORT:-8080}:8080"
         depends_on:
-            db:
+            db-service:
                 condition: service_healthy
         restart: unless-stopped
-        image: ${PROJECT_NAME:-site-card}-app:latest
-        container_name: ${PROJECT_NAME:-site-card}-app
+        image: ${PROJECT_NAME:-site-card}-app-service:latest
+        container_name: ${PROJECT_NAME:-site-card}-app-service
         volumes:
             - ./userdata:/userdata
         networks:

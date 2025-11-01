@@ -18,7 +18,7 @@ compose_file="compose.yml"
 env_file=".env"
 
 SERVICES_PATHS=(
-    "services/card"
+    "services/app-service"
     "services/notification-bot"
 )
 
