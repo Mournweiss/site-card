@@ -41,6 +41,10 @@ parse_args() {
                 NO_KEYGEN="true"
                 shift
                 ;;
+            --foreground|-f)
+                FOREGROUND_MODE="true"
+                shift
+                ;;
             *)
                 warn "Unknown argument: $1"
                 shift
@@ -168,9 +172,13 @@ run_project() {
     info "Stopping and cleaning up any running containers..."
     $orchestrator --env-file "$env_file" -f "$compose_file" down -v || warn "Down failed or nothing to remove"
     success "Previous containers removed"
-    info "Building and starting project in detached mode..."
-    $orchestrator --env-file "$env_file" -f "$compose_file" up --build -d
-    success "App started in detached mode"
+    info "Building and starting project in $([ "$FOREGROUND_MODE" = "true" ] && echo "foreground" || echo "detached") mode..."
+    if [ "$FOREGROUND_MODE" = "true" ]; then
+        $orchestrator --env-file "$env_file" -f "$compose_file" up --build
+    else
+        $orchestrator --env-file "$env_file" -f "$compose_file" up --build -d
+    fi
+    success "App started in $([ "$FOREGROUND_MODE" = "true" ] && echo "foreground" || echo "detached") mode"
 }
 
 main() {
