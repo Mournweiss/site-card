@@ -26,3 +26,5 @@ Development roadmap
 -   [ ] Add modular project cards to the Portfolio section of two types - cards for IT projects and art cards
 -   [x] Add ability to download the CV file by clicking on the button
 -   [x] Add ability to generate a QR code redirecting to the home page
+-   [ ] Add formation and tracking of site metrics
+-   [ ] Add option to specify links in the Education and Career blocks in the About section
