@@ -22,20 +22,13 @@ Ruby-based web application and API service for SiteCard project
 
 ## Overview
 
-App Service is the core user-facing application and API for the SiteCard platform. Implemented in Ruby (Rack) and deployed as a containerized microservice, it provides:
-
--   Dynamic profile and portfolio web pages (public and admin UI)
--   Secure admin authentication (optional Telegram WebApp support)
--   REST-style and gRPC interfaces for data and notification integration
--   PostgreSQL data storage, with persistent models for profile, experience, skills, and more
--   Modern interactive frontend bundled by Vite (Node.js), supporting editable sections, admin panel, and responsive design
--   Integrated build pipeline with Docker Compose / Podman Compose orchestration
+App Service is the core user-facing application and API for the SiteCard platform. Implemented in Ruby (Rack) and deployed as a containerized microservice.
 
 ### Tech Stack
 
--   **Ruby 3.3** (Backend, Rack, Sinatra-esque style)
+-   **Ruby 3.3** (Backend, Rack)
 -   **Rack** (Rack web server/abstraction)
--   **Webrick** (WEBrick HTTP server for local/dev use)
+-   **Webrick** (WEBrick HTTP server)
 -   **Bundler** (gem management)
 -   **pg** (PostgreSQL integration)
 -   **dotenv** (env configuration)

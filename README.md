@@ -22,7 +22,7 @@ SiteCard is a micro-service, container-ready web platform for creating interacti
 
 ### Services & Tools
 
--   [**App Service**](services/app-service/README.md): Ruby web application (Sinatra/Hanami-style). Handles primary site UI, authentication, asset delivery, and gRPC notifications.
+-   [**App Service**](services/app-service/README.md): Ruby web application. Handles primary site UI, authentication, asset delivery, and gRPC notifications.
 -   [**Notification Bot**](services/notification-bot/README.md): Python, async Telegram bot (aiogram/telethon, gRPC). Delivers contact forms, manages user authorization, and pushes notifications for site events.
 -   [**Database**](services/db-service/README.md): PostgreSQL service with migration/init scripts. Stores user data, contacts, portfolio, skills, and experience records.
 -   [**Keygen Utility**](https://github.com/Mournweiss/PQC-Key-Generator/blob/main/README.md): Containerized Go + OpenSSL tool to generate PQC admin keys (setup/maintenance).
