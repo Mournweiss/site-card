@@ -29,6 +29,8 @@ Notification-bot is a containerized microservice component of the SiteCard proje
 -   **Poetry** (dependency management)
 -   **Docker/Podman** (deployment)
 
+You can view the full list of Python dependencies in [pyproject.toml](./pyproject.toml).
+
 ## Usage
 
 ### Bot Commands and Features

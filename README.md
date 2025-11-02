@@ -9,7 +9,7 @@ Containerized micro-service web business-card platform
 [![Keygen](https://img.shields.io/badge/PQC--Key--Generator-7c3aed?style=for-the-badge)](https://github.com/Mournweiss/PQC-Key-Generator)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge&logoWidth=40)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white&logoWidth=40)](https://www.docker.com/)
-[![Ruby](https://img.shields.io/badge/Ruby-3.2.2-CC342D?style=for-the-badge&logo=ruby&logoColor=white&logoWidth=40)](https://www.ruby-lang.org/)
+[![Ruby](https://img.shields.io/badge/Ruby-3.3-CC342D?style=for-the-badge&logo=ruby&logoColor=white&logoWidth=40)](https://www.ruby-lang.org/)
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg?style=for-the-badge&logo=python&logoColor=white&logoWidth=40)](https://www.python.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-blue?style=for-the-badge&logo=postgresql&logoColor=white&logoWidth=40)](https://www.postgresql.org/)
 [![gRPC](https://img.shields.io/badge/gRPC-1.76.0-blueviolet?style=for-the-badge&logo=grpc)](https://grpc.io/)

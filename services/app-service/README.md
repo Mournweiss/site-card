@@ -4,7 +4,7 @@
 
 Ruby-based web application and API service for SiteCard project
 
-[![Ruby](https://img.shields.io/badge/Ruby-3.3.0-CC342D?style=for-the-badge&logo=ruby)](https://www.ruby-lang.org/)
+[![Ruby](https://img.shields.io/badge/Ruby-3.3-CC342D?style=for-the-badge&logo=ruby)](https://www.ruby-lang.org/)
 [![Rack](https://img.shields.io/badge/Rack-3.2-red?style=for-the-badge&logo=ruby)](https://rack.github.io/)
 [![Webrick](https://img.shields.io/badge/Webrick-1.9-E96A10?style=for-the-badge&logo=ruby)](https://rubygems.org/gems/webrick)
 [![Bundler](https://img.shields.io/badge/Bundler-2.x-990000?style=for-the-badge&logo=ruby)](https://bundler.io/)
@@ -12,7 +12,7 @@ Ruby-based web application and API service for SiteCard project
 [![dotenv](https://img.shields.io/badge/dotenv-3.0-green?style=for-the-badge&logo=dotenv&logoColor=white)](https://github.com/bkeepers/dotenv)
 [![gRPC](https://img.shields.io/badge/gRPC-1.76.0-blueviolet?style=for-the-badge&logo=grpc)](https://grpc.io/)
 [![Protobuf](https://img.shields.io/badge/Protobuf-3.25.8-FFCC00?style=for-the-badge&logo=protocol-buffers&logoColor=black)](https://developers.google.com/protocol-buffers)
-[![Node.js](https://img.shields.io/badge/Node.js-20.x-339933?style=for-the-badge&logo=node.js)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20-339933?style=for-the-badge&logo=node.js)](https://nodejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.9-646cff?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![nginx](https://img.shields.io/badge/nginx-1.x-brightgreen?style=for-the-badge&logo=nginx&logoColor=white)](https://nginx.org/)
 [![ruby:3.3-slim](https://img.shields.io/badge/ruby:3.3--slim-CC342D?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/_/ruby)
@@ -37,6 +37,8 @@ App Service is the core user-facing application and API for the SiteCard platfor
 -   **Vite 7** (modern JS/CSS bundling)
 -   **nginx** (static files/proxy)
 -   **Docker/Podman** (deployment)
+
+You can view all Ruby gem dependencies in [Gemfile](./Gemfile), and frontend (JS/CSS) dependencies in [package.json](./package.json).
 
 ## Usage
 
