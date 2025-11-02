@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 // Reference to Telegram WebApp JS interface
 let tg = window.Telegram?.WebApp;
 

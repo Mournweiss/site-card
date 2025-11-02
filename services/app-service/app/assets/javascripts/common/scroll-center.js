@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 /**
  * Scrolls the target element to the center of the viewport (vertically and horizontally).
  * Uses native scrollIntoView if supported, falls back to manual scroll.

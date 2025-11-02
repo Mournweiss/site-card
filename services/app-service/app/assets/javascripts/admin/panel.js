@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 // List of manageable admin sections
 const SECTIONS = ["avatar", "about", "experience", "skills", "portfolio", "contacts"];
 

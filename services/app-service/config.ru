@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+#
+# SPDX-License-Identifier: MIT
+
 # Rack application entrypoint for SiteCard; routes requests to controllers by URL prefix.
 require 'rack/request'
 require 'rack/response'

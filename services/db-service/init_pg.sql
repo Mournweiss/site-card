@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+--
+-- SPDX-License-Identifier: MIT
+
 -- Database schema and initial/seed data for SiteCard app
 -- Tables: avatars, about, careers, skill_groups, skills, experiences, portfolios, portfolio_languages, portfolio_tech_badges, contacts, authorized_bot_users
 

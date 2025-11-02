@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+#
+# SPDX-License-Identifier: MIT
+
 require 'dotenv/load'
 
 # AppConfig: application configuration loader; handles environment variables and .env file parsing.

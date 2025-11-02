@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+#
+# SPDX-License-Identifier: MIT
+
 require_relative '../config/initializers/app_config'
 
 # Defines all custom error types and an error-handling mixin for consistent API responses.

@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 /* Skills main section: vertical spacing, adapts to viewport for mobile */
 .skills-section {
     margin-block: 100px 100px;

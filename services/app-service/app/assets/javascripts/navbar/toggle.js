@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 /**
  * Navbar-toggle interaction logic for responsive/mobile navigation.
  * Toggles nav visibility and aria-expanded attribute for accessibility.

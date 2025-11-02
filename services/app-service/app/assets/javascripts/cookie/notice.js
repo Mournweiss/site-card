@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 /**
  * Cookie consent banner logic for site-wide GDPR compliance.
  * Shows a banner unless consent is already set as a cookie.

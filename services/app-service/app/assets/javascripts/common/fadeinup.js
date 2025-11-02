@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 /**
  * Applies fade-in-up animation classes to elements when scrolled into view.
  * Uses IntersectionObserver for visibility detection. Only runs if IntersectionObserver is supported.

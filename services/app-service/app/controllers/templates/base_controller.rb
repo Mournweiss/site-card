@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+#
+# SPDX-License-Identifier: MIT
+
 # Abstract base controller for other controllers to inherit common logic/config access
 class BaseController
     attr_reader :config, :logger

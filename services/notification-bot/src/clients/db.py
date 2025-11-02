@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+#
+# SPDX-License-Identifier: MIT
+
 """
 DB client for user auth, manages authorized_bot_users (add, remove, check, list).
 """

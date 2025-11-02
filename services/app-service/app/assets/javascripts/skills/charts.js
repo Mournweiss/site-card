@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 /**
  * Renders one or more skill pie charts using Chart.js, per provided configs.
  * Chart configs are expected as an array of objects (see format below) inside #context-skills.

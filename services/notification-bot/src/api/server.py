@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+#
+# SPDX-License-Identifier: MIT
+
 """
 gRPC service implementation for notification-bot (contact message, Telegram WebApp auth).
 Implements NotificationDeliveryServicer from service_pb2_grpc.

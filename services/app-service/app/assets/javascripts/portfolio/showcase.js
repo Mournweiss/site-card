@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 /**
  * Horizontal scrolling for portfolio/project showcase rail.
  * Attaches click event listeners to arrow controls to scroll project cards smoothly left/right.

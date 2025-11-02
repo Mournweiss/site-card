@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 /**
  * Loads and renders experience radar chart for the portfolio section.
  * Dynamically imports Chart.js from CDN only when needed.

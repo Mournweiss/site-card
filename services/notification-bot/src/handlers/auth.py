@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+#
+# SPDX-License-Identifier: MIT
+
 """
 Authorization manager for notification-bot Telegram users. Provides Authorization/Deauthorization/checks for use in gRPC, bot commands.
 """

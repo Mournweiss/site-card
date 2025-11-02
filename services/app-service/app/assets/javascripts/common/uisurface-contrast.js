@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 /**
  * Automatically adjusts text contrast for .ui-surface elements based on the computed background image region.
  * Uses canvas to analyze background behind each surface, calculates average luminance,

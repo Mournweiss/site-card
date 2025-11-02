@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+#
+# SPDX-License-Identifier: MIT
+
 require 'webrick'
 require_relative '../../config/initializers/app_config'
 require_relative '../../lib/logger'

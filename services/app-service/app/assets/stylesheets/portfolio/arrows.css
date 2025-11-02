@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 /* Parent: sets up positioning context for navigation arrows */
 .portfolio-container {
     position: relative;

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+#
+# SPDX-License-Identifier: MIT
+
 # Utilities for setting, reading, clearing, and verifying secure cookies in Rack/WEBrick responses.
 module CookieManager
     DEFAULTS = {

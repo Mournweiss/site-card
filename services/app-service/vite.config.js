@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+//
+// SPDX-License-Identifier: MIT
+
 // Vite build and asset pipeline for SiteCard
 import { resolve } from "path";
 import { defineConfig } from "vite";
