@@ -1,3 +1,6 @@
+"""
+About command handler for notification-bot. Details bot purpose, links, and metadata.
+"""
 import platform
 import telegram
 from datetime import datetime
@@ -16,6 +19,16 @@ ABOUT_TEXT = (
 )
 
 async def about_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Handles /about: shows bot purpose, version, and links.
+
+    Parameters:
+    - update: telegram.Update
+    - context: telegram.ext.ContextTypes.DEFAULT_TYPE
+
+    Returns:
+    - None
+    """
     user_id = update.effective_user.id
     logger.info("/about requested", extra={"log_user_id": user_id})
     await update.message.reply_text(ABOUT_TEXT, parse_mode='Markdown')

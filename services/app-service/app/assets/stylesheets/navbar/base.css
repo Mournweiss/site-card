@@ -1,3 +1,4 @@
+/* Fixed, horizontally aligned navbar with theme background and shadow */
 .navbar {
     position: fixed;
     top: 2.5vh;
@@ -14,6 +15,8 @@
     max-width: 98vw;
     user-select: none;
 }
+
+/* Main nav container: desktop row, mobile column (via mq) */
 .navbar-list {
     display: flex;
     flex-direction: row;
@@ -23,6 +26,8 @@
     padding: 0;
     list-style: none;
 }
+
+/* Navigation link: button style, branded, hover/active state */
 .navbar-link {
     display: inline-block;
     border-radius: 1.4em;
@@ -52,6 +57,8 @@
     color: var(--color-fg);
     text-decoration: none;
 }
+
+/* Toggle button (hidden on desktop, shown on small screens) */
 .navbar-toggle {
     display: none;
     background: none;
@@ -63,6 +70,8 @@
     color: var(--color-white);
     cursor: pointer;
 }
+
+/* Toggle: creates three-bar effect using box-shadow */
 .navbar-toggle-icon {
     display: block;
     width: 1.9em;
@@ -75,6 +84,7 @@
 }
 
 @media (max-width: 991px) {
+    /* Convert .navbar to mobile-friendly top position, remove shadow */
     .navbar {
         position: fixed;
         top: 0.85em;
@@ -92,6 +102,8 @@
         justify-content: flex-end;
         z-index: 101;
     }
+
+    /* Show toggle, position top-right */
     .navbar-toggle {
         display: inline-block;
         position: absolute;
@@ -113,6 +125,8 @@
         justify-content: center;
         height: 2.7em;
     }
+
+    /* Toggle sizing for mobile */
     .navbar-toggle-icon {
         display: block;
         width: 1.15em;
@@ -122,6 +136,8 @@
         border-radius: 1.2px;
         margin: 0.18em 0;
     }
+
+    /* Nav links hidden as column by default, shown only with .navbar-list-expanded */
     .navbar-list {
         display: none;
         flex-direction: column;
@@ -141,6 +157,8 @@
         z-index: 1099;
         align-items: flex-end;
     }
+
+    /* Show nav when toggled open */
     .navbar-list.navbar-list-expanded {
         display: flex;
         animation: navbarSlideIn 0.22s cubic-bezier(0.16, 2.5, 0.51, 0.91);

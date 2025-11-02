@@ -1,3 +1,4 @@
+/* Icon grid: vertical stack centered in section */
 .contacts-icons {
     display: flex;
     flex-direction: column;
@@ -5,6 +6,8 @@
     gap: 3.2rem;
     margin-top: 2.3rem;
 }
+
+/* Each icon as navigable link: block, centered, no underline */
 .contacts-icon-link {
     display: flex;
     flex-direction: column;
@@ -15,6 +18,8 @@
     gap: 0;
     outline: none;
 }
+
+/* Circle logic and icon display (big, clickable, shape, no bg) */
 .contacts-icon-circle {
     display: flex;
     flex-direction: column;
@@ -25,7 +30,7 @@
     min-height: unset;
     width: auto;
     height: auto;
-    font-size: 14em;
+    font-size: 14em; /* Icon size */
     box-shadow: none;
     background: none !important;
     color: inherit;
@@ -46,6 +51,8 @@
     background: none !important;
     color: inherit;
 }
+
+/* Text label below the icon */
 .contacts-icon-label {
     margin-top: 0;
     font-weight: 570;
@@ -56,6 +63,8 @@
     text-align: center;
     user-select: text;
 }
+
+/* Interactive scaling on hover/focus (a11y/UX) */
 .contacts-icon-circle:hover,
 .contacts-icon-circle:focus-visible {
     transform: scale(1.11);

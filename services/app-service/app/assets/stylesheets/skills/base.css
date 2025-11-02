@@ -1,3 +1,4 @@
+/* Skills main section: vertical spacing, adapts to viewport for mobile */
 .skills-section {
     margin-block: 100px 100px;
 }
@@ -11,6 +12,8 @@
         margin-block: 38px 54px;
     }
 }
+
+/* Labels and accent colors for skill chart and info */
 .skills-chart-label {
     color: var(--color-primary);
 }

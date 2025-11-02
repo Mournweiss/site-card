@@ -1,3 +1,4 @@
+/* Flex container: vertically and horizontally center the auth box full viewport */
 .auth-center {
     display: flex;
     align-items: center;
@@ -5,6 +6,7 @@
     height: 100vh;
 }
 
+/* Auth box: themed card styling, max-width and shadow for separation */
 .auth-box {
     background: var(--color-surface);
     padding: 2em;
@@ -27,6 +29,7 @@
     padding: 0;
 }
 
+/* Input fields: border, background, inherit palette, spacing */
 .auth-box input[type="password"] {
     width: 100%;
     padding: 0.7em;
@@ -42,6 +45,7 @@
     margin-top: 0.2em;
 }
 
+/* Feedback message blocks for auth state */
 .auth-msg {
     text-align: center;
     margin-bottom: 1em;

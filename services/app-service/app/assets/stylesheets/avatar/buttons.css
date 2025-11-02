@@ -1,3 +1,4 @@
+/* Actions group for avatar (e.g., download CV, show QR) */
 .avatar-actions {
     display: flex;
     flex-direction: row;
@@ -7,6 +8,8 @@
     align-items: center;
     justify-content: flex-start;
 }
+
+/* On small screens, group buttons vertically, reduce gaps */
 @media (max-width: 700px) {
     .avatar-actions {
         flex-direction: row;

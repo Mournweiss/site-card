@@ -3,11 +3,22 @@ require_relative '../../lib/errors'
 require_relative 'portfolio_language'
 require_relative 'portfolio_tech_badge'
 
+# Represents a portfolio/project entry with metadata, for user showcase.
 class Portfolio
     TABLE = 'portfolios'.freeze
 
     attr_reader :id, :title, :description, :order_index, :url
 
+    # Initializes a Portfolio item with all relevant fields.
+    #
+    # Parameters:
+    # - id: String|Integer - record primary key
+    # - title: String - project name
+    # - description: String - project description
+    # - order_index: String|Integer - display ordering
+    # - url: String - remote link for project
+    #
+    # Returns: Portfolio
     def initialize(attrs)
         @id = attrs['id']
         @title = attrs['title']
@@ -16,6 +27,15 @@ class Portfolio
         @url = attrs['url']
     end
 
+    # Fetches all portfolio items ordered by sort index.
+    #
+    # Parameters:
+    # - conn: PG::Connection
+    #
+    # Returns: Array<Portfolio>
+    #
+    # Raises:
+    # - BDError, DataConsistencyError on database error
     def self.all(conn)
         begin
             conn.exec("SELECT * FROM #{TABLE} ORDER BY order_index ASC, id ASC").map { |row| Portfolio.new(row) }
@@ -26,6 +46,16 @@ class Portfolio
         end
     end
 
+    # Finds a portfolio entry by id.
+    #
+    # Parameters:
+    # - conn: PG::Connection
+    # - id: String|Integer
+    #
+    # Returns: Portfolio|nil
+    #
+    # Raises:
+    # - BDError, DataConsistencyError on error
     def self.find(conn, id)
         begin
             res = conn.exec_params("SELECT * FROM #{TABLE} WHERE id = $1 LIMIT 1", [id])
@@ -37,6 +67,15 @@ class Portfolio
         end
     end
 
+    # Returns an array of PortfolioLanguage objects for this portfolio's languages.
+    #
+    # Parameters:
+    # - conn: PG::Connection
+    #
+    # Returns: Array<PortfolioLanguage>
+    #
+    # Raises:
+    # - BDError/DataConsistencyError on DB error
     def languages(conn)
         begin
             PortfolioLanguage.all_by_portfolio(conn, @id)
@@ -47,6 +86,15 @@ class Portfolio
         end
     end
 
+    # Returns an array of PortfolioTechBadge objects for this portfolio's badges.
+    #
+    # Parameters:
+    # - conn: PG::Connection
+    #
+    # Returns: Array<PortfolioTechBadge>
+    #
+    # Raises:
+    # - BDError/DataConsistencyError on error
     def tech_badges(conn)
         begin
             PortfolioTechBadge.all_by_portfolio(conn, @id)

@@ -14,8 +14,15 @@ require_relative '../models/career'
 require_relative '../models/avatar'
 require_relative '../../config/initializers/pg_repository'
 
+# Renders full app-page or standalone HTML fragments/components (admin & public),
+# injects DB-sourced data contexts, supports layouting and error reporting.
 class Renderer
     @repo_instance = nil
+
+    # Returns singleton PGRepository (DB connection pool).
+    #
+    # Returns:
+    # - PGRepository - a singleton repository instance
     def self.pg_repository_instance
         @repo_instance ||= PGRepository.new
     end
@@ -27,10 +34,24 @@ class Renderer
     COMPONENTS_PATH_AUTH   = File.expand_path('components/auth', __dir__)
     LAYOUT_PATH = File.expand_path('layouts/application.html', __dir__)
 
+    # New renderer for rendering views and app UI.
+    #
+    # Parameters:
+    # - pg_repo: PGRepository|nil - custom repo (for test, DI); default uses class instance
+    #
+    # Returns:
+    # - Renderer instance
     def initialize(pg_repo = nil)
         @pg_repo = pg_repo || self.class.pg_repository_instance
     end
 
+    # Renders the site navbar using nav_links or default set.
+    #
+    # Parameters:
+    # - nav_links: Array<Hash>|nil - (each: {href: String, label: String}), use default if nil
+    #
+    # Returns:
+    # - String - HTML of rendered navbar
     def render_navbar(nav_links: nil)
         navbar_path = File.expand_path('components/public/navbar.html', __dir__)
         erb_template = ERB.new(File.read(navbar_path))
@@ -45,6 +66,18 @@ class Renderer
         erb_template.result_with_hash(nav_links: links)
     end
 
+    # Renders the full app page in either admin/public mode.
+    #
+    # Parameters:
+    # - contact_message: String|nil - HTML snippet inserted if present
+    # - mode: Symbol - :public or :admin (controls components/layout)
+    # - nav_links: Array<Hash>|nil - override navigation structure if set
+    #
+    # Returns:
+    # - String - rendered HTML document
+    #
+    # Raises:
+    # - TemplateError/RenderError/BDError: for template, layout or DB loading problems
     def render(contact_message: nil, mode: :public, nav_links: nil)
         begin
             data_ctx = load_data_context
@@ -84,6 +117,7 @@ class Renderer
                 end
             }.join("\n")
             if contact_message && !sections_html.empty?
+                # Insert contact message block into form
                 sections_html = sections_html.sub('</form>', "<div class=\"alert alert-info mt-3\">#{contact_message}</div></form>")
             end
             layout_html = File.exist?(LAYOUT_PATH) ? File.read(LAYOUT_PATH) : "<html><body>#{sections_html}</body></html>"
@@ -95,6 +129,18 @@ class Renderer
         end
     end
 
+    # Renders a standalone component fragment (by whitelisted name).
+    # Protects against path traversal/naming attacks.
+    #
+    # Parameters:
+    # - component: String or Symbol - base name (e.g., 'about')
+    # - data: Hash - data context for ERB binding
+    #
+    # Returns:
+    # - String - rendered HTML fragment for the component
+    #
+    # Raises:
+    # - RuntimeError if component is unavailable or outside whitelist
     def render_component(component, data = {})
         fname = component.to_s.gsub(/[^a-zA-Z0-9_]/, '') + '.html'
         allowed = PUBLIC_COMPONENTS + Dir.entries(COMPONENTS_PATH_PUBLIC).select{|f| f.match?(/^[a-z0-9_]+\.html$/i) }
@@ -105,10 +151,16 @@ class Renderer
 
     private
 
+    # Loads the entire app data context from the database for template rendering (about, avatar, careers, skills, etc).
+    #
+    # Returns:
+    # - Hash (String=>Hash) - keys for each section/component with associated data
+    #
+    # Raises:
+    # - BDError on DB errors, misc custom for component load failures
     def load_data_context
         ctx = {}
         @pg_repo.with_connection do |conn|
-
             begin
                 about = About.fetch(conn) || OpenStruct.new(age: '', location: '', education: '', languages: '')
             rescue Exception => e
@@ -186,6 +238,13 @@ class Renderer
         ctx
     end
 
+    # Serializes skills section data as JSON for use in JS components.
+    #
+    # Parameters:
+    # - ctx: Hash - skills data context for user
+    #
+    # Returns:
+    # - String - JSON representation (array of chart configs)
     def json_skills(ctx)
         groups = ctx[:skill_groups] || []
         piectx = []
@@ -203,6 +262,13 @@ class Renderer
         JSON.generate(piectx)
     end
 
+    # Serializes user experience data as JSON for radar chart JS.
+    #
+    # Parameters:
+    # - ctx: Hash - experience data context
+    #
+    # Returns:
+    # - String - JSON with {labels: ..., datasets: ...}
     def json_experience(ctx)
         arr = ctx[:experiences] || []
         JSON.generate({
@@ -211,6 +277,15 @@ class Renderer
         })
     end
 
+    # Injects generated sections and (optionally) navbar into layout HTML.
+    #
+    # Parameters:
+    # - layout_html: String - layout ERB (HTML or fragment)
+    # - sections_html: String - already-rendered sections content
+    # - navbar_html: String - navbar content, optional (default '')
+    #
+    # Returns:
+    # - String - composed HTML for entire page
     def inject_into_layout(layout_html, sections_html, navbar_html = '')
         layout_with_nav = navbar_html && !navbar_html.empty? ? layout_html.sub('<body>', "<body>\n#{navbar_html}") : layout_html
         layout_with_nav.gsub(

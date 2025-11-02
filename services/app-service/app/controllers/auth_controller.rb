@@ -6,11 +6,19 @@ require 'base64'
 require 'cgi'
 require 'json'
 
+# Controller handling authentication for admin and Telegram WebApp users.
 class AuthController < BaseController
     ADMIN_COOKIE = 'sitecard_admin'.freeze
     ADMIN_SESSION_TTL = 7200
     COOKIE_OPTIONS = { http_only: true, same_site: 'Strict' }.freeze
 
+    # Handles routing for auth paths; dispatches to sub-handlers by path/verb.
+    #
+    # Parameters:
+    # - req: WEBrick::HTTPRequest - incoming request
+    # - res: WEBrick::HTTPResponse - outgoing response (mutates)
+    #
+    # Returns: nil
     def handle_request(req, res)
         path = req.path_info.sub(/^\/auth/, '')
         if ['', '/'].include?(path)
@@ -26,6 +34,15 @@ class AuthController < BaseController
     end
 
     private
+
+    # Renders the admin login form (HTML).
+    #
+    # Parameters:
+    # - res: WEBrick::HTTPResponse - response to write HTML to
+    # - msg: String (optional) - status/error message
+    # - form_action: String (optional) - form action endpoint
+    #
+    # Returns: nil
     def render_admin_auth(res, msg = '', form_action = '/auth/admin')
         html = render_template(File.join(Renderer::COMPONENTS_PATH_AUTH, 'admin.html'),
             { login_status_msg: msg, form_action: form_action })
@@ -34,6 +51,12 @@ class AuthController < BaseController
         res.body = html
     end
 
+    # Renders the Telegram WebApp login HTML.
+    #
+    # Parameters:
+    # - res: WEBrick::HTTPResponse
+    #
+    # Returns: nil
     def render_webapp_auth(res)
         html = File.read(File.join(Renderer::COMPONENTS_PATH_AUTH, 'webapp.html'))
         res.status = 200
@@ -41,6 +64,13 @@ class AuthController < BaseController
         res.body = html
     end
 
+    # POST-handler for admin login.
+    #
+    # Parameters:
+    # - req: WEBrick::HTTPRequest (admin_key from POST)
+    # - res: WEBrick::HTTPResponse
+    #
+    # Returns: nil
     def handle_admin_post(req, res)
         admin_key = (req.body.respond_to?(:read) ? URI.decode_www_form(req.body.read).to_h['admin_key'] : nil)
         if !admin_key.is_a?(String) || admin_key.strip.empty?
@@ -57,6 +87,14 @@ class AuthController < BaseController
         end
     end
 
+    # POST-handler for Telegram WebApp: checks admin_key and Telegram init_data,
+    # calls gRPC to authorize user with notification-bot.
+    #
+    # Parameters:
+    # - req: WEBrick::HTTPRequest (with form data)
+    # - res: WEBrick::HTTPResponse
+    #
+    # Returns: nil
     def handle_webapp_post(req, res)
         fields = req.body.respond_to?(:read) ? URI.decode_www_form(req.body.read).to_h : {}
         admin_key = fields['admin_key']
@@ -103,17 +141,37 @@ class AuthController < BaseController
         end
     end
 
+    # Redirect utility.
+    #
+    # Parameters:
+    # - url: String - destination URL
+    # - res: WEBrick::HTTPResponse
+    #
+    # Returns: nil
     def do_redirect(url, res)
         res.status = 302
         res['Location'] = url
         res.body = ''
     end
 
+    # Checks validity of received admin key.
+    #
+    # Parameters:
+    # - key: String - admin key supplied by user
+    #
+    # Returns: Boolean - true if matches ENV['ADMIN_KEY']
     def verify_admin_key(key)
         env_key = ENV['ADMIN_KEY'] || ''
         secure_compare(env_key, key)
     end
 
+    # Secure bytewise compare.
+    #
+    # Parameters:
+    # - a: String
+    # - b: String
+    #
+    # Returns: Boolean
     def secure_compare(a, b)
         return false unless a.bytesize == b.bytesize
         l = a.unpack "C*"
@@ -122,6 +180,13 @@ class AuthController < BaseController
         res == 0
     end
 
+    # Telegram WebApp data signature and freshness verification.
+    #
+    # Parameters:
+    # - init_data_str: String - original Telegram WebApp init data (URL encoded)
+    #
+    # Returns: Hash - user info (user_id, username, full_user)
+    # Raises: VerificationError if any step fails
     def verify_webapp_init_data!(init_data_str)
         token = config.notification_bot_token
         raise VerificationError, 'Server is misconfigured: no bot token available.' unless token

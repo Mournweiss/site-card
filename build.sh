@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-
+#
+# Main build and orchestration script for multi-service site-card project.
+# Handles .env setup, key generation, proto file distribution, submodule preparation,
+# and container orchestration.
+#
 set -e
 
 # ANSI color codes
@@ -22,6 +26,14 @@ SERVICES_PATHS=(
     "services/notification-bot"
 )
 
+# Parses command-line arguments and sets global variables for orchestrator and options.
+# Handles container orchestrator selection, keygen, Telegram token injection, foreground mode.
+#
+# Parameters:
+# - $@: array - command-line arguments
+#
+# Returns:
+# - None (sets global shell vars)
 parse_args() {
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -34,7 +46,7 @@ parse_args() {
                 shift
                 ;;
             --telegram-token|-t)
-                TELEGRAM_TOKEN="$2"
+                BOT_TOKEN="$2"
                 shift 2
                 ;;
             --no-keygen|-n)
@@ -53,6 +65,13 @@ parse_args() {
     done
 }
 
+# Checks if a given orchestrator command is installed and available.
+#
+# Parameters:
+# - $1: string - orchestrator name ("docker-compose", "podman-compose", "docker compose")
+#
+# Returns:
+# - 0: success, 1: not available
 is_orchestrator_available() {
     case "$1" in
         podman-compose)
@@ -70,6 +89,13 @@ is_orchestrator_available() {
     esac
 }
 
+# Selects and validates best-available container orchestrator, or uses argument if set.
+#
+# Parameters:
+# - None (uses global ORCHESTRATOR)
+#
+# Returns:
+# - string: orchestrator command or exits with error
 select_orchestrator() {
     local candidates=("podman-compose" "docker-compose" "docker compose")
     if [ -n "$ORCHESTRATOR" ]; then
@@ -90,6 +116,13 @@ select_orchestrator() {
     fi
 }
 
+# Initializes git submodules if .gitmodules exists.
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None
 init_submodules() {
     if [ -f .gitmodules ]; then
         info "Initializing git submodules..."
@@ -100,6 +133,13 @@ init_submodules() {
     fi
 }
 
+# Verifies or creates .env file from example and injects BOT_TOKEN if given.
+#
+# Parameters:
+# - None (uses shell globals)
+#
+# Returns:
+# - None
 make_env() {
     if [ -f .env ]; then
         warn ".env already exists, skipping creation"
@@ -111,20 +151,29 @@ make_env() {
             error ".env.example not found"
         fi
     fi
-    if [ -n "$TELEGRAM_TOKEN" ]; then
-        if grep -q '^TELEGRAM_BOT_TOKEN=' .env; then
-            sed -i "s|^TELEGRAM_BOT_TOKEN=.*|TELEGRAM_BOT_TOKEN=$TELEGRAM_TOKEN|" .env
+    # Inject bot token if set
+    if [ -n "$BOT_TOKEN" ]; then
+        if grep -q '^NOTIFICATION_BOT_TOKEN=' .env; then
+            sed -i "s|^NOTIFICATION_BOT_TOKEN=.*|NOTIFICATION_BOT_TOKEN=$BOT_TOKEN|" .env
         else
             if grep -q '^PROJECT_NAME=' .env; then
-                awk '/^PROJECT_NAME=/{print;print "TELEGRAM_BOT_TOKEN='$TELEGRAM_TOKEN'";next}1' .env > .env.tmp && mv .env.tmp .env
+                awk '/^PROJECT_NAME=/{print;print "NOTIFICATION_BOT_TOKEN='$BOT_TOKEN'";next}1' .env > .env.tmp && mv .env.tmp .env
             else
-                echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_TOKEN" >> .env
+                echo "NOTIFICATION_BOT_TOKEN=$BOT_TOKEN" >> .env
             fi
         fi
-        success "TELEGRAM_BOT_TOKEN injected from argument"
+        success "NOTIFICATION_BOT_TOKEN injected from argument"
     fi
 }
 
+# Generates an ADMIN_KEY with keygen/generate_key.sh and saves it to .env as base64.
+# Skipped if NO_KEYGEN set.
+#
+# Parameters:
+# - None (uses shell globals, keygen script)
+#
+# Returns:
+# - None
 generate_admin_key() {
     if [ -n "$NO_KEYGEN" ]; then
         info "Skipping ADMIN_KEY generation"
@@ -143,6 +192,13 @@ generate_admin_key() {
     success "ADMIN_KEY set successfully"
 }
 
+# Removes previous "proto-context" directories in all services to avoid stale gRPC definitions.
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None
 clean_proto_contexts() {
     for svc in "${SERVICES_PATHS[@]}"; do
         local proto_dir="$svc/proto-context"
@@ -154,6 +210,13 @@ clean_proto_contexts() {
     success "Proto contexts cleaned"
 }
 
+# Copies all proto files from ./proto into every service's proto-context dir.
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None
 copy_proto_contexts() {
     local src_proto="proto"
     if [ ! -d "$src_proto" ]; then
@@ -167,6 +230,13 @@ copy_proto_contexts() {
     success "Proto contexts copied successfully"
 }
 
+# Stops all previous containers, then builds and starts project in either foreground or detached mode according to FOREGROUND_MODE.
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None
 run_project() {
     local orchestrator=$(select_orchestrator)
     info "Stopping and cleaning up any running containers..."
@@ -181,6 +251,13 @@ run_project() {
     success "App started in $([ "$FOREGROUND_MODE" = "true" ] && echo "foreground" || echo "detached") mode"
 }
 
+# Main orchestration entrypoint
+#
+# Parameters:
+# - $@: array - command-line invocation arguments
+#
+# Returns:
+# - None
 main() {
     parse_args "$@"
     init_submodules

@@ -1,8 +1,11 @@
+/* Main footer block: full width, transparent, vertical paddings */
 footer {
     background: transparent;
     padding: 28px 0 5px 0;
     width: 100%;
 }
+
+/* Centered horizontal footer layout, faded color, subtle weight */
 .footer-main {
     display: flex;
     flex-direction: row;
@@ -19,10 +22,14 @@ footer {
     font-size: 1em;
     color: #aac7ef;
 }
+
+/* Site primary accent for footer name and key links */
 .footer-title,
 .footer-link {
     color: var(--color-accent);
 }
+
+/* GitHub/project link: flex layout for logo + label, smooth hover/visited transitions */
 .footer-github-link {
     display: inline-flex;
     align-items: center;

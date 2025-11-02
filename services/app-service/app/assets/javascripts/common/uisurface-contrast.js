@@ -1,9 +1,21 @@
+/**
+ * Automatically adjusts text contrast for .ui-surface elements based on the computed background image region.
+ * Uses canvas to analyze background behind each surface, calculates average luminance,
+ * and toggles --light-text/--dark-text utility classes for accessibility.
+ *
+ * Only runs if at least one .ui-surface and a background image are present.
+ */
 (function () {
     var surfaces = document.querySelectorAll(".ui-surface");
     var bgUrl = getBackgroundImageUrl();
     if (!surfaces.length || !bgUrl) return;
     var img = new window.Image();
     img.crossOrigin = "anonymous";
+
+    /**
+     * Main onload: samples each surface area using a temporary canvas,
+     * analyzes average luminance, and applies best text contrast class.
+     */
     img.onload = function () {
         surfaces.forEach(function (surf) {
             try {
@@ -16,6 +28,8 @@
                 var data = ctx.getImageData(0, 0, can.width, can.height).data;
                 var total = 0,
                     count = 0;
+
+                // For each pixel, compute luminance (Y) and build running average.
                 for (var i = 0; i < data.length; i += 4) {
                     var r = data[i],
                         g = data[i + 1],
@@ -25,6 +39,8 @@
                     count++;
                 }
                 var avgY = count ? total / count : 0;
+
+                // Remove both classes, then conditionally apply based on luminance threshold
                 surf.classList.remove("ui-surface--light-text", "ui-surface--dark-text");
                 if (avgY < 140) {
                     surf.classList.add("ui-surface--light-text");
@@ -36,6 +52,11 @@
     };
     img.src = bgUrl;
 
+    /**
+     * Extracts the URL of the current body's background image, if defined in CSS.
+     *
+     * @returns {string|null} The background image URL or null.
+     */
     function getBackgroundImageUrl() {
         var style = window.getComputedStyle(document.body),
             url = style.backgroundImage;
@@ -44,6 +65,7 @@
         return match ? match[1] : null;
     }
 
+    // On window resize, retrigger image analysis for updated surface dimensions
     window.addEventListener("resize", function () {
         img.src = bgUrl;
     });

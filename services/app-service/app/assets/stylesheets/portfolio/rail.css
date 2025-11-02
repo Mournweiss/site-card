@@ -1,3 +1,4 @@
+/* Horizontal scrolling rail for projects: snap, large gap, no visible scrollbar */
 .portfolio-rail {
     display: flex;
     flex-direction: row;
@@ -13,15 +14,19 @@
     position: relative;
     background: var(--color-bg);
     border: none;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: none; /* Hide Firefox native scrollbar */
+    -ms-overflow-style: none; /* Hide IE/Edge scrollbars */
 }
 .portfolio-rail::-webkit-scrollbar {
     display: none;
 }
+
+/* Project card snug-in-rail for sliding effect */
 .project-card {
     flex-shrink: 0;
 }
+
+/* Main portfolio viewport container with padding, safe-area, box-sizing fixes */
 #portfolio,
 .portfolio-container {
     width: 100vw;
@@ -33,7 +38,6 @@
     padding-left: max(env(safe-area-inset-left), 0px);
     padding-right: max(env(safe-area-inset-right), 0px);
 }
-
 html,
 body {
     overflow-x: hidden !important;

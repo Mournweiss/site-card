@@ -2,28 +2,43 @@ syntax = "proto3";
 
 package notification;
 
+// Main notification-bot service for site events
 service NotificationDelivery {
+
+    // Sends contact message via gRPC to notification service (e.g., email, Telegram)
     rpc DeliverContactMessage (ContactMessageRequest) returns (ContactMessageResponse);
+
+    // Authorizes a Telegram WebApp user for receiving notifications
     rpc AuthorizeWebappUser (WebappUserAuthRequest) returns (WebappUserAuthResponse);
 }
 
+// Data sent from site contact/feedback form
 message ContactMessageRequest {
+
+    // Site user name (freeform, required)
     string name = 1;
+
+    // User email address for notification/response
     string email = 2;
+
+    // The body/text of the contact message
     string body = 3;
 }
 
+// Response indicating if message was delivered and error details
 message ContactMessageResponse {
-    bool success = 1;
-    string error_message = 2;
+    bool success = 1;               // True if notification was delivered OK
+    string error_message = 2;       // If failed, system/user-facing reason
 }
 
+// Telegram WebApp user authentication
 message WebappUserAuthRequest {
-    int64 user_id = 1;
-    string username = 2;
+    int64 user_id = 1;              // Telegram user ID (int64, required)
+    string username = 2;            // Telegram username
 }
 
+// Response for Webapp user auth
 message WebappUserAuthResponse {
-    bool success = 1;
-    string error_message = 2;
+    bool success = 1;               // True if user is authorized
+    string error_message = 2;       // If not, reason
 }

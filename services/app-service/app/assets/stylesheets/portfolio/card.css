@@ -1,3 +1,4 @@
+/* Clickable navigation wrapper for each project card */
 .project-card-link {
     display: block;
     text-decoration: none;
@@ -8,6 +9,8 @@
 .project-card-link:hover {
     outline: none;
 }
+
+/* Main project card: fixed flexible size, snap in scroller, visual elevation, flex column */
 .project-card {
     flex-shrink: 0;
     background: var(--color-surface);

@@ -1,3 +1,8 @@
+"""
+gRPC service implementation for notification-bot (contact message, Telegram WebApp auth).
+Implements NotificationDeliveryServicer from service_pb2_grpc.
+"""
+
 import grpc
 from concurrent import futures
 import logging
@@ -11,9 +16,29 @@ logger = logging.getLogger(__name__)
 class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
 
     def __init__(self, handler):
+        """
+        Initialize service with domain handler (delivers messages, manages auth).
+
+        Parameters:
+        - handler: object - provides deliver_contact_message(), etc
+
+        Returns:
+        - NotificationService instance
+        """
         self.handler = handler
 
     def AuthorizeWebappUser(self, request, context):
+        """
+        gRPC endpoint to authorize a Telegram WebApp user.
+        Sets INVALID_ARGUMENT if user_id not present; returns result OK or with error_message.
+
+        Parameters:
+        - request: WebappUserAuthRequest - incoming request from client
+        - context: grpc.ServicerContext - for error status/settings
+
+        Returns:
+        - WebappUserAuthResponse: RPC result
+        """
         user_id = getattr(request, 'user_id', None)
         username = getattr(request, 'username', None)
 
@@ -30,6 +55,17 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
             return service_pb2.WebappUserAuthResponse(success=False, error_message=str(ex))
 
     def DeliverContactMessage(self, request, context):
+        """
+        gRPC endpoint to send a user contact message for notification delivery.
+        Validates fields, delegates to handler. Sets status on failure.
+
+        Parameters:
+        - request: ContactMessageRequest - gRPC input message
+        - context: grpc.ServicerContext
+
+        Returns:
+        - ContactMessageResponse: success/error
+        """
         name = getattr(request, 'name', None)
         email = getattr(request, 'email', None)
         body = getattr(request, 'body', None)
@@ -57,7 +93,19 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
             context.set_details("Internal error")
             return service_pb2.ContactMessageResponse(success=False, error_message="Internal server error")
 
+
 def serve(config, handler):
+    """
+    Entrypoint for gRPC server; binds and serves NotificationService on configured port.
+    Call blocks until termination and logs endpoint info.
+
+    Parameters:
+    - config: object - contains notification_bot_port attribute
+    - handler: object - passed to NotificationService (domain/logic providers)
+
+    Returns:
+    - None
+    """
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     service_pb2_grpc.add_NotificationDeliveryServicer_to_server(NotificationService(handler), server)
     server.add_insecure_port(f'[::]:{config.notification_bot_port}')

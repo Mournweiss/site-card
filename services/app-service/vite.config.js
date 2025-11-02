@@ -1,14 +1,19 @@
+// Vite build and asset pipeline for SiteCard
 import { resolve } from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+    // Root directory for all asset building
     root: "app/assets",
     build: {
+        // Output dir is public so it is directly http-served by backend/static
         outDir: resolve(__dirname, "public/assets"),
         assetsDir: ".",
         emptyOutDir: true,
+        // JS and CSS entry points (chunk per asset for easy backend include)
         rollupOptions: {
             input: {
+                // Each distinct feature/section as a separate build output
                 "avatar-avatar": resolve(__dirname, "app/assets/javascripts/avatar/avatar.js"),
                 "avatar-base": resolve(__dirname, "app/assets/stylesheets/avatar/base.css"),
                 "avatar-image": resolve(__dirname, "app/assets/stylesheets/avatar/image.css"),
@@ -45,6 +50,7 @@ export default defineConfig({
                 "auth-base": resolve(__dirname, "app/assets/stylesheets/auth/base.css"),
                 "auth-webapp": resolve(__dirname, "app/assets/javascripts/auth/webapp.js"),
             },
+            // Output files match input chunknames for easy backend mapping
             output: {
                 entryFileNames: "[name].js",
                 assetFileNames: "[name].css",
@@ -52,6 +58,6 @@ export default defineConfig({
         },
     },
     server: {
-        open: false,
+        open: false, // Do not auto-open browser
     },
 });

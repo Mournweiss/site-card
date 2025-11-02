@@ -1,3 +1,6 @@
+"""
+Logout command handler and confirmation dialog for notification-bot.
+"""
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, CallbackQueryHandler
 from src.logger import get_logger
@@ -11,18 +14,47 @@ ALREADY_LOGGED_OUT_TEXT = "You were not authorized."
 ERROR_LOGOUT_TEXT = "Unexpected error during logout. Try again later."
 
 async def logout_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Handles /logout: prompts user for confirmation with inline Yes/No buttons.
+
+    Parameters:
+    - update: telegram.Update
+    - context: telegram.ext.ContextTypes.DEFAULT_TYPE
+
+    Returns:
+    - None
+    """
     keyboard = [[
         InlineKeyboardButton("Yes", callback_data="logout_yes"),
         InlineKeyboardButton("No", callback_data="logout_no")
     ]]
-
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(CONFIRM_LOGOUT_TEXT, reply_markup=reply_markup)
     logger.info("Sent logout confirmation query", extra={"log_user_id": update.effective_user.id})
 
+
 def build_logout_callback_handler():
+    """
+    Builds a callback handler for logout confirmation (button press).
+
+    Parameters:
+    - none (returns handler for registration)
+
+    Returns:
+    - CallbackQueryHandler: handles Yes/No confirmation for logout
+    """
 
     async def logout_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """
+        Nested callback: handles Yes/No inline action, manages sessions.
+
+        Parameters:
+        - update: telegram.Update
+        - context: telegram.ext.ContextTypes.DEFAULT_TYPE
+
+        Returns:
+        - None
+        """
         query = update.callback_query
         user_id = query.from_user.id
         logger.info(f"Received logout callback", extra={"log_user_id": user_id, "callback_data": query.data})

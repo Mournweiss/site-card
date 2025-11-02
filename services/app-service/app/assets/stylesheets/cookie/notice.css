@@ -1,3 +1,4 @@
+/* Floating cookie consent banner, fixed at bottom, themed, rounded, responsive. */
 #cookie-notice {
     display: none;
     position: fixed;
@@ -25,6 +26,8 @@
     gap: 0;
     box-shadow: none;
 }
+
+/* Visibility/animation toggle for showing the banner */
 #cookie-notice.cookie-notice-visible {
     display: flex !important;
     opacity: 1;
@@ -41,12 +44,16 @@
         transform: translateY(0);
     }
 }
+
+/* Main text: grows to fill, side spacing */
 #cookie-notice span {
     flex-grow: 1;
     text-align: left;
     margin-right: 2em;
     min-width: 0;
 }
+
+/* Policy/info link styling inside banner */
 #cookie-notice a {
     color: var(--color-primary);
     text-decoration: underline;
@@ -56,6 +63,8 @@
 #cookie-notice a:focus {
     color: var(--color-accent);
 }
+
+/* Responsive: stack vertically and shrink gap/radius on small screens */
 @media (max-width: 545px) {
     #cookie-notice {
         flex-direction: column;

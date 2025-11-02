@@ -1,3 +1,4 @@
+/* Section root: vertical+horizontal center, full viewport height */
 .avatar-section {
     background: none;
     min-height: 100vh;
@@ -7,6 +8,7 @@
     width: 100%;
 }
 
+/* Primary card for avatar & info; side-by-side/flex container */
 .avatar-card {
     background: transparent;
     border-radius: 2.45rem;
@@ -20,6 +22,8 @@
     margin: 0 auto;
     position: relative;
 }
+
+/* Outer ring circle, visual framing for avatar image */
 .avatar-ring {
     width: 477px;
     height: 477px;
@@ -34,9 +38,10 @@
     z-index: 2;
 }
 .avatar-ring::after {
-    content: none;
+    content: none; /* Prepared for future decoration */
 }
 
+/* Main wrapper for image/initials component */
 .avatar-image-wrapper {
     width: 387px;
     height: 387px;
@@ -49,7 +54,9 @@
     justify-content: center;
     overflow: hidden;
 }
+
 @media (max-width: 900px) {
+    /* Switch card to vertical stack; reduce/min reset min sizes */
     .avatar-card {
         flex-direction: column;
         align-items: center;
@@ -65,7 +72,7 @@
         margin-left: 0;
     }
     .avatar-section {
-        min-height: 500px;
+        min-height: 500px; /* shrink on mobile */
     }
     .avatar-actions {
         flex-direction: column;
@@ -75,7 +82,7 @@
         margin-top: 10px;
     }
     .avatar-btn {
-        min-width: 140px;
+        min-width: 140px; /* wider tap target */
     }
     .avatar-ring {
         margin-bottom: 24px;

@@ -1,3 +1,4 @@
+/* Modal backdrop overlay—blurs and darkens underlying page, traps focus */
 #popup-backdrop {
     position: fixed;
     left: 0;
@@ -19,6 +20,8 @@
     opacity: 0;
     pointer-events: none;
 }
+
+/* Modal container: rounded, theme palette surface, vertical stacking, responsive padding */
 #popup-modal {
     background: var(--color-surface);
     border-radius: 1.6em;
@@ -35,6 +38,8 @@
     overflow: visible;
     gap: 1.3em 0;
 }
+
+/* Popup close (X) button: always visible/aligned top-right for a11y */
 .popup-close {
     position: absolute;
     top: 1.2em;
@@ -55,6 +60,8 @@
     background: rgba(100, 100, 120, 0.2);
     color: var(--color-white);
 }
+
+/* Center images and canvases inside modal */
 #popup-modal img,
 #popup-modal canvas {
     max-width: 300px;
@@ -62,6 +69,8 @@
     display: block;
     margin: 0 auto;
 }
+
+/* Message form inside popup: stacked labels/fields, vertical spacing */
 #popup-modal .popup-message-form {
     width: 100%;
     margin-top: 1.1em;
@@ -76,6 +85,7 @@
     letter-spacing: 0.014em;
     font-size: 1.02em;
 }
+
 #popup-modal .popup-message-form input,
 #popup-modal .popup-message-form textarea {
     width: 100%;
@@ -95,6 +105,8 @@
     border-color: var(--color-primary);
     box-shadow: 0 0 0 2px var(--color-shadow-hover);
 }
+
+/* Feedback message blocks (for message form) */
 #popup-modal .popup-message-form .popup-form-error {
     color: var(--color-error);
     font-size: 0.97em;
@@ -118,6 +130,8 @@
     align-self: flex-end;
     margin-top: 0.8em;
 }
+
+/* Responsive modal tweaks for small screens (width/padding/image size) */
 @media (max-width: 480px) {
     #popup-modal {
         max-width: 171.5vw;

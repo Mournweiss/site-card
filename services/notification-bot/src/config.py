@@ -1,8 +1,24 @@
+"""
+Typed configuration and .env loader for notification-bot.
+"""
 import os
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Config:
+    """
+    Typed configuration for bot env and DB, loaded at startup. Fields:
+    - admin_key: str
+    - notification_bot_token: str
+    - notification_bot_port: int (default 50051)
+    - debug: bool
+    - domain: str (for webapp_url)
+    - pg_host: str
+    - pg_port: int
+    - pg_user: str
+    - pg_password: str
+    - pg_database: str
+    """
     admin_key: str
     notification_bot_token: str
     notification_bot_port: int = 50051
@@ -16,6 +32,18 @@ class Config:
 
     @staticmethod
     def from_env():
+        """
+        Loads config from environment and provides type validation.
+
+        Parameters:
+        - None (pulls os.environ)
+
+        Returns:
+        - Config instance
+
+        Raises:
+        - RuntimeError if any required key missing
+        """
         missing = []
         admin_key = os.environ.get("ADMIN_KEY", "")
 
@@ -66,7 +94,15 @@ class Config:
 
     @property
     def webapp_url(self):
+        """
+        Computes Telegram WebApp auth URL using configured domain (if present).
 
+        Parameters:
+        - None
+
+        Returns:
+        - str - full https URL for bot WebApp auth
+        """
         if self.domain:
             return f"https://{self.domain}/auth/webapp"
 

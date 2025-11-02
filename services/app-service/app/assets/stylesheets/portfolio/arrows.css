@@ -1,7 +1,10 @@
+/* Parent: sets up positioning context for navigation arrows */
 .portfolio-container {
     position: relative;
     width: 100%;
 }
+
+/* Overlay for navigation arrows, spreads over content */
 .portfolio-arrows {
     position: absolute;
     pointer-events: none;
@@ -11,6 +14,8 @@
 .portfolio-arrows .portfolio-arrow {
     pointer-events: auto;
 }
+
+/* Main navigation arrow button: positioning, sizing, style, interactive states */
 .portfolio-arrow {
     width: 70px;
     height: 70px;
@@ -33,12 +38,16 @@
     z-index: 22;
     opacity: 0.95;
 }
+
+/* Arrow placement */
 .portfolio-arrow-left {
     left: 0.8rem;
 }
 .portfolio-arrow-right {
     right: 0.8rem;
 }
+
+/* Focus & hover effects, active/disabled */
 .portfolio-arrow:focus-visible {
     box-shadow: 0 2px 38px 0 var(--color-shadow-hover);
 }
@@ -52,6 +61,8 @@
     opacity: 0.39;
     pointer-events: none;
 }
+
+/* Scale arrow and position for phones/tablets */
 @media (max-width: 899px) {
     .portfolio-arrow {
         width: 56px;

@@ -1,22 +1,27 @@
+# Build static frontend assets with Node + Vite
 FROM docker.io/library/node:20-slim AS assets
 WORKDIR /build
 COPY package.json vite.config.js ./
 COPY app/assets ./app/assets
 RUN npm install && npm run build
 
+# Ruby backend build with all dependencies, nginx and gRPC
 FROM docker.io/library/ruby:3.3-slim AS backend
 WORKDIR /app
 COPY Gemfile ./
 
+# Install OS dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends nginx build-essential gettext protobuf-compiler protobuf-compiler-grpc && \
     rm -rf /var/lib/apt/lists/*
 
+# Install Ruby gems, including grpc and build tools
 RUN gem install bundler grpc grpc-tools && bundle install
 
 RUN mkdir -p /userdata
 COPY . .
 
+# Copy frontend assets from build stage
 COPY --from=assets /build/public/assets ./public/assets
 
 COPY entrypoint.sh /entrypoint.sh

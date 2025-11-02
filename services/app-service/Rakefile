@@ -1,5 +1,7 @@
+# Utility and build tasks for SiteCard
 require 'rake'
 
+# Asset-related commands
 namespace :assets do
     desc 'Build frontend assets using Vite'
     task :build do
@@ -7,6 +9,7 @@ namespace :assets do
             sh 'npm run build'
             puts "Assets built successfully"
         rescue => e
+            # Fail fast if build fails, show error context
             puts "Asset build failed: #{e.message}"
             puts e.backtrace.join("\n")
             exit 1
@@ -26,6 +29,7 @@ namespace :assets do
     end
 end
 
+# Project info
 desc 'Show project info'
 task :info do
     begin

@@ -1,8 +1,12 @@
+/* Root classes and layout for the 'About' UI section (responsive, flexible, card-based) */
 .about-section {
+    /* Reserve space at the top for sticky nav offset */
     scroll-margin-top: 100px;
 }
+
+/* Responsive card for wrapping about section content */
 .about-card {
-    background: transparent !important;
+    background: transparent !important; /* Allow background themes */
     border-radius: 1.15rem;
     box-shadow: 0 4px 28px 0 rgba(16, 20, 32, 0.06), 0 1.5px 8px 0 rgba(0, 0, 0, 0.03);
     padding: 3.8rem 3.8rem 3rem 3.8rem;
@@ -12,19 +16,22 @@
     margin-left: auto;
     margin-right: auto;
 }
+
 .card-body {
     padding: 0;
 }
-.about-me-section {
-}
+
+/* 'About' table-style rows and cells for key/value pairs */
 .about-me-row {
     display: flex;
     flex-direction: row;
     gap: 1.5em;
     margin-bottom: 1.2em;
 }
+
+/* Adds horizontal indent for nested info rows */
 .about-me-row--indented {
-    padding-left: calc(50% / 3 + 0.75em);
+    padding-left: calc(50% / 3 + 0.75em); /* Responsive indent matches card proportions */
 }
 .about-me-cell {
     background: transparent !important;
@@ -44,7 +51,10 @@
     font-size: 1.72rem;
     white-space: normal;
 }
+
+/* Remove horizontal paddings, force full-width stacking, responsive realignment */
 @media (max-width: 1200px) {
+    /* Full-bleed card, remove side padding/margin on small screens */
     .container > .about-card {
         padding-left: 0 !important;
         padding-right: 0 !important;
@@ -56,6 +66,8 @@
         position: relative;
         box-sizing: border-box;
     }
+
+    /* Remove extra horizontal padding for smaller screens */
     .about-card {
         padding-left: 0 !important;
         padding-right: 0 !important;
@@ -67,6 +79,8 @@
         padding-right: 0 !important;
         box-sizing: border-box;
     }
+
+    /* Flatten rows/cells, zero out side margins/paddings */
     .about-me-section,
     .about-me-row,
     .about-me-row--indented {
@@ -85,10 +99,12 @@
         padding-left: 0;
         padding-right: 0;
         box-sizing: border-box;
-        justify-content: flex-start !important;
+        justify-content: flex-start !important; /* Prevent center on small screens */
         align-items: flex-start !important;
     }
 }
+
+/* Visual display for the metadata icon, title, and value fields */
 .about-me-icon {
     font-size: 3.15em;
     color: var(--color-icon);
@@ -113,14 +129,17 @@
     line-height: 1.18;
     word-break: break-word;
 }
+
+/* Applies about-section palette—can be themed with CSS vars */
 body {
     background: var(--color-bg);
     color: var(--color-fg);
 }
+
 .about-card,
 .about-me-section,
 .about-me-row,
 .about-me-cell {
-    background: transparent !important;
+    background: transparent !important; /* Inherit themed backgrounds */
     color: var(--color-fg);
 }

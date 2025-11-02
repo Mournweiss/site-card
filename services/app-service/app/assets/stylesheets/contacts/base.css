@@ -1,3 +1,4 @@
+/* Section layout: vertical stack, centered, with inner gap */
 .contacts-section {
     display: flex;
     flex-direction: column;
@@ -9,6 +10,8 @@
     color: var(--color-fg);
     background: var(--color-bg);
 }
+
+/* Shrink/pad less on tablets & mobile */
 @media (max-width: 800px) {
     .contacts-section {
         padding: 27px 0 36px 0;
@@ -21,6 +24,7 @@
     }
 }
 
+/* Call-to-action message button: large, rounded, centralized */
 .contacts-message-cta {
     min-width: 230px;
     min-height: 54px;
@@ -33,7 +37,6 @@
     transition: background 0.14s, color 0.14s, box-shadow 0.13s;
     align-self: center;
 }
-
 @media (max-width: 500px) {
     .contacts-message-cta {
         min-width: 90vw;
@@ -42,6 +45,7 @@
     }
 }
 
+/* Divider with pseudo-element lines and centered label */
 .contacts-divider {
     display: flex;
     width: 100%;

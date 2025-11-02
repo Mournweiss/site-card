@@ -1,3 +1,4 @@
+/* CSS custom properties (palette/theming colors) */
 :root {
     --color-bg: #191c1f;
     --color-fg: #f0f2f4;
@@ -28,6 +29,8 @@ body {
     background: var(--color-bg);
     color: var(--color-fg);
 }
+
+/* Fadein animation: elements become visible with upward motion on scroll */
 .fadein-up {
     opacity: 0;
     transform: translateY(38px);
@@ -37,9 +40,12 @@ body {
     opacity: 1;
     transform: none;
 }
+
 .scroll-margin-y {
     scroll-margin-top: 100px;
 }
+
+/* Consistent block section title style */
 .block-title {
     color: var(--color-white);
     font-size: 2.08rem;
@@ -51,6 +57,8 @@ body {
     line-height: 1.11;
     padding: 0;
 }
+
+/* Branded button—used for all primary site CTAs */
 .sitecard-btn {
     display: inline-block;
     border-radius: 26px;
@@ -80,6 +88,8 @@ body {
     box-shadow: 0 2px 38px 0 var(--color-shadow-hover);
     text-decoration: none !important;
 }
+
+/* Responsive adjustments to .sitecard-btn width for small screens */
 @media (max-width: 700px) {
     .sitecard-btn {
         min-width: 120px;

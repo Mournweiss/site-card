@@ -6,6 +6,7 @@ require_relative '../../lib/errors'
 require_relative './templates/base_controller'
 require 'grpc'
 
+# Add Ruby proto context for gRPC calls.
 PROTO_ROOT = File.expand_path('proto-context', Dir.pwd)
 $LOAD_PATH.unshift(PROTO_ROOT)
 begin
@@ -20,7 +21,16 @@ end
 
 RENDERER_INSTANCE = Renderer.new
 
+# Public-facing controller: serves components, handles contact messages, main landing.
 class PublicController < BaseController
+
+    # Routes all public (non-auth/admin) paths to handler methods.
+    #
+    # Parameters:
+    # - req: WEBrick::HTTPRequest - incoming request
+    # - res: WEBrick::HTTPResponse - outgoing response
+    #
+    # Returns: nil
     def handle_request(req, res)
         path = req.path_info
         if path.start_with?('/public/component/')
@@ -33,6 +43,14 @@ class PublicController < BaseController
     end
 
     private
+
+    # Renders a UI component fragment by name (from /public/component/<name> route).
+    #
+    # Parameters:
+    # - req: WEBrick::HTTPRequest with path_info
+    # - res: WEBrick::HTTPResponse
+    #
+    # Returns: nil; responds with component HTML or 404
     def handle_component(req, res)
         component = req.path_info.sub('/public/component/', '').gsub(/[^a-zA-Z0-9_]/, '')
         begin
@@ -47,6 +65,13 @@ class PublicController < BaseController
         end
     end
 
+    # Handles POST to /api/message for site contact messages, sends via gRPC.
+    #
+    # Parameters:
+    # - req: WEBrick::HTTPRequest (JSON body)
+    # - res: WEBrick::HTTPResponse
+    #
+    # Returns: nil; responds with JSON-encoded result
     def handle_message(req, res)
         payload = JSON.parse(req.body.read) rescue {}
         name = (payload["name"] || "").strip
@@ -74,6 +99,12 @@ class PublicController < BaseController
         end
     end
 
+    # Renders and returns the site public landing page.
+    #
+    # Parameters:
+    # - res: WEBrick::HTTPResponse
+    #
+    # Returns: nil
     def render_home(res)
         html = Renderer.new.render(mode: :public)
         res.status = 200
@@ -81,6 +112,14 @@ class PublicController < BaseController
         res.body = html
     end
 
+    # Responds with JSON body and code. Sets correct content-type.
+    #
+    # Parameters:
+    # - res: WEBrick::HTTPResponse
+    # - obj: Hash or Array to encode as JSON
+    # - code: Integer (default 200) - HTTP status code
+    #
+    # Returns: nil
     def respond_json(res, obj, code=200)
         res.status = code
         res['Content-Type'] = 'application/json; charset=utf-8'

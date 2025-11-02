@@ -1,8 +1,16 @@
 require 'dotenv/load'
 
+# AppConfig: application configuration loader; handles environment variables and .env file parsing.
 class AppConfig
     attr_reader :env, :port, :notification_grpc_host, :notification_bot_token
 
+    # Initializes AppConfig with merged environment and .env/.dotenv values.
+    #
+    # Parameters:
+    # - none
+    #
+    # Returns:
+    # - AppConfig instance
     def initialize
         @env = load_env
         @port = fetch_param('RACKUP_PORT', 9292).to_i
@@ -10,6 +18,13 @@ class AppConfig
         @notification_bot_token = fetch_param('NOTIFICATION_BOT_TOKEN', nil)
     end
 
+    # Checks if application debug mode is enabled via ENV.
+    #
+    # Parameters:
+    # - none
+    #
+    # Returns:
+    # - Boolean - true if DEBUG=true or 1
     def self.debug_mode
         env_val = ENV['DEBUG']
         env_val == 'true' || env_val == '1'
@@ -17,6 +32,13 @@ class AppConfig
 
     private
 
+    # Loads environment variables from .env (if exists) merged with ENV.
+    #
+    # Parameters:
+    # - none
+    #
+    # Returns:
+    # - Hash (String=>String) - ENV union with .env
     def load_env
         env = {}
         env_path = File.expand_path('../../.env', __FILE__)
@@ -31,6 +53,14 @@ class AppConfig
         env
     end
 
+    # Looks up an ENV or loaded .env parameter, with fallback default.
+    #
+    # Parameters:
+    # - key: String - environment variable name
+    # - default: any - fallback value
+    #
+    # Returns:
+    # - String|any - found value or default
     def fetch_param(key, default)
         ENV[key] || @env[key] || default
     end

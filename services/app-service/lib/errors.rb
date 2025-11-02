@@ -1,25 +1,67 @@
 require_relative '../config/initializers/app_config'
 
+# Defines all custom error types and an error-handling mixin for consistent API responses.
 class SiteCardError < StandardError
+
+    # Base class for all custom site errors; exposes additional context for logging/rendering.
+    #
+    # Parameters:
+    # - message: String - human/exportable error message
+    # - context: Hash - key details for debugging
+    #
+    # Returns:
+    # - SiteCardError instance
     attr_reader :context
     def initialize(message = nil, context: {})
         super(message)
         @context = context || {}
     end
+
+    # Turns exception and context into a loggable string.
+    #
+    # Returns:
+    # - String - log entry
     def to_log
         "[#{self.class.name}] #{message} | Context: #{context}"
     end
 end
 
+# Raised for invalid/unsatisfied request data
 class ValidationError < SiteCardError; end
+
+# Raised for configuration loading problems
 class ConfigError < SiteCardError; end
+
+# Raised for explicit (handled) database errors
 class BDError < SiteCardError; end
+
+# Raised if something is logically inconsistent with DB or app data
 class DataConsistencyError < SiteCardError; end
+
+# Raised for template/ERB rendering problems
 class RenderError < SiteCardError; end
+
+# Raised for failures inside ERB template rendering
 class TemplateError < SiteCardError; end
+
+# Raised for cryptographic/ID signature/mismatch
 class VerificationError < SiteCardError; end
 
+# Mixin for error-handling logic used in controllers/services
 module ErrorHandler
+
+    # Wraps arbitrary block with site-style error translation logic.
+    # Catches known errors, returns friendly responses; logs in debug mode.
+    #
+    # Parameters:
+    # - response: WEBrick::HTTPResponse - writable outgoing response object
+    # - logger: Logger|AppLogger - log bridge for error context
+    #
+    # Returns:
+    # - Any (block result or nil)
+    #
+    # Raises:
+    # - Any error not derived from handled chain
     def with_error_handling(response, logger)
         yield
     rescue ValidationError => e
@@ -51,6 +93,15 @@ module ErrorHandler
     end
 
     private
+
+    # Attempts to render a given error template file, optionally injects message.
+    #
+    # Parameters:
+    # - path: String - path to the html template (relative)
+    # - err_msg: String|nil - error message to inject if debug
+    #
+    # Returns:
+    # - String - composed error page
     def render_error_template(path, err_msg = nil)
         begin
             html = File.read(path)

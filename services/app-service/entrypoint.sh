@@ -1,5 +1,10 @@
 #!/bin/sh
-
+#
+# Entrypoint script for app-service container.
+# Orchestrates environment checks, asset warnings, gRPC code generation,
+# configures nginx, and runs the Ruby backend. All output uses colored logging and
+# failure aborts container boot for reliable CI/CD and prod deploys.
+#
 set -euo pipefail
 
 COLOR_INFO="\033[0m"
@@ -13,6 +18,13 @@ warn()    { printf "%b\n" "${COLOR_WARN}$1${COLOR_RESET}"; }
 error()   { printf "%b\n" "${COLOR_ERROR}$1${COLOR_RESET}" >&2; exit 1; }
 success() { printf "%b\n" "${COLOR_SUCCESS}$1${COLOR_RESET}"; }
 
+# Checks that all required environment variables for DB, nginx, and backend are present.
+#
+# Parameters:
+# - None (uses shell env)
+#
+# Returns:
+# - None (exits on missing vars)
 check_env() {
     : "${PGHOST?PGHOST is required}"
     : "${PGPORT?PGPORT is required}"
@@ -24,12 +36,26 @@ check_env() {
     success "All required environment variables present"
 }
 
+# Emits a warning if ./public/assets directory is missing or empty (for safe asset serving)
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None
 asset_warn() {
     if [ ! -d ./public/assets ] || [ -z "$(ls -A ./public/assets 2>/dev/null)" ]; then
         warn "./public/assets is missing or empty"
     fi
 }
 
+# Runs gRPC protobuf generator; ensures Ruby plugin and output files exist.
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None (exits on failure)
 protoc_gen() {
     if ! command -v protoc >/dev/null 2>&1; then
         error "protoc not found"
@@ -45,6 +71,13 @@ protoc_gen() {
     success "Ruby gRPC files generated"
 }
 
+# Generates nginx.conf from template using configured env variables.
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None
 setup_nginx() {
     if [ -f /app/config/nginx.conf ]; then
         info "Generating nginx.conf from template with envsubst..."
@@ -54,17 +87,39 @@ setup_nginx() {
     fi
 }
 
+# Starts nginx using the generated config, aborting if startup fails.
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None
 start_nginx() {
     info "Starting nginx on port $NGINX_PORT..."
     nginx || error "Failed to start nginx"
     success "nginx started"
 }
 
+# Launches the Ruby backend server using Bundler and rackup.
+# Never returns (process hand-off to Ruby app).
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None (exec)
 start_app() {
     info "Starting Ruby backend (bundle exec rackup config.ru) on port $RACKUP_PORT..."
     exec bundle exec rackup /app/config.ru -p "$RACKUP_PORT"
 }
 
+# Main orchestration entrypoint.
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None
 main() {
     check_env
     asset_warn

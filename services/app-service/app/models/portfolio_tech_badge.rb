@@ -1,11 +1,21 @@
 require 'pg'
 require_relative '../../lib/errors'
 
+# Represents a technology badge/icon displayed with a portfolio section.
 class PortfolioTechBadge
     TABLE = 'portfolio_tech_badges'.freeze
 
     attr_reader :id, :portfolio_id, :name, :icon
 
+    # Initializes a badge associated with a portfolio project.
+    #
+    # Parameters:
+    # - id: String|Integer - badge identifier
+    # - portfolio_id: String|Integer - parent portfolio ID
+    # - name: String - badge/technology name
+    # - icon: String - font, svg, or icon class
+    #
+    # Returns: PortfolioTechBadge
     def initialize(attrs)
         @id = attrs['id']
         @portfolio_id = attrs['portfolio_id']
@@ -13,6 +23,16 @@ class PortfolioTechBadge
         @icon = attrs['icon']
     end
 
+    # Returns all tech badges associated to a portfolio.
+    #
+    # Parameters:
+    # - conn: PG::Connection
+    # - portfolio_id: String|Integer
+    #
+    # Returns: Array<PortfolioTechBadge>
+    #
+    # Raises:
+    # - BDError/DataConsistencyError
     def self.all_by_portfolio(conn, portfolio_id)
         begin
             conn.exec_params("SELECT * FROM #{TABLE} WHERE portfolio_id = $1 ORDER BY id ASC", [portfolio_id]).map { |row| PortfolioTechBadge.new(row) }
@@ -23,6 +43,16 @@ class PortfolioTechBadge
         end
     end
 
+    # Finds one tech badge by ID.
+    #
+    # Parameters:
+    # - conn: PG::Connection
+    # - id: String|Integer
+    #
+    # Returns: PortfolioTechBadge|nil
+    #
+    # Raises:
+    # - BDError/DataConsistencyError on failure
     def self.find(conn, id)
         begin
             res = conn.exec_params("SELECT * FROM #{TABLE} WHERE id = $1 LIMIT 1", [id])

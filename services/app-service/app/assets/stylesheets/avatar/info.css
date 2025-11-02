@@ -1,8 +1,9 @@
+/* Main info block (right of avatar ring), structured as vertical flex card */
 .avatar-info {
     min-width: 270px;
     max-width: 480px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Stack meta rows vertically */
     justify-content: flex-start;
     align-items: flex-start;
     gap: 0.3rem;
@@ -10,6 +11,8 @@
     margin-top: 6px;
     position: relative;
 }
+
+/* Role/title: smaller, accent color, above name */
 .avatar-role {
     font-size: 0.98rem;
     color: var(--color-primary);
@@ -21,6 +24,8 @@
     opacity: 0.86;
     line-height: 1.25;
 }
+
+/* Name: big, bold, clear, main font-family for branding */
 .avatar-name {
     font-size: 2.45rem;
     font-weight: 830;
@@ -30,6 +35,8 @@
     line-height: 1.13;
     letter-spacing: 0.01em;
 }
+
+/* Description paragraph: muted, multiline, not too wide */
 .avatar-description {
     color: var(--color-text);
     font-size: 1.09rem;

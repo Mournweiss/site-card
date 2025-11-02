@@ -1,7 +1,10 @@
+/* Main experience section: stretches full width, bottom margin for separation */
 .experience-section {
     width: 100%;
     margin-bottom: 3.5rem;
 }
+
+/* Chart section label: larger, semibold, branding color */
 .chart-label {
     font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
     font-weight: 600;
@@ -14,6 +17,8 @@
     text-align: left;
     padding-left: 0.1em;
 }
+
+/* Accent and content for feature/metadata */
 .experience-label {
     color: var(--color-accent);
 }

@@ -1,4 +1,22 @@
+/**
+ * Renders one or more skill pie charts using Chart.js, per provided configs.
+ * Chart configs are expected as an array of objects (see format below) inside #context-skills.
+ * Dynamically loads Chart.js from CDN if not already present.
+ *
+ * Config example for each chart:
+ *   {
+ *     id: 'canvas-id', width: 378, height: 378,
+ *     label: 'Some skills', labels: [...], data: [...], colors: [...]
+ *   }
+ */
 (function () {
+    /**
+     * Asynchronously loads Chart.js from CDN if not already present.
+     * Calls callback after ready.
+     *
+     * @param {function} callback - Triggered when Chart.js is ready.
+     * @returns {void}
+     */
     function loadChartJs(callback) {
         if (window.Chart) return callback();
         var script = document.createElement("script");
@@ -6,6 +24,8 @@
         script.onload = callback;
         document.head.appendChild(script);
     }
+
+    // Chart configs array, parsed from hidden context JSON
     var pieCharts;
     try {
         var el = document.getElementById("context-skills");
@@ -13,6 +33,13 @@
     } catch (e) {
         pieCharts = [];
     }
+
+    /**
+     * Iterates over config objects, rendering doughnut charts with Chart.js into referenced canvases.
+     * Safely no-ops if Chart.js or canvas not found.
+     *
+     * Each chart config object must have keys: id, label, labels, data, colors, (width, height optional).
+     */
     function renderPies() {
         (pieCharts || []).forEach(function (pcfg) {
             var c = document.getElementById(pcfg.id);
@@ -44,6 +71,8 @@
             }
         });
     }
+
+    // Asynchronously load Chart.js and render pies after DOM is ready
     loadChartJs(function () {
         setTimeout(renderPies, 0);
     });
