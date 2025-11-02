@@ -26,6 +26,7 @@ public/assets/
 **/test/
 **/tests/
 /build/
+**/*reuse/
 
 # Logs
 *.log
