@@ -45,6 +45,9 @@ services:
             - .env
         ports:
             - "${NOTIFICATION_BOT_PORT:-50051}:50051"
+        depends_on:
+            db-service:
+                condition: service_healthy
         restart: unless-stopped
         image: ${PROJECT_NAME:-site-card}-notification-bot:latest
         container_name: ${PROJECT_NAME:-site-card}-notification-bot
