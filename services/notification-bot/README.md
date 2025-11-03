@@ -38,6 +38,7 @@ You can view the full list of Python dependencies in [pyproject.toml](./pyprojec
 -   `/start` — Start the bot and receive a button to authorize via the SiteCard WebApp.
 -   `/about` — Show information about the Notification Bot, its version, and supported commands.
 -   `/logout` — Deauthorize and stop receiving notifications.
+-   `/status` - Display user authorization status.
 
 ### Features
 

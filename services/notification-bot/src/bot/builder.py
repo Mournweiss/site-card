@@ -1,12 +1,8 @@
-# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
-#
-# SPDX-License-Identifier: MIT
-
 """
 Builder for initializing Telegram Application with handlers for notification-bot.
 """
 from telegram.ext import ApplicationBuilder, CommandHandler
-from .commands import start_handler, about_handler, logout_handler, build_logout_callback_handler
+from .commands import start_handler, about_handler, logout_handler, build_logout_callback_handler, status_handler
 from src.logger import get_logger
 from src.handlers import user_auth_manager
 
@@ -39,5 +35,8 @@ def build_application(config, user_auth_manager_instance=None):
     application.add_handler(CommandHandler("logout", logout_handler))
     application.add_handler(build_logout_callback_handler())
     logger.info("Registered /logout handler and callback handler")
+
+    application.add_handler(CommandHandler("status", status_handler))
+    logger.info("Registered /status handler")
 
     return application
