@@ -1,0 +1,94 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/* Styles for QR code modal and canvas */
+#qr-canvas {
+    display: block;
+    margin: 0 auto 0.7em auto;
+    background: transparent;
+    width: 480px;
+    height: 480px;
+}
+
+@media (max-width: 520px) {
+    .qr-canvas-wrapper {
+        width: 96vw;
+        height: 96vw;
+        max-width: 340px;
+        max-height: 340px;
+    }
+    #qr-canvas {
+        width: 96vw !important;
+        height: 96vw !important;
+        max-width: 340px;
+        max-height: 340px;
+    }
+}
+
+/* QR color picker label styling */
+.qr-color-picker-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.5em;
+    text-align: center;
+    font-size: 1em;
+    color: var(--color-fg);
+    cursor: pointer;
+}
+.qr-color-circle {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 2.64em;
+    height: 2.64em;
+    border-radius: 50%;
+    border: 2.3px solid var(--color-border);
+    box-shadow: 0 1.5px 7px 0 rgba(40, 60, 90, 0.06);
+    padding: 0;
+    background: none;
+    cursor: pointer;
+    outline: none;
+    transition: border 0.13s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+}
+.qr-color-circle::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 50%;
+}
+.qr-color-circle::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+.qr-color-circle::-moz-color-swatch {
+    border: none;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+.qr-color-circle:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 2.5px 12px 0 rgba(90, 120, 210, 0.13);
+}
+.qr-color-circle {
+    width: 2.64em;
+    height: 2.64em;
+}
+.qr-color-picker-container {
+    display: flex;
+    justify-content: center;
+    gap: 1.6em;
+    margin: 1.15em 0 3.1em 0;
+    align-items: center;
+}
+
+.qr-instruction {
+    margin-top: 1.1em;
+    text-align: center;
+    font-size: 1.08em;
+    color: var(--color-accent);
+}

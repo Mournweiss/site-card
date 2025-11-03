@@ -39,8 +39,70 @@ export function initAvatarQRButton() {
 }
 
 /**
+ * Generates a QR code in the provided canvas with a rounded-rectangle clip.
+ *
+ * @param {HTMLCanvasElement} el - Canvas for QR code output.
+ * @param {string} url - Payload to encode.
+ * @param {string} [dark] - Foreground color (hex or CSS color).
+ * @param {string} [light] - Background color (hex or CSS color).
+ * @returns {void}
+ */
+function generateQRCodeCanvas(el, url, dark, light) {
+    if (!el) return;
+    // Use provided or fallback to CSS variables as defaults
+    const rootStyle = getComputedStyle(document.documentElement);
+    const qrDark = dark || rootStyle.getPropertyValue("--color-accent").trim() || "#a8b8e2";
+    const qrLight = light || rootStyle.getPropertyValue("--color-surface").trim() || "#23242a";
+    const w = el.width;
+    const h = el.height;
+    const radius = 58; // px, adjust for visual match
+
+    // Prepare off-screen canvas for qr-paint without clipping quality
+    const tmp = document.createElement("canvas");
+    tmp.width = w;
+    tmp.height = h;
+
+    QRCode.toCanvas(
+        tmp,
+        url,
+        {
+            width: w,
+            color: {
+                dark: qrDark,
+                light: qrLight,
+            },
+        },
+        function (error) {
+            if (error) {
+                el.parentNode.innerHTML =
+                    '<div style="color:#e88;padding:2em">QR generation failed. Try again later.</div>';
+                return;
+            }
+            // Draw to visible canvas with rounded clip
+            const ctx = el.getContext("2d");
+            ctx.clearRect(0, 0, w, h);
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(w - radius, 0);
+            ctx.arcTo(w, 0, w, radius, radius);
+            ctx.lineTo(w, h - radius);
+            ctx.arcTo(w, h, w - radius, h, radius);
+            ctx.lineTo(radius, h);
+            ctx.arcTo(0, h, 0, h - radius, radius);
+            ctx.lineTo(0, radius);
+            ctx.arcTo(0, 0, radius, 0, radius);
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(tmp, 0, 0, w, h);
+            ctx.restore();
+        }
+    );
+}
+
+/**
  * Loads popup markup, shows QR popup with QR code and copy-to-clipboard logic.
- * Wires up all necessary event listeners for popup interactivity.
+ * Integrates dynamic color selectors and re-renders QR on color change.
  *
  * @param {string} url - URL to encode in the QR code.
  * @returns {Promise<void>}
@@ -48,15 +110,35 @@ export function initAvatarQRButton() {
 async function showQRPopup(url) {
     const contentEl = await getQRPopupMarkup();
     openPopup(contentEl.outerHTML, {
-        onClose: () => {}, // No-op here but extension point
+        onClose: () => {}, // Extension point
     });
     const closeBtn = document.querySelector(".popup-close");
     closeBtn.addEventListener("click", closePopup);
     const qrCanvas = document.getElementById("qr-canvas");
-    generateQRCodeCanvas(qrCanvas, url);
-    const copyBtn = document.getElementById("qr-copy-btn");
+    const darkInput = document.getElementById("qr-color-dark");
+    const lightInput = document.getElementById("qr-color-light");
+    // Set to initial values (defaults from current CSS variables)
+    const rootStyle = getComputedStyle(document.documentElement);
+    darkInput.value = cssVarToHex(rootStyle.getPropertyValue("--color-accent"), "#a8b8e2");
+    lightInput.value = cssVarToHex(rootStyle.getPropertyValue("--color-surface"), "#23242a");
+    let currentDark = darkInput.value;
+    let currentLight = lightInput.value;
+    generateQRCodeCanvas(qrCanvas, url, currentDark, currentLight);
 
-    // Handles copying the rendered QR code to the clipboard
+    // Debounced QR update for color pickers
+    let regenTimeout;
+    function scheduleRegen() {
+        clearTimeout(regenTimeout);
+        regenTimeout = setTimeout(() => {
+            currentDark = darkInput.value;
+            currentLight = lightInput.value;
+            generateQRCodeCanvas(qrCanvas, url, currentDark, currentLight);
+        }, 80);
+    }
+    darkInput.addEventListener("input", scheduleRegen);
+    lightInput.addEventListener("input", scheduleRegen);
+
+    const copyBtn = document.getElementById("qr-copy-btn");
     copyBtn.addEventListener("click", async function () {
         try {
             qrCanvas.toBlob(async function (blob) {
@@ -83,35 +165,34 @@ async function showQRPopup(url) {
 }
 
 /**
- * Generates a QR code in the provided canvas element.
- * Uses computed CSS for color styling.
- *
- * @param {HTMLCanvasElement} el - Canvas for QR code output.
- * @param {string} url - Payload to encode.
- * @returns {void}
+ * Utility: Convert CSS variable color (hex or rgb(a)) to hex string, fallback if invalid.
+ * @param {string} cssColor
+ * @param {string} fallback
+ * @returns {string}
  */
-function generateQRCodeCanvas(el, url) {
-    if (!el) return;
-    const rootStyle = getComputedStyle(document.documentElement);
-    const qrDark = rootStyle.getPropertyValue("--color-accent") || "#a8b8e2";
-    const qrLight = rootStyle.getPropertyValue("--color-surface").trim() || "#23242a";
-    QRCode.toCanvas(
-        el,
-        url,
-        {
-            width: 480,
-            color: {
-                dark: qrDark.trim(),
-                light: qrLight,
-            },
-        },
-        function (error) {
-            if (error) {
-                el.parentNode.innerHTML =
-                    '<div style="color:#e88;padding:2em">QR generation failed. Try again later.</div>';
-            }
-        }
-    );
+function cssVarToHex(cssColor, fallback) {
+    if (!cssColor) return fallback;
+    cssColor = cssColor.trim();
+    // Hex direct
+    if (cssColor.startsWith("#") && (cssColor.length === 7 || cssColor.length === 4)) return cssColor;
+    // Try rgb/rgba
+    const rgbMatch = cssColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+    if (rgbMatch) {
+        const r = Number(rgbMatch[1]);
+        const g = Number(rgbMatch[2]);
+        const b = Number(rgbMatch[3]);
+        return (
+            "#" +
+            [r, g, b]
+                .map(v => {
+                    const str = v.toString(16);
+                    return str.length < 2 ? "0" + str : str;
+                })
+                .join("")
+        );
+    }
+    // HSL, named, etc., fallback
+    return fallback;
 }
 
 // Attach QR button initialization after DOM load
