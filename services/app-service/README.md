@@ -17,6 +17,8 @@ Ruby-based web application and API service for SiteCard project
 [![nginx](https://img.shields.io/badge/nginx-1.x-brightgreen?style=for-the-badge&logo=nginx&logoColor=white)](https://nginx.org/)
 [![ruby:3.3-slim](https://img.shields.io/badge/ruby:3.3--slim-CC342D?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/_/ruby)
 [![node:20-slim](https://img.shields.io/badge/node:20--slim-339933?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/_/node)
+[![Bootstrap 5](https://img.shields.io/badge/Bootstrap-5.3.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
+[![Chart.js](https://img.shields.io/badge/Chart.js-4.4.1-red?style=for-the-badge&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
 
 </div>
 
