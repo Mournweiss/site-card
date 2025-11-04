@@ -22,7 +22,6 @@ public/assets/
 *.swp
 *.swo
 *~
-.env
 **/test/
 **/tests/
 /build/
@@ -55,3 +54,4 @@ Thumbs.db
 *.iml
 **/pgdata/
 **/proto-context/
+**/certs/
