@@ -84,10 +84,10 @@ check_tls() {
     if [ -n "${DOMAIN:-}" ]; then
         validate_domain
     fi
-    if [ -f /certs/fullchain.pem ] && [ -f /certs/privkey.pem ]; then
+    if ls /certs/*.crt 1> /dev/null 2>&1 && ls /certs/*.key 1> /dev/null 2>&1; then
         if [ -n "${DOMAIN:-}" ]; then
             export NGINX_ENABLE=1
-            info "Valid domain and certificate files detected, running PROD_MODE"
+            info "Valid domain and at least one certificate/key found, running PROD_MODE"
             info "DOMAIN=$DOMAIN"
             return 0
         else
@@ -97,7 +97,7 @@ check_tls() {
         fi
     else
         export NGINX_ENABLE=""
-        warn "SSL cert or key not found in /certs, running DEV_MODE"
+        warn "No certificate (.crt) or key (.key) found in /certs, running DEV_MODE"
         return 1
     fi
 }
@@ -126,14 +126,36 @@ validate_domain() {
 # - None (prepares files for Nginx)
 prepare_nginx_certs() {
     mkdir -p /etc/nginx/certs
-    if ls /certs/*.crt 1> /dev/null 2>&1; then
-        cat /certs/*.crt > /etc/nginx/certs/fullchain.pem
+    info "Searching for .crt certificate files in /certs..."
+    crt_files=$(ls /certs/*.crt 2>/dev/null || true)
+    if [ -n "$crt_files" ]; then
+        info "Found certificate files: $crt_files"
+        cat $crt_files > /etc/nginx/certs/fullchain.pem
+        success "Created /etc/nginx/certs/fullchain.pem from found .crt files"
+    else
+        warn "No .crt certificate files found in /certs"
     fi
-    first_key=$(find /certs -maxdepth 1 -type f -name "*.key" | head -n1)
+    info "Searching for .key files in /certs..."
+    keys_found=$(find /certs -maxdepth 1 -type f -name "*.key")
+    key_count=$(echo "$keys_found" | grep -c ".key" || true)
+    if [ "$key_count" -gt 1 ]; then
+        warn "More than one .key file found! Using the first: $(echo "$keys_found" | head -n1)"
+    fi
+    first_key=$(echo "$keys_found" | head -n1)
     if [ -n "$first_key" ]; then
         cp "$first_key" /etc/nginx/certs/privkey.pem
+        success "Copied private key to /etc/nginx/certs/privkey.pem"
+    else
+        warn "No .key file found in /certs"
+    fi
+    if [ ! -s /etc/nginx/certs/fullchain.pem ]; then
+        error "Nginx fullchain.pem was not created, no crt files or empty result"
+    fi
+    if [ ! -s /etc/nginx/certs/privkey.pem ]; then
+        error "Nginx privkey.pem was not created, no key file copied or empty result"
     fi
 }
+
 
 # Generates nginx.conf from template using substituted environment variables.
 #
