@@ -5,17 +5,17 @@
 require 'pg'
 require_relative '../../lib/errors'
 
-# Metadata for user's general profile (age, location, education, languages).
+# Metadata for user's general profile (birth date, location, education, languages).
 class About
     TABLE = 'about'.freeze
 
-    attr_reader :id, :age, :location, :education, :languages
+    attr_reader :id, :birth_date, :location, :education, :languages
 
     # Initializes an About record with main metadata fields.
     #
     # Parameters:
     # - id: String - unique identifier
-    # - age: String|Integer - age value for display
+    # - birth_date: Date|String - date of birth (YYYY-MM-DD)
     # - location: String - geographic location/city
     # - education: String - degree/level/major
     # - languages: String - language(s) spoken
@@ -23,13 +23,30 @@ class About
     # Returns: About
     def initialize(attrs)
         @id = attrs['id']
-        @age = attrs['age']
+        @birth_date = begin
+            v = attrs['birth_date']
+            v ? Date.parse(v) : nil
+        rescue
+            nil
+        end
         @location = attrs['location']
         @education = attrs['education']
         @languages = attrs['languages'] || ''
     end
 
-    # Fetches the first about row from the DB or nil if not present.
+    # Computes age (years) from birth_date.
+    #
+    # Returns:
+    # - Integer|nil - user age in years, or nil if birth_date not set/invalid
+    def age
+        return nil unless @birth_date
+        today = Date.today
+        years = today.year - @birth_date.year
+        years -= 1 if today.month < @birth_date.month || (today.month == @birth_date.month && today.day < @birth_date.day)
+        years
+    end
+
+    # Fetches the first about row from the DB or nil if not present
     #
     # Parameters:
     # - conn: PG::Connection - database connection

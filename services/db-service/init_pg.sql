@@ -21,14 +21,14 @@ ON CONFLICT (id) DO NOTHING;
 -- About: general profile metadata
 CREATE TABLE IF NOT EXISTS about (
     id SERIAL PRIMARY KEY,
-    age INTEGER,
+    birth_date DATE,
     location VARCHAR(128),
     education VARCHAR(128),
     languages TEXT
 );
 -- Demo seed for user meta
-INSERT INTO about (id, age, location, education, languages)
-VALUES (1, 29, 'Moscow', 'MSTU Bauman', 'English (C1), Russian (native)')
+INSERT INTO about (id, birth_date, location, education, languages)
+VALUES (1, '1996-09-01', 'Moscow', 'MSTU Bauman', 'English (C1), Russian (native)')
 ON CONFLICT (id) DO NOTHING;
 
 -- Careers: work experience (references about)

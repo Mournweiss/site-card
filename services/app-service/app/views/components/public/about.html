@@ -6,7 +6,7 @@
                 <div class="about-me-section d-none d-md-block">
                     <% BLOCKS_PER_ROW = 3
                        about_blocks = [
-                           {icon: 'bi-person',    title: 'Age',       value: data[:about].age},
+                           {icon: 'bi-person',    title: 'Age',       value: (data[:about].age || '--')},
                            {icon: 'bi-geo-alt',   title: 'Location',  value: data[:about].location},
                            {icon: 'bi-mortarboard', title: 'Education', value: data[:about].education},
                            {icon: 'bi-translate', title: 'Language',  value: data[:languages]},
@@ -39,7 +39,7 @@
 
                 <div class="about-me-section d-block d-md-none">
                     <% about_blocks = [
-                        {icon: 'bi-person',    title: 'Age',       value: data[:about].age},
+                        {icon: 'bi-person',    title: 'Age',       value: (data[:about].age || '--')},
                         {icon: 'bi-geo-alt',   title: 'Location',  value: data[:about].location},
                         {icon: 'bi-mortarboard', title: 'Education', value: data[:about].education},
                         {icon: 'bi-translate', title: 'Language',  value: data[:languages]},
