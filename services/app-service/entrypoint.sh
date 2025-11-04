@@ -116,6 +116,24 @@ validate_domain() {
     fi
 }
 
+# Aggregates certificates and private key into Nginx internal location for TLS usage.
+#
+# - Concatenates all .crt files in /certs into /etc/nginx/certs/fullchain.pem (if any .crt present)
+# - Copies *.key in /certs to /etc/nginx/certs/privkey.pem (uses first found)
+#
+# Returns:
+# - None (prepares files for Nginx)
+prepare_nginx_certs() {
+    mkdir -p /etc/nginx/certs
+    if compgen -G "/certs/*.crt" > /dev/null; then
+        cat /certs/*.crt > /etc/nginx/certs/fullchain.pem
+    fi
+    first_key=$(find /certs -maxdepth 1 -type f -name "*.key" | head -n1)
+    if [ -n "$first_key" ]; then
+        cp "$first_key" /etc/nginx/certs/privkey.pem
+    fi
+}
+
 # Generates nginx.conf from template using substituted environment variables.
 #
 # Parameters:
@@ -124,17 +142,18 @@ validate_domain() {
 # Returns:
 # - None (exits on error or writes new config to /etc/nginx/nginx.conf)
 setup_nginx() {
+    prepare_nginx_certs
     if [ "$NGINX_ENABLE" = "1" ]; then
         info "Starting in PROD_MODE..."
-        if [ -f /app/config/nginx.conf ]; then
-            envsubst '$NGINX_PORT $RACKUP_PORT $DOMAIN' < /app/config/nginx.conf > /etc/nginx/nginx.conf
+        if [ -f /app/config/nginx.prod.conf ]; then
+            envsubst '$NGINX_HTTPS_PORT $RACKUP_PORT $DOMAIN' < /app/config/nginx.prod.conf > /etc/nginx/nginx.conf
         else
-            error "nginx.conf not found in /app/config"
+            error "nginx.prod.conf not found in /app/config"
         fi
     else
         warn "Starting in DEV_MODE (HTTP only)..."
         if [ -f /app/config/nginx.dev.conf ]; then
-            envsubst '$NGINX_PORT $RACKUP_PORT' < /app/config/nginx.dev.conf > /etc/nginx/nginx.conf
+            envsubst '$NGINX_HTTP_PORT $RACKUP_PORT' < /app/config/nginx.dev.conf > /etc/nginx/nginx.conf
         else
             error "nginx.dev.conf not found in /app/config"
         fi
@@ -149,7 +168,11 @@ setup_nginx() {
 # Returns:
 # - None
 start_nginx() {
-    info "Starting nginx on port $NGINX_PORT..."
+    if [ "$NGINX_ENABLE" = "1" ]; then
+        info "Starting nginx on port $NGINX_HTTPS_PORT..."
+    else
+        info "Starting nginx on port $NGINX_HTTP_PORT..."
+    fi
     nginx || error "Failed to start nginx"
     success "nginx started"
 }

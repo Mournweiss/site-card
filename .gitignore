@@ -52,6 +52,10 @@ Thumbs.db
 
 # Misc
 *.iml
+*.crt
+*.key
+*.der
+.*csr
 **/pgdata/
 **/proto-context/
-**/certs/
+

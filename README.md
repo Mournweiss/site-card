@@ -37,7 +37,13 @@ SiteCard is a micro-service, container-ready web platform for creating interacti
     cd site-card
     ```
 
-2. Prepare and run [orchestration script](build.sh):
+2. Place SSL certificates:
+
+    All your SSL certificates (in .crt format: domain, root, intermediate, etc.) and private key (.key) provided by your certificate authority or domain registrar must be put inside the `certs/` directory in the project root. NGINX will automatically detect and process all `.crt` files for use as the certificate chain, and only a single `.key` file (the main private key) must be provided.
+
+    > **Note:** NGINX only accepts certificates in `.crt` format. Do NOT place `.csr` files (certificate signing requests) inside `certs/`. They are only used to request certificates from a Certificate Authority and are not needed by NGINX or the running site.
+
+3. Prepare and run [orchestration script](build.sh):
 
     ```bash
     chmod +x build.sh
@@ -50,14 +56,15 @@ SiteCard is a micro-service, container-ready web platform for creating interacti
     ```text
     --docker, -d              Use docker-compose backend orchestration
     --podman, -p              Use podman-compose as orchestrator
-    --telegram-token, -t ARG  Inject a Telegram bot token into .env
-    --no-keygen, -n           Skip admin key generation (useful for debug/re-run)
-    --foreground, -f          Run containers in foreground (not detached)
+    --telegram-token, -t ARG  Inject a Telegram bot token into .env (required)
+    --domain, -dmn           Inject a public domain name (used for NGINX and service URLs) into the .env file (required)
+    --no-keygen, -n           Skip admin key generation
+    --foreground, -f          Run containers in foreground
     ```
 
     > **Note:** `build.sh` automatically selects an available orchestration engine if no specific option is given. To force a specific orchestrator, use the `--podman`/`-p` or `--docker`/`-d` argument as needed.
 
-3. Access app:
+4. Access app:
     - Main site: [http://localhost:8080](http://localhost:8080)
     - Telegram Bot: as specified by `NOTIFICATION_BOT_TOKEN`.
 
