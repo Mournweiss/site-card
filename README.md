@@ -41,7 +41,7 @@ SiteCard is a micro-service, container-ready web platform for creating interacti
 
     All your SSL certificates (in .crt format: domain, root, intermediate, etc.) and private key (.key) provided by your certificate authority or domain registrar must be put inside the `certs/` directory in the project root. NGINX will automatically detect and process all `.crt` files for use as the certificate chain, and only a single `.key` file (the main private key) must be provided.
 
-    > **Note:** NGINX only accepts certificates in `.crt` format. Do NOT place `.csr` files (certificate signing requests) inside `certs/`. They are only used to request certificates from a Certificate Authority and are not needed by NGINX or the running site.
+    > **Note:** NGINX ONLY accepts certificates in `.crt` format (not in `.der`, `.p7b` or `.p7c`). Do NOT place `.csr` files (certificate signing requests) inside `certs/`. They are only used to request certificates from a Certificate Authority and are not needed by NGINX or the running site.
 
 3. Prepare and run [orchestration script](build.sh):
 
@@ -57,7 +57,7 @@ SiteCard is a micro-service, container-ready web platform for creating interacti
     --docker, -d              Use docker-compose backend orchestration
     --podman, -p              Use podman-compose as orchestrator
     --telegram-token, -t ARG  Inject a Telegram bot token into .env (required)
-    --domain, -dmn           Inject a public domain name (used for NGINX and service URLs) into the .env file (required)
+    --domain, -dmn ARG        Inject a public domain name (used for NGINX and service URLs) into the .env file (required)
     --no-keygen, -n           Skip admin key generation
     --foreground, -f          Run containers in foreground
     ```
