@@ -27,7 +27,7 @@ SERVICES_PATHS=(
 )
 
 # Parses command-line arguments and sets global variables for orchestrator and options.
-# Handles container orchestrator selection, keygen, Telegram token injection, foreground mode.
+# Handles container orchestrator selection, keygen, Telegram token, domain injection, foreground mode.
 #
 # Parameters:
 # - $@: array - command-line arguments
@@ -46,7 +46,11 @@ parse_args() {
                 shift
                 ;;
             --telegram-token|-t)
-                BOT_TOKEN="$2"
+                TELEGRAM_TOKEN="$2"
+                shift 2
+                ;;
+            --domain|-dmn)
+                DOMAIN_ARG="$2"
                 shift 2
                 ;;
             --no-keygen|-n)
@@ -133,7 +137,7 @@ init_submodules() {
     fi
 }
 
-# Verifies or creates .env file from example and injects BOT_TOKEN if given.
+# Verifies or creates .env file from example, injects TELEGRAM_TOKEN and DOMAIN if provided.
 #
 # Parameters:
 # - None (uses shell globals)
@@ -152,17 +156,30 @@ make_env() {
         fi
     fi
     # Inject bot token if set
-    if [ -n "$BOT_TOKEN" ]; then
-        if grep -q '^NOTIFICATION_BOT_TOKEN=' .env; then
-            sed -i "s|^NOTIFICATION_BOT_TOKEN=.*|NOTIFICATION_BOT_TOKEN=$BOT_TOKEN|" .env
+    if [ -n "$TELEGRAM_TOKEN" ]; then
+        if grep -q '^TELEGRAM_BOT_TOKEN=' .env; then
+            sed -i "s|^TELEGRAM_BOT_TOKEN=.*|TELEGRAM_BOT_TOKEN=$TELEGRAM_TOKEN|" .env
         else
             if grep -q '^PROJECT_NAME=' .env; then
-                awk '/^PROJECT_NAME=/{print;print "NOTIFICATION_BOT_TOKEN='$BOT_TOKEN'";next}1' .env > .env.tmp && mv .env.tmp .env
+                awk '/^PROJECT_NAME=/{print;print "TELEGRAM_BOT_TOKEN='$TELEGRAM_TOKEN'";next}1' .env > .env.tmp && mv .env.tmp .env
             else
-                echo "NOTIFICATION_BOT_TOKEN=$BOT_TOKEN" >> .env
+                echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_TOKEN" >> .env
             fi
         fi
-        success "NOTIFICATION_BOT_TOKEN injected from argument"
+        success "TELEGRAM_BOT_TOKEN injected from argument"
+    fi
+    # Inject DOMAIN if set
+    if [ -n "$DOMAIN_ARG" ]; then
+        if grep -q '^DOMAIN=' .env; then
+            sed -i "s|^DOMAIN=.*|DOMAIN=$DOMAIN_ARG|" .env
+        else
+            if grep -q '^PROJECT_NAME=' .env; then
+                awk '/^PROJECT_NAME=/{print;print "DOMAIN='$DOMAIN_ARG'";next}1' .env > .env.tmp && mv .env.tmp .env
+            else
+                echo "DOMAIN=$DOMAIN_ARG" >> .env
+            fi
+        fi
+        success "DOMAIN injected from argument"
     fi
 }
 

@@ -36,6 +36,7 @@ services:
         container_name: ${PROJECT_NAME:-site-card}-app-service
         volumes:
             - ./userdata:/userdata
+            - ./certs:/certs
         networks:
             - ${PROJECT_NAME:-site-card}-net
 
@@ -56,6 +57,7 @@ services:
 
 volumes:
     pgdata:
+    certs:
 
 networks:
     ${PROJECT_NAME:-site-card}-net:

@@ -71,19 +71,73 @@ protoc_gen() {
     success "Ruby gRPC files generated"
 }
 
-# Generates nginx.conf from template using configured env variables.
+# Checks all required conditions for TLS: domain validity and certificate presence.
 #
 # Parameters:
-# - None
+# - None (uses DOMAIN, /certs/ paths from environment/filesystem)
 #
 # Returns:
-# - None
-setup_nginx() {
-    if [ -f /app/config/nginx.conf ]; then
-        info "Generating nginx.conf from template with envsubst..."
-        envsubst '$NGINX_PORT $RACKUP_PORT' < /app/config/nginx.conf > /etc/nginx/nginx.conf || error "Failed to generate nginx.conf from template"
+# - 0 if HTTPS prerequisites are met and flags are set (enables HTTPS)
+# - 1 for HTTP-only mode; aborts process if domain is invalid
+check_tls() {
+    if [ -n "${DOMAIN:-}" ]; then
+        validate_domain
+    fi
+    if [ -f /certs/fullchain.pem ] && [ -f /certs/privkey.pem ]; then
+        if [ -n "${DOMAIN:-}" ]; then
+            export NGINX_ENABLE=1
+            info "Valid domain and certificate files detected, running PROD_MODE"
+            info "DOMAIN=$DOMAIN"
+            return 0
+        else
+            export NGINX_ENABLE=""
+            warn "Certs found but DOMAIN unset, running DEV_MODE"
+            return 1
+        fi
     else
-        error "nginx.conf not found in /app/config"
+        export NGINX_ENABLE=""
+        warn "SSL cert or key not found in /certs, running DEV_MODE"
+        return 1
+    fi
+}
+
+# Validates DOMAIN environment variable using simple regex for FQDN.
+#
+# Parameters:
+# - None (uses DOMAIN from environment)
+#
+# Returns:
+# - None (exits the process if DOMAIN is invalid)
+validate_domain() {
+    if [ -n "${DOMAIN:-}" ]; then
+        if ! echo "$DOMAIN" | grep -Eq '^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'; then
+            error "DOMAIN $DOMAIN is invalid. Example: site.com or sub.domain.org"
+        fi
+    fi
+}
+
+# Generates nginx.conf from template using substituted environment variables.
+#
+# Parameters:
+# - None (operates on environment, config paths)
+#
+# Returns:
+# - None (exits on error or writes new config to /etc/nginx/nginx.conf)
+setup_nginx() {
+    if [ "$NGINX_ENABLE" = "1" ]; then
+        info "Starting in PROD_MODE..."
+        if [ -f /app/config/nginx.conf ]; then
+            envsubst '$NGINX_PORT $RACKUP_PORT $DOMAIN' < /app/config/nginx.conf > /etc/nginx/nginx.conf
+        else
+            error "nginx.conf not found in /app/config"
+        fi
+    else
+        warn "Starting in DEV_MODE (HTTP only)..."
+        if [ -f /app/config/nginx.dev.conf ]; then
+            envsubst '$NGINX_PORT $RACKUP_PORT' < /app/config/nginx.dev.conf > /etc/nginx/nginx.conf
+        else
+            error "nginx.dev.conf not found in /app/config"
+        fi
     fi
 }
 
@@ -100,20 +154,21 @@ start_nginx() {
     success "nginx started"
 }
 
-# Launches the Ruby backend server using Bundler and rackup.
-# Never returns (process hand-off to Ruby app).
+# Launches the application in the appropriate mode: 
+# - PROD_MODE: nginx + rackup if NGINX_ENABLE=1, else DEV_MODE (rackup only)
 #
 # Parameters:
 # - None
 #
 # Returns:
-# - None (exec)
+# - None (never returns)
 start_app() {
-    info "Starting Ruby backend (bundle exec rackup config.ru) on port $RACKUP_PORT..."
+    setup_nginx
+    start_nginx
     exec bundle exec rackup /app/config.ru -p "$RACKUP_PORT"
 }
 
-# Main orchestration entrypoint.
+# Orchestrates full startup: env check, asset warn, gRPC gen, nginx setup/start, Ruby app.
 #
 # Parameters:
 # - None
@@ -122,10 +177,9 @@ start_app() {
 # - None
 main() {
     check_env
+    check_tls || true
     asset_warn
     protoc_gen
-    setup_nginx
-    start_nginx
     start_app
 }
 
