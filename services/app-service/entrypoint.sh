@@ -31,7 +31,8 @@ check_env() {
     : "${PGUSER?PGUSER is required}"
     : "${PGPASSWORD?PGPASSWORD is required}"
     : "${PGDATABASE?PGDATABASE is required}"
-    : "${NGINX_PORT?NGINX_PORT is required}"
+    : "${NGINX_HTTP_PORT?NGINX_HTTP_PORT is required}"
+    : "${NGINX_HTTPS_PORT?NGINX_HTTPS_PORT is required}"
     : "${RACKUP_PORT?RACKUP_PORT is required}"
     success "All required environment variables present"
 }
@@ -125,7 +126,7 @@ validate_domain() {
 # - None (prepares files for Nginx)
 prepare_nginx_certs() {
     mkdir -p /etc/nginx/certs
-    if compgen -G "/certs/*.crt" > /dev/null; then
+    if ls /certs/*.crt 1> /dev/null 2>&1; then
         cat /certs/*.crt > /etc/nginx/certs/fullchain.pem
     fi
     first_key=$(find /certs -maxdepth 1 -type f -name "*.key" | head -n1)
@@ -142,9 +143,9 @@ prepare_nginx_certs() {
 # Returns:
 # - None (exits on error or writes new config to /etc/nginx/nginx.conf)
 setup_nginx() {
-    prepare_nginx_certs
     if [ "$NGINX_ENABLE" = "1" ]; then
         info "Starting in PROD_MODE..."
+        prepare_nginx_certs
         if [ -f /app/config/nginx.prod.conf ]; then
             envsubst '$NGINX_HTTPS_PORT $RACKUP_PORT $DOMAIN' < /app/config/nginx.prod.conf > /etc/nginx/nginx.conf
         else

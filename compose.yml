@@ -27,7 +27,8 @@ services:
         env_file:
             - .env
         ports:
-            - "${NGINX_PORT:-8080}:8080"
+            - "${NGINX_HTTP_PORT:-9292}:9292"
+            - "${NGINX_HTTPS_PORT:-9393}:9393"
         depends_on:
             db-service:
                 condition: service_healthy
