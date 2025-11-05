@@ -57,7 +57,7 @@ SiteCard is a micro-service, container-ready web platform for creating interacti
     --docker, -d              Use docker-compose backend orchestration
     --podman, -p              Use podman-compose as orchestrator
     --telegram-token, -t ARG  Inject a Telegram bot token into .env (required)
-    --domain, -dmn ARG        Inject a public domain name (used for NGINX and service URLs) into the .env file (required)
+    --domain, -dmn ARG        Inject a public domain name into the .env file (required)
     --no-keygen, -n           Skip admin key generation
     --foreground, -f          Run containers in foreground
     ```
@@ -65,7 +65,7 @@ SiteCard is a micro-service, container-ready web platform for creating interacti
     > **Note:** `build.sh` automatically selects an available orchestration engine if no specific option is given. To force a specific orchestrator, use the `--podman`/`-p` or `--docker`/`-d` argument as needed.
 
 4. Access app:
-    - Main site: [http://localhost:8080](http://localhost:8080)
+    - Main site (HTTP): [http://localhost:9292](http://localhost:9292)
     - Telegram Bot: as specified by `NOTIFICATION_BOT_TOKEN`.
 
 ## User Data Volume
