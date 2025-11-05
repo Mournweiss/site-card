@@ -46,7 +46,7 @@ parse_args() {
                 shift
                 ;;
             --telegram-token|-t)
-                TELEGRAM_TOKEN="$2"
+                NOTIFICATION_BOT_TOKEN="$2"
                 shift 2
                 ;;
             --domain|-dmn)
@@ -173,7 +173,7 @@ ensure_env_vars() {
     fi
 }
 
-# Verifies or creates .env file from example, injects TELEGRAM_TOKEN and DOMAIN if provided.
+# Verifies or creates .env file from example, injects NOTIFICATION_BOT_TOKEN and DOMAIN if provided.
 #
 # Parameters:
 # - None (uses shell globals)
@@ -193,17 +193,17 @@ make_env() {
         fi
     fi
     # Inject bot token if set
-    if [ -n "$TELEGRAM_TOKEN" ]; then
-        if grep -q '^TELEGRAM_BOT_TOKEN=' .env; then
-            sed -i "s|^TELEGRAM_BOT_TOKEN=.*|TELEGRAM_BOT_TOKEN=$TELEGRAM_TOKEN|" .env
+    if [ -n "$NOTIFICATION_BOT_TOKEN" ]; then
+        if grep -q '^NOTIFICATION_BOT_TOKEN=' .env; then
+            sed -i "s|^NOTIFICATION_BOT_TOKEN=.*|NOTIFICATION_BOT_TOKEN=$NOTIFICATION_BOT_TOKEN|" .env
         else
             if grep -q '^PROJECT_NAME=' .env; then
-                awk '/^PROJECT_NAME=/{print;print "TELEGRAM_BOT_TOKEN='$TELEGRAM_TOKEN'";next}1' .env > .env.tmp && mv .env.tmp .env
+                awk '/^PROJECT_NAME=/{print;print "NOTIFICATION_BOT_TOKEN='$NOTIFICATION_BOT_TOKEN'";next}1' .env > .env.tmp && mv .env.tmp .env
             else
-                echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_TOKEN" >> .env
+                echo "NOTIFICATION_BOT_TOKEN=$NOTIFICATION_BOT_TOKEN" >> .env
             fi
         fi
-        success "TELEGRAM_BOT_TOKEN injected from argument"
+        success "NOTIFICATION_BOT_TOKEN injected from argument"
     fi
     # Inject DOMAIN if set
     if [ -n "$DOMAIN_ARG" ]; then
