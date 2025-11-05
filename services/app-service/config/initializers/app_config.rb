@@ -6,7 +6,7 @@ require 'dotenv/load'
 
 # AppConfig: application configuration loader; handles environment variables and .env file parsing.
 class AppConfig
-    attr_reader :env, :port, :notification_grpc_host, :notification_bot_token
+    attr_reader :env, :port, :notification_grpc_host, :notification_bot_token, :admin_key
 
     # Initializes AppConfig with merged environment and .env/.dotenv values.
     #
@@ -20,6 +20,7 @@ class AppConfig
         @port = fetch_param('RACKUP_PORT', 9292).to_i
         @notification_grpc_host = fetch_param('NOTIFICATION_GRPC_HOST', 'notification-bot:50051')
         @notification_bot_token = fetch_param('NOTIFICATION_BOT_TOKEN', nil)
+        @admin_key = load_admin_key
     end
 
     # Checks if application debug mode is enabled via ENV.
@@ -32,6 +33,28 @@ class AppConfig
     def self.debug_mode
         env_val = ENV['DEBUG']
         env_val == 'true' || env_val == '1'
+    end
+
+    # Loads the admin key from ADMIN_KEY_PATH file.
+    #
+    # Parameters:
+    # - none
+    #
+    # Returns:
+    # - String (admin key, read as binary or text, stripped)
+    #
+    # Raises:
+    # - RuntimeError if ADMIN_KEY_PATH not set in ENV or .env
+    # - RuntimeError if failed to read admin key from ADMIN_KEY_PATH
+    def load_admin_key
+        key_path = fetch_param('ADMIN_KEY_PATH', nil)
+        raise 'ADMIN_KEY_PATH not set in ENV or .env' unless key_path
+        begin
+            raw = File.binread(key_path)
+            raw.strip
+        rescue => e
+            raise "Failed to read admin key from #{key_path}: #{e.message}"
+        end
     end
 
     private

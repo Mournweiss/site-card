@@ -165,8 +165,8 @@ class AuthController < BaseController
     #
     # Returns: Boolean - true if matches ENV['ADMIN_KEY']
     def verify_admin_key(key)
-        env_key = ENV['ADMIN_KEY'] || ''
-        secure_compare(env_key, key)
+        config_key = config.admin_key || ''
+        secure_compare(config_key, key)
     end
 
     # Secure bytewise compare.

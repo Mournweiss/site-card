@@ -18,8 +18,6 @@ RUN apt-get update && \
 # Install Ruby gems, including grpc and build tools
 RUN gem install bundler grpc grpc-tools && bundle install
 
-RUN mkdir -p /userdata
-RUN mkdir -p /certs
 COPY . .
 
 # Copy frontend assets from build stage

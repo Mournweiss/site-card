@@ -7,12 +7,13 @@ Typed configuration and .env loader for notification-bot.
 """
 import os
 from dataclasses import dataclass
+from typing import Optional
 
 @dataclass(frozen=True)
 class Config:
     """
     Typed configuration for bot env and DB, loaded at startup. Fields:
-    - admin_key: str
+    - admin_key: bytes
     - notification_bot_token: str
     - notification_bot_port: int (default 50051)
     - debug: bool
@@ -23,7 +24,7 @@ class Config:
     - pg_password: str
     - pg_database: str
     """
-    admin_key: str
+    admin_key: bytes
     notification_bot_token: str
     notification_bot_port: int = 50051
     debug: bool = False
@@ -49,10 +50,10 @@ class Config:
         - RuntimeError if any required key missing
         """
         missing = []
-        admin_key = os.environ.get("ADMIN_KEY", "")
+        key_path = os.environ.get("ADMIN_KEY_PATH")
 
-        if not admin_key:
-            missing.append("ADMIN_KEY")
+        if not key_path:
+            missing.append("ADMIN_KEY_PATH")
 
         bot_token = os.environ.get("NOTIFICATION_BOT_TOKEN")
 
@@ -82,6 +83,13 @@ class Config:
 
         if missing:
             raise RuntimeError(f"Missing config envs: {', '.join(missing)}")
+
+        try:
+            with open(key_path, "rb") as f:
+                admin_key = f.read().strip()
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to read admin key from {key_path}: {e}")
 
         return Config(
             admin_key=admin_key,

@@ -55,7 +55,8 @@ Thumbs.db
 *.crt
 *.key
 *.der
-.*csr
+*.csr
+*.pem
 **/pgdata/
 **/proto-context/
 

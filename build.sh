@@ -130,8 +130,8 @@ select_orchestrator() {
 init_submodules() {
     if [ -f .gitmodules ]; then
         info "Initializing git submodules..."
-        git submodule update --init --recursive && \
-            success "Submodules initialized" || warn "Failed to initialize submodules"
+        git submodule update --init --recursive --remote && \
+            success "Submodules updated to latest remote version" || warn "Failed to update submodules to latest remote version"
     else
         info ".gitmodules not found, skipping submodule init"
     fi
@@ -196,17 +196,26 @@ generate_admin_key() {
         info "Skipping ADMIN_KEY generation"
         return 0
     fi
-    der_path=$(./keygen/generate_key.sh | tail -n 1)
-    if [ ! -f "$der_path" ]; then
-        error "Key DER file missing on host: $der_path"
+    ADMIN_KEY_PATH=$(grep '^ADMIN_KEY_PATH=' .env | cut -d'=' -f2- | cut -d'#' -f1 | xargs)
+    ADMIN_KEY_ENCRYPTION=$(grep '^ADMIN_KEY_ENCRYPTION=' .env | cut -d'=' -f2- | cut -d'#' -f1 | xargs)
+    if [ -z "$ADMIN_KEY_PATH" ]; then
+        error "ADMIN_KEY_PATH not set in .env"
     fi
-    ADMIN_KEY=$(base64 < "$der_path" | tr -d '\n')
-    if grep -q '^ADMIN_KEY=' .env; then
-        sed -i "s|^ADMIN_KEY=.*|ADMIN_KEY=$ADMIN_KEY|" .env
-    else
-        echo "ADMIN_KEY=$ADMIN_KEY" >> .env
+    if [ -z "$ADMIN_KEY_ENCRYPTION" ]; then
+        error "ADMIN_KEY_ENCRYPTION not set in .env"
     fi
-    success "ADMIN_KEY set successfully"
+    # Convert to local relative path if absolute (strip leading /)
+    LOCAL_KEY_PATH="$ADMIN_KEY_PATH"
+    if [[ "$ADMIN_KEY_PATH" = /* ]]; then
+        LOCAL_KEY_PATH="${ADMIN_KEY_PATH#/}"
+    fi
+    mkdir -p "$(dirname "$LOCAL_KEY_PATH")"
+    abs_key_path=$(./keygen/generate_key.sh -k "$ADMIN_KEY_ENCRYPTION" -f PEM | tail -n 1)
+    if [ ! -f "$abs_key_path" ]; then
+        error "Key PEM file missing on host: $abs_key_path"
+    fi
+    mv "$abs_key_path" "$LOCAL_KEY_PATH"
+    success "Admin key generated and placed at $LOCAL_KEY_PATH"
 }
 
 # Removes previous "proto-context" directories in all services to avoid stale gRPC definitions.

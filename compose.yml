@@ -53,6 +53,8 @@ services:
         restart: unless-stopped
         image: ${PROJECT_NAME:-site-card}-notification-bot:latest
         container_name: ${PROJECT_NAME:-site-card}-notification-bot
+        volumes:
+            - ./certs:/certs
         networks:
             - ${PROJECT_NAME:-site-card}-net
 
