@@ -95,3 +95,44 @@
         margin-right: 0;
     }
 }
+
+@media (max-width: 600px) {
+    .avatar-card,
+    .avatar-ring,
+    .avatar-image-wrapper,
+    .avatar-img,
+    .avatar-fallback {
+        max-width: 96vw;
+        width: 96vw !important;
+        min-width: unset !important;
+        box-sizing: border-box;
+    }
+    .avatar-section {
+        width: 100vw;
+        overflow-x: hidden;
+        min-width: unset;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .avatar-info {
+        max-width: 95vw;
+        min-width: unset;
+        box-sizing: border-box;
+        word-break: break-word;
+    }
+    .avatar-description {
+        max-width: 92vw;
+        word-break: break-word;
+        box-sizing: border-box;
+    }
+    .avatar-actions {
+        flex-direction: column;
+        gap: 0.7rem;
+        width: 98vw;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0;
+        margin-right: 0;
+        box-sizing: border-box;
+    }
+}

@@ -156,3 +156,28 @@
         max-width: 92vw;
     }
 }
+
+@media (max-width: 600px) {
+    #popup-modal {
+        max-width: 96vw !important;
+        width: 98vw !important;
+        min-width: unset !important;
+        box-sizing: border-box;
+        padding: 1.1em 0.6em 1.7em 0.6em;
+        margin: 0;
+    }
+    #popup-modal .popup-message-form,
+    #popup-modal .popup-form-error,
+    #popup-modal .popup-form-success,
+    #popup-modal .popup-form-loading {
+        box-sizing: border-box;
+        max-width: 92vw;
+        word-break: break-word;
+        min-width: unset;
+    }
+    #popup-modal img,
+    #popup-modal canvas {
+        max-width: 90vw !important;
+        width: auto;
+    }
+}

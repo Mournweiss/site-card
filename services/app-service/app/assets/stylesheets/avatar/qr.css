@@ -13,18 +13,16 @@
     height: 480px;
 }
 
-@media (max-width: 520px) {
-    .qr-canvas-wrapper {
-        width: 96vw;
-        height: 96vw;
-        max-width: 340px;
-        max-height: 340px;
-    }
+@media (max-width: 600px) {
     #qr-canvas {
-        width: 96vw !important;
-        height: 96vw !important;
-        max-width: 340px;
-        max-height: 340px;
+        width: auto;
+        height: auto;
+        max-width: 96vw;
+        max-height: 96vw;
+        aspect-ratio: 1 / 1;
+        display: block;
+        margin: 0 auto 0.7em auto;
+        box-sizing: border-box;
     }
 }
 
