@@ -1,10 +1,7 @@
-# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
-#
-# SPDX-License-Identifier: MIT
-
 require 'dotenv/load'
+require 'base64'
 
-# AppConfig: application configuration loader; handles environment variables and .env file parsing.
+# Application configuration loader; handles environment variables, .env parsing, and key handling.
 class AppConfig
     attr_reader :env, :port, :notification_grpc_host, :notification_bot_token, :admin_key
 
@@ -47,13 +44,13 @@ class AppConfig
     # - RuntimeError if ADMIN_KEY_PATH not set in ENV or .env
     # - RuntimeError if failed to read admin key from ADMIN_KEY_PATH
     def load_admin_key
-        key_path = fetch_param('ADMIN_KEY_PATH', nil)
-        raise 'ADMIN_KEY_PATH not set in ENV or .env' unless key_path
+        key_path = fetch_param('PRIVATE_KEY_PATH', nil)
+        raise 'PRIVATE_KEY_PATH not set in ENV or .env' unless key_path
         begin
-            raw = File.binread(key_path)
-            raw.strip
+            der = File.binread(key_path)
+            Base64.strict_encode64(der)
         rescue => e
-            raise "Failed to read admin key from #{key_path}: #{e.message}"
+            raise "Failed to read admin private key from #{key_path}: #{e.message}"
         end
     end
 

@@ -233,26 +233,32 @@ generate_admin_key() {
         info "Skipping ADMIN_KEY generation"
         return 0
     fi
-    ADMIN_KEY_PATH=$(grep '^ADMIN_KEY_PATH=' .env | cut -d'=' -f2- | cut -d'#' -f1 | xargs)
-    ADMIN_KEY_ENCRYPTION=$(grep '^ADMIN_KEY_ENCRYPTION=' .env | cut -d'=' -f2- | cut -d'#' -f1 | xargs)
-    if [ -z "$ADMIN_KEY_PATH" ]; then
-        error "ADMIN_KEY_PATH not set in .env"
+    PRIVATE_KEY_PATH=$(grep '^PRIVATE_KEY_PATH=' .env | cut -d'=' -f2- | cut -d'#' -f1 | xargs)
+    PUBLIC_KEY_PATH=$(grep '^PUBLIC_KEY_PATH=' .env | cut -d'=' -f2- | cut -d'#' -f1 | xargs)
+    KEYS_ENCRYPTION=$(grep '^KEYS_ENCRYPTION=' .env | cut -d'=' -f2- | cut -d'#' -f1 | xargs)
+    if [ -z "$PRIVATE_KEY_PATH" ] || [ -z "$PUBLIC_KEY_PATH" ] || [ -z "$KEYS_ENCRYPTION" ]; then
+        error "Missing required key-related env variables. Aborting."
     fi
-    if [ -z "$ADMIN_KEY_ENCRYPTION" ]; then
-        error "ADMIN_KEY_ENCRYPTION not set in .env"
+    LOCAL_PRIVATE_PATH="$PRIVATE_KEY_PATH"
+    LOCAL_PUBLIC_PATH="$PUBLIC_KEY_PATH"
+    if [[ "$PRIVATE_KEY_PATH" = /* ]]; then LOCAL_PRIVATE_PATH="${PRIVATE_KEY_PATH#/}"; fi
+    if [[ "$PUBLIC_KEY_PATH" = /* ]]; then LOCAL_PUBLIC_PATH="${PUBLIC_KEY_PATH#/}"; fi
+    mkdir -p "$(dirname "$LOCAL_PRIVATE_PATH")" "$(dirname "$LOCAL_PUBLIC_PATH")"
+    set +e
+    KEYGEN_OUTPUT=$(./keygen/generate_key.sh -p -k "$KEYS_ENCRYPTION" 2>&1)
+    KEYGEN_EXIT_CODE=$?
+    set -e
+    if [ $KEYGEN_EXIT_CODE -ne 0 ]; then
+        error "Key generation failed (generate_key.sh returned code $KEYGEN_EXIT_CODE). Output: $KEYGEN_OUTPUT"
     fi
-    # Convert to local relative path if absolute (strip leading /)
-    LOCAL_KEY_PATH="$ADMIN_KEY_PATH"
-    if [[ "$ADMIN_KEY_PATH" = /* ]]; then
-        LOCAL_KEY_PATH="${ADMIN_KEY_PATH#/}"
+    DER_PATH=$(echo "$KEYGEN_OUTPUT" | grep '.der' | head -1 | xargs)
+    PEM_PATH=$(echo "$KEYGEN_OUTPUT" | grep '.pem' | head -1 | xargs)
+    if [ ! -f "$DER_PATH" ] || [ ! -f "$PEM_PATH" ]; then
+        error "Key generation failed: .der or .pem file not produced. Check logs: $KEYGEN_OUTPUT"
     fi
-    mkdir -p "$(dirname "$LOCAL_KEY_PATH")"
-    abs_key_path=$(./keygen/generate_key.sh -k "$ADMIN_KEY_ENCRYPTION" -f PEM | tail -n 1)
-    if [ ! -f "$abs_key_path" ]; then
-        error "Key PEM file missing on host: $abs_key_path"
-    fi
-    mv "$abs_key_path" "$LOCAL_KEY_PATH"
-    success "Admin key generated and placed at $LOCAL_KEY_PATH"
+    mv "$DER_PATH" "$LOCAL_PRIVATE_PATH"
+    mv "$PEM_PATH" "$LOCAL_PUBLIC_PATH"
+    success "Admin key pair generated and placed at $LOCAL_PRIVATE_PATH and $LOCAL_PUBLIC_PATH"
 }
 
 # Removes previous "proto-context" directories in all services to avoid stale gRPC definitions.

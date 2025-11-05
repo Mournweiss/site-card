@@ -1,11 +1,8 @@
-# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
-#
-# SPDX-License-Identifier: MIT
-
 """
 Typed configuration and .env loader for notification-bot.
 """
 import os
+import base64
 from dataclasses import dataclass
 from typing import Optional
 
@@ -13,7 +10,7 @@ from typing import Optional
 class Config:
     """
     Typed configuration for bot env and DB, loaded at startup. Fields:
-    - admin_key: bytes
+    - admin_key: base64-encoded string of private key
     - notification_bot_token: str
     - notification_bot_port: int (default 50051)
     - debug: bool
@@ -24,7 +21,7 @@ class Config:
     - pg_password: str
     - pg_database: str
     """
-    admin_key: bytes
+    admin_key: str
     notification_bot_token: str
     notification_bot_port: int = 50051
     debug: bool = False
@@ -50,10 +47,10 @@ class Config:
         - RuntimeError if any required key missing
         """
         missing = []
-        key_path = os.environ.get("ADMIN_KEY_PATH")
+        private_key_path = os.environ.get("PRIVATE_KEY_PATH")
 
-        if not key_path:
-            missing.append("ADMIN_KEY_PATH")
+        if not private_key_path:
+            missing.append("PRIVATE_KEY_PATH")
 
         bot_token = os.environ.get("NOTIFICATION_BOT_TOKEN")
 
@@ -85,11 +82,11 @@ class Config:
             raise RuntimeError(f"Missing config envs: {', '.join(missing)}")
 
         try:
-            with open(key_path, "rb") as f:
-                admin_key = f.read().strip()
+            with open(private_key_path, "rb") as f:
+                admin_key = base64.b64encode(f.read()).decode('ascii').replace('\n','')
 
         except Exception as e:
-            raise RuntimeError(f"Failed to read admin key from {key_path}: {e}")
+            raise RuntimeError(f"Failed to read private key from {private_key_path}: {e}")
 
         return Config(
             admin_key=admin_key,

@@ -80,7 +80,9 @@ This project uses the [userdata/](userdata/) directory (Docker volume) to suppor
 
 ## Primary Environment Variables
 
--   `ADMIN_KEY` — PQC admin key for privileged panel access (auto-generated or manual)
+-   `PRIVATE_KEY_PATH` — Absolute path to the admin's private key (default: /certs/private_key.der).
+-   `PUBLIC_KEY_PATH` — Absolute path to the admin's public key (default: /certs/public_key.pem)
+-   `KEYS_ENCRYPTION` — Algorithm for admin keypair generation; must match platform requirements (default: ML-KEM-512).
 -   `DOMAIN` — Public domain (for links and Telegram WebApp integration)
 -   `NOTIFICATION_BOT_TOKEN` — Telegram Bot token from @BotFather
 -   `DEBUG` — Enable debug output (`true`/`false`)
