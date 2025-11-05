@@ -137,6 +137,42 @@ init_submodules() {
     fi
 }
 
+# Ensures all variables from the template are present in the actual env file.
+#
+# Parameters:
+# - template_file: string - path to the template .env file (e.g., .env.example)
+# - env_file: string - path to the target .env file
+#
+# Returns:
+# - None
+ensure_env_vars() {
+    local template_file="$1"
+    local env_file="$2"
+    local updated=0
+    info "Syncing .env with template: $template_file"
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        [[ -z "$line" || "$line" =~ ^# ]] && continue
+        # Parse and trim var name
+        var_name="${line%%=*}"
+        var_name="$(echo "$var_name" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+        info "Checking if $var_name is present in $env_file ..."
+        if ! grep -Eq "^[[:space:]]*#?[[:space:]]*$var_name[[:space:]]*=" "$env_file"; then
+            last_char=$(tail -c1 "$env_file" 2>/dev/null || echo '')
+            if [[ "$last_char" != "" && "$last_char" != $'\n' ]]; then
+                echo >> "$env_file"
+            fi
+            echo "$line" >> "$env_file"
+            info "Added $var_name to $env_file"
+            updated=1
+        fi
+    done < "$template_file"
+    if [[ $updated -eq 1 ]]; then
+        info "Completed variable sync: $env_file updated"
+    else
+        info "No missing variables detected in $env_file"
+    fi
+}
+
 # Verifies or creates .env file from example, injects TELEGRAM_TOKEN and DOMAIN if provided.
 #
 # Parameters:
@@ -147,6 +183,7 @@ init_submodules() {
 make_env() {
     if [ -f .env ]; then
         warn ".env already exists, skipping creation"
+        ensure_env_vars .env.example .env
     else
         if [ -f .env.example ]; then
             cp .env.example .env
