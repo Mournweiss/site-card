@@ -5,6 +5,7 @@
 require_relative './templates/base_controller'
 require_relative '../../lib/errors'
 require_relative '../../lib/cookie_manager'
+require_relative '../../lib/logger'
 require 'openssl'
 require 'base64'
 require 'cgi'
@@ -194,47 +195,47 @@ class AuthController < BaseController
     def verify_webapp_init_data!(init_data_str)
         token = config.notification_bot_token
         unless token
-            logger.debug("Verification failed: token is nil/empty")
+            logger.info("Verification failed: token is nil/empty")
             raise VerificationError, 'Server is misconfigured: no bot token available.'
         end
         unless init_data_str.is_a?(String) && !init_data_str.empty?
-            logger.debug({event: 'init_data missing or empty', got_type: init_data_str.class.name, value: init_data_str.inspect}.inspect)
+            logger.info({event: 'init_data missing or empty', got_type: init_data_str.class.name, value: init_data_str.inspect}.inspect)
             raise VerificationError, 'No init_data received'
         end
-        logger.debug({event: 'init_data raw', raw: init_data_str}.inspect)
+        logger.info({event: 'init_data raw', raw: init_data_str}.inspect)
         data = CGI.parse(init_data_str)
-        logger.debug({event: 'init_data parsed', data: data}.inspect)
+        logger.info({event: 'init_data parsed', data: data}.inspect)
         auth_date = data['auth_date']&.first
         unless auth_date
-            logger.debug({event: 'auth_date missing', all_keys: data.keys}.inspect)
+            logger.info({event: 'auth_date missing', all_keys: data.keys}.inspect)
             raise VerificationError, 'Missing auth_date'
         end
         hash = data['hash']&.first
         unless hash
-            logger.debug({event: 'hash missing', all_keys: data.keys}.inspect)
+            logger.info({event: 'hash missing', all_keys: data.keys}.inspect)
             raise VerificationError, 'Missing hash'
         end
         check_str = data.keys.reject { |k| k == 'hash' }.sort.map { |k| "#{k}=#{data[k].first}" }.join("\n")
-        logger.debug({event: 'check_str computed', check_str: check_str}.inspect)
+        logger.info({event: 'check_str computed', check_str: check_str}.inspect)
         secret = OpenSSL::Digest::SHA256.digest(token)
         my_hash = OpenSSL::HMAC.hexdigest('SHA256', secret, check_str)
-        logger.debug({event: 'computed hash', my_hash: my_hash, received_hash: hash}.inspect)
+        logger.info({event: 'computed hash', my_hash: my_hash, received_hash: hash}.inspect)
         unless my_hash == hash
-            logger.debug({event: 'hash mismatch', my_hash: my_hash, received_hash: hash, check_str: check_str, token_last4: token[-4..-1]}.inspect)
+            logger.info({event: 'hash mismatch', my_hash: my_hash, received_hash: hash, check_str: check_str, token_last4: token[-4..-1]}.inspect)
             raise VerificationError, 'Invalid WebApp signature'
         end
         time_now = Time.now.to_i
         auth_time = auth_date.to_i
-        logger.debug({event: 'auth_date check', time_now: time_now, auth_date: auth_time, delta: time_now - auth_time}.inspect)
+        logger.info({event: 'auth_date check', time_now: time_now, auth_date: auth_time, delta: time_now - auth_time}.inspect)
         if (time_now - auth_time).abs > 86400
-            logger.debug({event: 'auth_date too old', now: time_now, received: auth_time, delta: time_now - auth_time}.inspect)
+            logger.info({event: 'auth_date too old', now: time_now, received: auth_time, delta: time_now - auth_time}.inspect)
             raise VerificationError, 'WebApp init_data too old'
         end
         user_json = data['user']&.first
         user = user_json ? JSON.parse(user_json) : nil
-        logger.debug({event: 'user parse', user_json: user_json, user: user}.inspect)
+        logger.info({event: 'user parse', user_json: user_json, user: user}.inspect)
         unless user && user['id']
-            logger.debug({event: 'user missing', user_json: user_json, data_keys: data.keys}.inspect)
+            logger.info({event: 'user missing', user_json: user_json, data_keys: data.keys}.inspect)
             raise VerificationError, 'Missing user data'
         end
         { user_id: user['id'].to_i, username: user['username'], full_user: user }

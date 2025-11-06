@@ -45,4 +45,13 @@ class AppLogger
     # Returns:
     # - nil
     def error(msg); @logger.error(msg); end
+
+    # Debug-level log message.
+    #
+    # Parameters:
+    # - msg: String - message to log
+    #
+    # Returns:
+    # - nil
+    def debug(msg); @logger.debug(msg); end
 end
