@@ -5,23 +5,13 @@
 """
 Start command handler for notification-bot. Offers WebApp auth button via /start.
 """
+import time
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup, WebAppInfo
 from telegram.ext import ContextTypes
 from src.logger import get_logger
+from src.handlers import generate_login_token, get_webapp_url, encrypt_uid_for_webapp
 
 logger = get_logger("cmd.start")
-
-def get_webapp_url(config):
-    """
-    Extracts WebApp URL from config for authorization button.
-
-    Parameters:
-    - config: object - bot config; may have .webapp_url
-
-    Returns:
-    - str: webapp URL or empty string if missing
-    """
-    return getattr(config, "webapp_url", "") or ""
 
 async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -35,11 +25,12 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     - None
     """
     user_id = update.effective_user.id
-    username = update.effective_user.username
     config = context.bot_data.get("config")
-    WEBAPP_URL = get_webapp_url(config)
-    logger.info("/start received - sent WebApp button", extra={"log_user_id": user_id, "webapp_url": WEBAPP_URL})
-    button = KeyboardButton(text="Authorize via WebApp", web_app=WebAppInfo(url=WEBAPP_URL))
+    euid = encrypt_uid_for_webapp(user_id, config.webapp_token_secret)
+    token = generate_login_token(euid, config.webapp_token_secret)
+    webapp_url = get_webapp_url(config.domain, euid, token, config.webapp_token_secret)
+    logger.info("/start issued WebApp button", extra={"webapp_url": webapp_url})
+    button = KeyboardButton(text="Authorize via WebApp", web_app=WebAppInfo(url=webapp_url))
     keyboard = ReplyKeyboardMarkup([[button]], resize_keyboard=True)
     welcome = (
         "Welcome to Notification-Bot.\n"

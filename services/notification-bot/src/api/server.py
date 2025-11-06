@@ -13,11 +13,14 @@ import logging
 from . import service_pb2
 from . import service_pb2_grpc
 from ..errors import NotificationException
-from ..handlers import user_auth_manager
+from ..handlers import user_auth_manager, decrypt_uid_for_webapp
 
 logger = logging.getLogger(__name__)
 
 class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
+    """
+    Implements NotificationDeliveryServicer endpoints for notification-bot.
+    """
 
     def __init__(self, handler):
         """
@@ -43,15 +46,23 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
         Returns:
         - WebappUserAuthResponse: RPC result
         """
-        user_id = getattr(request, 'user_id', None)
-        username = getattr(request, 'username', None)
+        euid = getattr(request, 'euid', None)
 
-        if not user_id:
+        if not euid:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return service_pb2.WebappUserAuthResponse(success=False, error_message="Missing user_id")
+            return service_pb2.WebappUserAuthResponse(success=False, error_message="Missing euid (encrypted user_id)")
 
         try:
-            user_auth_manager.authorize(int(user_id), username)
+            secret = self.handler.config.webapp_token_secret
+            user_id = decrypt_uid_for_webapp(euid, secret)
+
+        except Exception as ex:
+            logger.warning(f"Failed to decrypt euid for auth: {ex}")
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            return service_pb2.WebappUserAuthResponse(success=False, error_message="Invalid euid or decryption failed")
+
+        try:
+            user_auth_manager.authorize(int(user_id))
             return service_pb2.WebappUserAuthResponse(success=True, error_message="")
 
         except Exception as ex:
@@ -61,7 +72,6 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
     def DeliverContactMessage(self, request, context):
         """
         gRPC endpoint to send a user contact message for notification delivery.
-        Validates fields, delegates to handler. Sets status on failure.
 
         Parameters:
         - request: ContactMessageRequest - gRPC input message

@@ -10,6 +10,20 @@ require 'openssl'
 require 'base64'
 require 'cgi'
 require 'json'
+require 'grpc'
+
+# Add Ruby proto context for gRPC calls
+PROTO_ROOT = File.expand_path('proto-context', Dir.pwd)
+$LOAD_PATH.unshift(PROTO_ROOT)
+begin
+    require 'service_pb'
+    require 'service_services_pb'
+rescue LoadError => e
+    STDERR.puts "Failed to load gRPC Ruby proto files: #{e.message}"
+    STDERR.puts "Checked LOAD_PATH: #{$LOAD_PATH.inspect}"
+    STDERR.puts "Please verify proto Ruby file generation and permissions"
+    exit(2)
+end
 
 # Controller handling authentication for admin and Telegram WebApp users.
 class AuthController < BaseController
@@ -92,57 +106,68 @@ class AuthController < BaseController
         end
     end
 
-    # POST-handler for Telegram WebApp: checks admin_key and Telegram init_data,
-    # calls gRPC to authorize user with notification-bot.
+    # POST-handler for Telegram WebApp, works with euid and token.
     #
     # Parameters:
-    # - req: WEBrick::HTTPRequest (with form data)
+    # - req: WEBrick::HTTPRequest (with form data; params :euid, :token, ...)
     # - res: WEBrick::HTTPResponse
     #
     # Returns: nil
     def handle_webapp_post(req, res)
         fields = req.body.respond_to?(:read) ? URI.decode_www_form(req.body.read).to_h : {}
-        admin_key = fields['admin_key']
-        init_data = fields['init_data']
-        begin
-            tg_user = verify_webapp_init_data!(init_data)
-            logger.info("Telegram WebApp user verified: #{tg_user[:user_id]}, #{tg_user[:username]}")
-        rescue VerificationError => e
-            logger.warn("WebApp init_data verification failed: #{e.message}")
-            res.status = 401
-            res.body = 'Telegram user verification failed.'
-            return
-        end
-        unless admin_key.is_a?(String) && !admin_key.strip.empty?
+        euid = fields['euid']
+        token = fields['token']
+        logger.info("WebApp auth received", {euid: euid&.slice(0,12), token_length: token&.length})
+        unless euid && euid.length > 8 && token && token.length > 8
+            logger.warn("WebApp auth: Missing or invalid params", {euid_present: !euid.nil?, token_present: !token.nil?})
             res.status = 400
-            res.body = 'Admin key required.'
+            res.body = "Missing or invalid parameters (euid/token required)."
             return
         end
-        if verify_admin_key(admin_key)
-            begin
-                require 'grpc'
-                grpc_host = config.notification_grpc_host
-                stub = Notification::NotificationDelivery::Stub.new(grpc_host, :this_channel_is_insecure)
-                grpc_req = Notification::WebappUserAuthRequest.new(user_id: tg_user[:user_id], username: tg_user[:username] || "")
-                grpc_resp = stub.authorize_webapp_user(grpc_req)
-                if grpc_resp.success
-                    logger.info("Notification-bot: user authorized via gRPC", tg_user_id: tg_user[:user_id], username: tg_user[:username])
-                    res.status = 200
-                    res.body = '<div class="success">WebApp authorization successful!</div>'
-                else
-                    logger.warn("Notification-bot: user gRPC authorization failed: #{grpc_resp.error_message}")
-                    res.status = 401
-                    res.body = grpc_resp.error_message || 'gRPC authorization failed.'
-                end
-            rescue => e
-                logger.error("Notification-bot gRPC error: #{e.message}")
-                res.status = 502
-                res.body = 'Notification service unavailable.'
+        begin
+            grpc_host = config.notification_grpc_host
+            stub = Notification::NotificationDelivery::Stub.new(grpc_host, :this_channel_is_insecure)
+            grpc_req = Notification::WebappUserAuthRequest.new(euid: euid)
+            grpc_resp = stub.authorize_webapp_user(grpc_req)
+            if grpc_resp.success
+                logger.info("WebApp user authorized via gRPC (euid-only flow)", {euid: euid&.slice(0,12)})
+                res.status = 200
+                res.body = '<div class="success">WebApp authorization successful!</div>'
+            else
+                logger.warn("Notification-bot: user gRPC authorization failed: #{grpc_resp.error_message}", {euid: euid&.slice(0,12)})
+                res.status = 401
+                res.body = grpc_resp.error_message || 'gRPC authorization failed.'
             end
-        else
-            logger.warn("WebApp MiniApp admin key verify failed: #{tg_user[:user_id]}")
-            res.status = 401
-            res.body = 'Invalid admin key.'
+        rescue => e
+            logger.error("Notification-bot gRPC error: #{e.message}", {euid: euid&.slice(0,12)})
+            res.status = 502
+            res.body = 'Notification service unavailable.'
+        end
+    end
+
+    # Token/uid validation logic (JWT, nonce DB, etc).
+    #
+    # Parameters:
+    # - uid: String - user id from form/query param
+    # - token: String - JWT access token (WebApp)
+    #
+    # Returns: Boolean - true if valid (uid/token match, signature/time ok)
+    def validate_webapp_token(uid, token)
+        begin
+            require 'jwt'
+            hmac_secret = config.webapp_token_secret
+            payload, _ = JWT.decode(token, hmac_secret, true, { algorithm: 'HS256' })
+            logger.debug("JWT decoded", {payload: payload, uid_param: uid})
+            uid_match = payload["uid"].to_s == uid.to_s
+            exp_valid = payload["exp"] && Time.at(payload["exp"]) > Time.now
+            logger.debug("JWT uid_match: #{uid_match}, exp_valid: #{exp_valid}", {payload: payload, time: Time.now})
+            return uid_match && exp_valid
+        rescue JWT::DecodeError, JWT::ExpiredSignature => err
+            logger.warn("JWT decode/expiry validation failed for uid=#{uid}", {error: err.message})
+            return false
+        rescue => e
+            logger.error("WebApp token validation exception: #{e.message}", {uid: uid, token: token})
+            return false
         end
     end
 
@@ -183,61 +208,5 @@ class AuthController < BaseController
         res = 0
         b.each_byte { |byte| res |= byte ^ l.shift }
         res == 0
-    end
-
-    # Telegram WebApp data signature and freshness verification.
-    #
-    # Parameters:
-    # - init_data_str: String - original Telegram WebApp init data (URL encoded)
-    #
-    # Returns: Hash - user info (user_id, username, full_user)
-    # Raises: VerificationError if any step fails
-    def verify_webapp_init_data!(init_data_str)
-        token = config.notification_bot_token
-        unless token
-            logger.info("Verification failed: token is nil/empty")
-            raise VerificationError, 'Server is misconfigured: no bot token available.'
-        end
-        unless init_data_str.is_a?(String) && !init_data_str.empty?
-            logger.info({event: 'init_data missing or empty', got_type: init_data_str.class.name, value: init_data_str.inspect}.inspect)
-            raise VerificationError, 'No init_data received'
-        end
-        logger.info({event: 'init_data raw', raw: init_data_str}.inspect)
-        data = CGI.parse(init_data_str)
-        logger.info({event: 'init_data parsed', data: data}.inspect)
-        auth_date = data['auth_date']&.first
-        unless auth_date
-            logger.info({event: 'auth_date missing', all_keys: data.keys}.inspect)
-            raise VerificationError, 'Missing auth_date'
-        end
-        hash = data['hash']&.first
-        unless hash
-            logger.info({event: 'hash missing', all_keys: data.keys}.inspect)
-            raise VerificationError, 'Missing hash'
-        end
-        check_str = data.keys.reject { |k| k == 'hash' }.sort.map { |k| "#{k}=#{data[k].first}" }.join("\n")
-        logger.info({event: 'check_str computed', check_str: check_str}.inspect)
-        secret = OpenSSL::Digest::SHA256.digest(token)
-        my_hash = OpenSSL::HMAC.hexdigest('SHA256', secret, check_str)
-        logger.info({event: 'computed hash', my_hash: my_hash, received_hash: hash}.inspect)
-        unless my_hash == hash
-            logger.info({event: 'hash mismatch', my_hash: my_hash, received_hash: hash, check_str: check_str, token_last4: token[-4..-1]}.inspect)
-            raise VerificationError, 'Invalid WebApp signature'
-        end
-        time_now = Time.now.to_i
-        auth_time = auth_date.to_i
-        logger.info({event: 'auth_date check', time_now: time_now, auth_date: auth_time, delta: time_now - auth_time}.inspect)
-        if (time_now - auth_time).abs > 86400
-            logger.info({event: 'auth_date too old', now: time_now, received: auth_time, delta: time_now - auth_time}.inspect)
-            raise VerificationError, 'WebApp init_data too old'
-        end
-        user_json = data['user']&.first
-        user = user_json ? JSON.parse(user_json) : nil
-        logger.info({event: 'user parse', user_json: user_json, user: user}.inspect)
-        unless user && user['id']
-            logger.info({event: 'user missing', user_json: user_json, data_keys: data.keys}.inspect)
-            raise VerificationError, 'Missing user data'
-        end
-        { user_id: user['id'].to_i, username: user['username'], full_user: user }
     end
 end

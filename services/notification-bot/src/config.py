@@ -16,6 +16,7 @@ class Config:
     Typed configuration for bot env and DB, loaded at startup. Fields:
     - admin_key: base64-encoded string of private key
     - notification_bot_token: str
+    - webapp_token_secret: str (JWT/WebApp token signing secret)
     - notification_bot_port: int (default 50051)
     - debug: bool
     - domain: str (for webapp_url)
@@ -27,6 +28,7 @@ class Config:
     """
     admin_key: str
     notification_bot_token: str
+    webapp_token_secret: str
     notification_bot_port: int = 50051
     debug: bool = False
     domain: str = ""
@@ -69,6 +71,10 @@ class Config:
         pg_user = os.environ.get("PGUSER", "postgres")
         pg_password = os.environ.get("PGPASSWORD", "postgres")
         pg_database = os.environ.get("PGDATABASE", "sitecard")
+        webapp_token_secret = os.environ.get("WEBAPP_TOKEN_SECRET", "exampledevsecret")
+
+        if not webapp_token_secret:
+            missing.append("WEBAPP_TOKEN_SECRET")
 
         if not pg_host:
             missing.append("PGHOST")
@@ -103,20 +109,5 @@ class Config:
             pg_user=pg_user,
             pg_password=pg_password,
             pg_database=pg_database,
+            webapp_token_secret=webapp_token_secret,
         )
-
-    @property
-    def webapp_url(self):
-        """
-        Computes Telegram WebApp auth URL using configured domain (if present).
-
-        Parameters:
-        - None
-
-        Returns:
-        - str - full https URL for bot WebApp auth
-        """
-        if self.domain:
-            return f"https://{self.domain}/auth/webapp"
-
-        return ""

@@ -51,24 +51,23 @@ class NotificationUserRepository:
 
         return self._conn
 
-    def add_user(self, user_id: int, username: Optional[str] = None):
+    def add_user(self, user_id: int):
         """
-        Inserts or updates an authorized Telegram user.
+        Inserts or updates an authorized Telegram user by user_id.
 
         Parameters:
         - user_id: int - Telegram user ID
-        - username: Optional[str] - Telegram username
 
         Returns:
-        - None (side effect: record upserted in DB)
+        - None
         """
         conn = self._get_conn()
         with conn.cursor() as cur:
             cur.execute('''
-                INSERT INTO authorized_bot_users (user_id, username, authorized_at) 
-                VALUES (%s, %s, %s)
-                ON CONFLICT (user_id) DO UPDATE SET username=EXCLUDED.username, authorized_at=EXCLUDED.authorized_at;
-            ''', (user_id, username, datetime.datetime.utcnow()))
+                INSERT INTO authorized_bot_users (user_id, authorized_at)
+                VALUES (%s, %s)
+                ON CONFLICT (user_id) DO UPDATE SET authorized_at=EXCLUDED.authorized_at;
+            ''', (user_id, datetime.datetime.utcnow()))
             conn.commit()
 
     def remove_user(self, user_id: int):

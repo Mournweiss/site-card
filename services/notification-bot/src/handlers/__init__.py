@@ -3,6 +3,16 @@
 # SPDX-License-Identifier: MIT
 
 from .notification import NotificationHandler
-from .auth import UserAuthManager, user_auth_manager
+from .auth import (
+    UserAuthManager, user_auth_manager,
+    generate_login_token, validate_login_token,
+    encrypt_uid_for_webapp, decrypt_uid_for_webapp,
+    get_webapp_url
+)
 
-__all__ = ["NotificationHandler", "UserAuthManager", "user_auth_manager"]
+__all__ = [
+    "NotificationHandler", "UserAuthManager", "user_auth_manager",
+    "generate_login_token", "validate_login_token",
+    "encrypt_uid_for_webapp", "decrypt_uid_for_webapp",
+    "get_webapp_url"
+]

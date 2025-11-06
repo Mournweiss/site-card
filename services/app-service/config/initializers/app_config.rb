@@ -58,6 +58,15 @@ class AppConfig
         end
     end
 
+    # Returns the JWT/WebApp token secret for HS256 signature of tokens used in WebApp auth.
+    # Value set in WEBAPP_TOKEN_SECRET in .env/ENV, with a fallback for development.
+    #
+    # Returns:
+    # - String: secret key for token signing/validation
+    def webapp_token_secret
+        fetch_param('WEBAPP_TOKEN_SECRET', 'exampledevsecret')
+    end
+
     private
 
     # Loads environment variables from .env (if exists) merged with ENV.

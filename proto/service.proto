@@ -33,8 +33,7 @@ message ContactMessageResponse {
 
 // Telegram WebApp user authentication
 message WebappUserAuthRequest {
-    int64 user_id = 1;              // Telegram user ID (int64, required)
-    string username = 2;            // Telegram username
+    string euid = 1;                // Encrypted Telegram user ID (AES-GCM)
 }
 
 // Response for Webapp user auth

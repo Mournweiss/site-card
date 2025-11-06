@@ -261,6 +261,37 @@ generate_admin_key() {
     success "Admin key pair generated and placed at $LOCAL_PRIVATE_PATH and $LOCAL_PUBLIC_PATH"
 }
 
+
+# Generates a WEBAPP_TOKEN_SECRET for JWT/WebApp tokens using keygen/generate_key.sh and saves it to .env as base64.
+# Skipped if NO_KEYGEN set.
+#
+# Parameters:
+# - None
+#
+# Returns:
+# - None
+generate_webapp_token_secret() {
+    if [ -n "$NO_KEYGEN" ]; then
+        info "NO_KEYGEN set; JWT/WebApp token secret generation skipped, using existing value"
+        return 0
+    fi
+    info "Generating secure WEBAPP_TOKEN_SECRET (JWT/WebApp)..."
+    DER_SECRET_PATH=$(./keygen/generate_key.sh -f DER -k "$KEYS_ENCRYPTION" 2>/dev/null | grep '.der' | head -1 | xargs)
+    if [ ! -f "$DER_SECRET_PATH" ]; then
+        error "Could not generate DER-secret for WEBAPP_TOKEN_SECRET, $DER_SECRET_PATH not found"
+    fi
+    WEBAPP_TOKEN_SECRET_BASE64=$(base64 < "$DER_SECRET_PATH" | tr -d '\n')
+    if [ -z "$WEBAPP_TOKEN_SECRET_BASE64" ]; then
+        error "WEBAPP_TOKEN_SECRET could not be created, DER file empty or conversion failed"
+    fi
+    if grep -q '^WEBAPP_TOKEN_SECRET=' .env; then
+        sed -i "s|^WEBAPP_TOKEN_SECRET=.*|WEBAPP_TOKEN_SECRET=$WEBAPP_TOKEN_SECRET_BASE64|" .env
+    else
+        echo "WEBAPP_TOKEN_SECRET=$WEBAPP_TOKEN_SECRET_BASE64" >> .env
+    fi
+    success "WEBAPP_TOKEN_SECRET generated"
+}
+
 # Removes previous "proto-context" directories in all services to avoid stale gRPC definitions.
 #
 # Parameters:
@@ -332,6 +363,7 @@ main() {
     init_submodules
     make_env
     generate_admin_key
+    generate_webapp_token_secret
     clean_proto_contexts
     copy_proto_contexts
     run_project

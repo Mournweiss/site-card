@@ -10,7 +10,7 @@ require_relative '../../lib/errors'
 require_relative './templates/base_controller'
 require 'grpc'
 
-# Add Ruby proto context for gRPC calls.
+# Add Ruby proto context for gRPC calls
 PROTO_ROOT = File.expand_path('proto-context', Dir.pwd)
 $LOAD_PATH.unshift(PROTO_ROOT)
 begin

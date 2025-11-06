@@ -168,7 +168,6 @@ ON CONFLICT DO NOTHING;
 -- List of Telegram WebApp users authorized for notifications
 CREATE TABLE IF NOT EXISTS authorized_bot_users (
     id SERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL UNIQUE, -- Telegram user ID
-    username VARCHAR(64),
+    user_id BIGINT NOT NULL UNIQUE,
     authorized_at TIMESTAMP DEFAULT NOW()
 );
