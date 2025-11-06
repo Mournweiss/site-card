@@ -114,7 +114,7 @@ class AuthController < BaseController
     #
     # Returns: nil
     def handle_webapp_post(req, res)
-        fields = req.body.respond_to?(:read) ? URI.decode_www_form(req.body.read).to_h : {}
+        fields = req.query
         euid   = fields['euid']
         token  = fields['token']
         admin_key = fields['admin_key']
