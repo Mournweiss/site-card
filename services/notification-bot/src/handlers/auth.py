@@ -11,11 +11,11 @@ import time
 import jwt
 import base64
 import os
-from urllib.parse import urlencode
 from src.clients import NotificationUserRepository
 from typing import Optional
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
+from urllib.parse import urlencode
 
 class UserAuthManager:
     """
@@ -191,14 +191,13 @@ def encrypt_uid_for_webapp(user_id: str, secret: str) -> str:
     euid = iv + ct + tag
     return base64.urlsafe_b64encode(euid).decode('utf-8')
 
-def get_webapp_url(domain: str, user_id: str, token: str, secret: str) -> str:
+def get_webapp_url(domain: str, euid: str, token: str, secret: str) -> str:
     """
     Generates a secure, user-specific WebApp URL for Telegram authorization.
-    All user_id transmission occurs strictly as encrypted euid (see PLAN.md/security rationale).
 
     Parameters:
     - domain: str - full domain name (no protocol)
-    - user_id: str - user/session ID to encrypt (never exposed in URL)
+    - euid: str - Encrypted user/session ID
     - token: str - secure JWT/nonce for WebApp session
     - secret: str - WEBAPP_TOKEN_SECRET from config (base64 string)
 
@@ -206,14 +205,15 @@ def get_webapp_url(domain: str, user_id: str, token: str, secret: str) -> str:
     - str: WebApp URL with only euid and token as params
 
     Raises:
-    - RuntimeError: if encryption fails or domain unset
+    - RuntimeError: if domain unset
 
     Example:
-    - get_webapp_url("example.com", "12345", token, secret)
+    - get_webapp_url("example.com", euid, token, secret)
     """
+
     if not domain:
-        raise RuntimeError("DOMAIN must be set for WebApp URL generation.")
-    euid = encrypt_uid_for_webapp(user_id, secret)
+        raise RuntimeError("DOMAIN must be set for WebApp URL generation")
+
     params = urlencode({"euid": euid, "token": token})
     return f"https://{domain}/auth/webapp?{params}"
 

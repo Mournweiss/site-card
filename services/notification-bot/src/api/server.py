@@ -8,8 +8,9 @@ Implements NotificationDeliveryServicer from service_pb2_grpc.
 """
 
 import grpc
-from concurrent import futures
 import logging
+import traceback
+from concurrent import futures
 from . import service_pb2
 from . import service_pb2_grpc
 from ..errors import NotificationException
@@ -35,6 +36,9 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
         self.config = config
         self.handler = handler
 
+        if not hasattr(handler, "user_auth_manager") or handler.user_auth_manager is None:
+            logger.error("NotificationService initialized with handler lacking user_auth_manager")
+
     def AuthorizeWebappUser(self, request, context):
         """
         gRPC endpoint to authorize a Telegram WebApp user.
@@ -55,20 +59,23 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
 
         try:
             secret = self.config.webapp_token_secret
+            logger.info(f"Decrypting euid: {euid}")   
             user_id = decrypt_uid_for_webapp(euid, secret)
 
         except Exception as ex:
-            logger.warning(f"Failed to decrypt euid for auth: {ex}")
+            logger.warning(f"Failed to decrypt euid for auth: {ex}\n" + traceback.format_exc())
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return service_pb2.WebappUserAuthResponse(success=False, error_message="Invalid euid or decryption failed")
+            return service_pb2.WebappUserAuthResponse(success=False, error_message="Invalid euid or decryption failed: " + str(ex))
 
         try:
-            user_auth_manager.authorize(int(user_id))
+            logger.info(f"Authorizing user...")
+            self.handler.user_auth_manager.authorize(int(user_id))
             return service_pb2.WebappUserAuthResponse(success=True, error_message="")
 
         except Exception as ex:
+            logger.error(f"Exception in user authorization: {ex}\n" + traceback.format_exc())
             context.set_code(grpc.StatusCode.UNKNOWN)
-            return service_pb2.WebappUserAuthResponse(success=False, error_message=str(ex))
+            return service_pb2.WebappUserAuthResponse(success=False, error_message="Authorization exception: " + str(ex))
 
     def DeliverContactMessage(self, request, context):
         """

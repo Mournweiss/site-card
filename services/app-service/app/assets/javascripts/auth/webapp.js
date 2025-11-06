@@ -68,7 +68,7 @@ function updateFormState() {
     submitBtn.disabled = !(hasEuid && hasToken);
     if (!(hasEuid && hasToken)) {
         document.getElementById("formMsg").innerHTML =
-            '<span class="auth-error">Open this page via Telegram WebApp link only.</span>';
+            '<span class="auth-error">Open this page via Telegram WebApp link only</span>';
         submitBtn.classList.add("disabled");
     } else {
         submitBtn.classList.remove("disabled");
@@ -93,7 +93,7 @@ form.onsubmit = async e => {
     const admin_key = adminKeyInput.value;
     if (!euid || euid.length < 8 || !token || token.length < 8) return;
     if (!admin_key || admin_key.length < 4) {
-        document.getElementById("formMsg").innerHTML = `<span class='auth-error'>Admin key required.<\/span>`;
+        document.getElementById("formMsg").innerHTML = `<span class='auth-error'>Admin key required<\/span>`;
         return;
     }
     let data = new FormData(form);
