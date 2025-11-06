@@ -2,7 +2,12 @@
 //
 // SPDX-License-Identifier: MIT
 
-// Parse all search-string params (uid, token, etc) from the URL
+/**
+ * Parses all search-string params (euid, token, etc) from the current URL.
+ * Converts query parameters into a key-value object.
+ *
+ * @returns {Object.<string, string>} params - Map from parameter name to value.
+ */
 function parseSearchParams() {
     const params = {};
     (window.location.search || "")
@@ -16,14 +21,20 @@ function parseSearchParams() {
     return params;
 }
 
-const REQUIRED_FIELDS = ["euid", "token"];
+// List of required fields for authorization flow
+const REQUIRED_FIELDS = ["euid", "token", "admin_key"];
+
+// Extract parameters from URL
 const params = parseSearchParams();
+
+// Auth form element
 const form = document.getElementById("authForm");
 
+// Remove any preexisting hidden inputs to prevent duplicates
 [...form.querySelectorAll('input[type="hidden"]')].forEach(e => e.parentNode.removeChild(e));
 
-// Fill form with hidden fields for all parameters
-REQUIRED_FIELDS.forEach(field => {
+// Add hidden fields for euid and token from URL
+["euid", "token"].forEach(field => {
     let input = document.createElement("input");
     input.type = "hidden";
     input.name = field;
@@ -31,28 +42,51 @@ REQUIRED_FIELDS.forEach(field => {
     form.appendChild(input);
 });
 
-// Warning if any param is missing/invalid. Both euid (encrypted user ID) and token (JWT/nonce) must be present.
-const missing = REQUIRED_FIELDS.find(f => !params[f] || params[f].length < 8);
-if (missing) {
-    const msg = document.createElement("div");
-    msg.innerHTML = `<span class="auth-error">Authorization is only available via a secure Telegram WebApp button with valid session parameters (euid and token). (Missing: <b>${missing}</b>)<\/span>`;
-    form.insertBefore(msg, document.getElementById("formMsg"));
+const submitBtn = form.querySelector('button[type="submit"]');
+// Admin key password input (required)
+const adminKeyInput = form.querySelector('[name="admin_key"]');
+
+/**
+ * Updates the enabled/disabled state of the form elements (admin key input and submit button)
+ * depending on the presence of valid euid and token parameters.
+ * Adds a user-facing message if parameters are missing or invalid.
+ *
+ * @returns {void}
+ */
+function updateFormState() {
+    const hasEuid = !!params["euid"] && params["euid"].length >= 8;
+    const hasToken = !!params["token"] && params["token"].length >= 8;
+    adminKeyInput.disabled = !(hasEuid && hasToken);
+    submitBtn.disabled = !(hasEuid && hasToken);
+    if (!(hasEuid && hasToken)) {
+        document.getElementById("formMsg").innerHTML =
+            '<span class="auth-error">Open this page via Telegram WebApp link only</span>';
+    }
 }
 
+// Initialize form state/check on page load
+updateFormState();
+
+/**
+ * Handles form submission for Telegram WebApp authorization.
+ * Submits admin_key (input), euid and token (from URL) via POST to /auth/webapp.
+ * Shows status messages for error, progress, and result. Prevents submission if fields are invalid.
+ *
+ * @param {Event} e - Submit event
+ * @returns {Promise<void>}
+ */
 form.onsubmit = async e => {
     e.preventDefault();
-    for (const field of REQUIRED_FIELDS) {
-        const v = form.querySelector(`[name='${field}']`)?.value;
-        if (!v || v.length < 8) {
-            document.getElementById(
-                "formMsg"
-            ).innerHTML = `<span class='auth-error'>Missing or invalid field: ${field}. Authorization is not possible.<\/span>`;
-            return;
-        }
+    const euid = params["euid"];
+    const token = params["token"];
+    const admin_key = adminKeyInput.value;
+    if (!euid || euid.length < 8 || !token || token.length < 8) return;
+    if (!admin_key || admin_key.length < 4) {
+        document.getElementById("formMsg").innerHTML = `<span class='auth-error'>Admin key required<\/span>`;
+        return;
     }
-
-    // Submit parameters from hidden fields
     let data = new FormData(form);
+    data.set("admin_key", admin_key);
     document.getElementById("formMsg").textContent = "Processing...";
     try {
         let resp = await fetch("/auth/webapp", {

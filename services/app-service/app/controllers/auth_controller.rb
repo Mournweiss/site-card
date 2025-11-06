@@ -115,13 +115,20 @@ class AuthController < BaseController
     # Returns: nil
     def handle_webapp_post(req, res)
         fields = req.body.respond_to?(:read) ? URI.decode_www_form(req.body.read).to_h : {}
-        euid = fields['euid']
-        token = fields['token']
-        logger.info("WebApp auth received", {euid: euid&.slice(0,12), token_length: token&.length})
-        unless euid && euid.length > 8 && token && token.length > 8
-            logger.warn("WebApp auth: Missing or invalid params", {euid_present: !euid.nil?, token_present: !token.nil?})
+        euid   = fields['euid']
+        token  = fields['token']
+        admin_key = fields['admin_key']
+        logger.info("WebApp auth received", {euid: euid&.slice(0,12), token_length: token&.length, admin_key_given: !admin_key.to_s.strip.empty?})
+        unless euid && euid.length > 8 && token && token.length > 8 && admin_key && admin_key.length >= 4
             res.status = 400
-            res.body = "Missing or invalid parameters (euid/token required)."
+            res.body = "Missing or invalid parameters (euid, token, admin_key required)."
+            logger.warn("WebApp auth: Missing or invalid params", {euid_present: !euid.nil?, token_present: !token.nil?, admin_key_present: !admin_key.to_s.strip.empty?})
+            return
+        end
+        unless verify_admin_key(admin_key)
+            res.status = 401
+            res.body = "Invalid admin key."
+            logger.warn("WebApp admin_key invalid", {euid: euid&.slice(0,12), admin_key_length: admin_key.length})
             return
         end
         begin
@@ -130,11 +137,11 @@ class AuthController < BaseController
             grpc_req = Notification::WebappUserAuthRequest.new(euid: euid)
             grpc_resp = stub.authorize_webapp_user(grpc_req)
             if grpc_resp.success
-                logger.info("WebApp user authorized via gRPC (euid-only flow)", {euid: euid&.slice(0,12)})
+                logger.info("WebApp user authorized via gRPC", {euid: euid&.slice(0,12)})
                 res.status = 200
                 res.body = '<div class="success">WebApp authorization successful!</div>'
             else
-                logger.warn("Notification-bot: user gRPC authorization failed: #{grpc_resp.error_message}", {euid: euid&.slice(0,12)})
+                logger.warn("User gRPC authorization failed: #{grpc_resp.error_message}", {euid: euid&.slice(0,12)})
                 res.status = 401
                 res.body = grpc_resp.error_message || 'gRPC authorization failed.'
             end
