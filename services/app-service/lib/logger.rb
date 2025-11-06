@@ -1,8 +1,5 @@
-# SPDX-FileCopyrightText: 2025 Maxim Selin <selinmax05@mail.ru>
-#
-# SPDX-License-Identifier: MIT
-
 require 'logger'
+require 'json'
 
 # Facade for stdlib Logger with level & output management for app logging.
 class AppLogger
@@ -23,35 +20,47 @@ class AppLogger
     #
     # Parameters:
     # - msg: String - message to log
+    # - data: Hash (optional) - structured data
     #
     # Returns:
     # - nil
-    def info(msg); @logger.info(msg); end
+    def info(msg, data = nil)
+      @logger.info(data ? "#{msg} | #{data.to_json}" : msg)
+    end
 
     # Warn-level log message.
     #
     # Parameters:
     # - msg: String - message to log
+    # - data: Hash (optional) - structured data
     #
     # Returns:
     # - nil
-    def warn(msg); @logger.warn(msg); end
+    def warn(msg, data = nil)
+      @logger.warn(data ? "#{msg} | #{data.to_json}" : msg)
+    end
 
     # Error-level log message.
     #
     # Parameters:
     # - msg: String - message to log
+    # - data: Hash (optional) - structured data
     #
     # Returns:
     # - nil
-    def error(msg); @logger.error(msg); end
+    def error(msg, data = nil)
+      @logger.error(data ? "#{msg} | #{data.to_json}" : msg)
+    end
 
     # Debug-level log message.
     #
     # Parameters:
     # - msg: String - message to log
+    # - data: Hash (optional) - structured data
     #
     # Returns:
     # - nil
-    def debug(msg); @logger.debug(msg); end
+    def debug(msg, data = nil)
+      @logger.debug(data ? "#{msg} | #{data.to_json}" : msg)
+    end
 end
