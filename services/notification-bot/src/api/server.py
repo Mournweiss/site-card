@@ -22,7 +22,7 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
     Implements NotificationDeliveryServicer endpoints for notification-bot.
     """
 
-    def __init__(self, handler):
+    def __init__(self, config, handler):
         """
         Initialize service with domain handler (delivers messages, manages auth).
 
@@ -32,6 +32,7 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
         Returns:
         - NotificationService instance
         """
+        self.config = config
         self.handler = handler
 
     def AuthorizeWebappUser(self, request, context):
@@ -53,7 +54,7 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
             return service_pb2.WebappUserAuthResponse(success=False, error_message="Missing euid (encrypted user_id)")
 
         try:
-            secret = self.handler.config.webapp_token_secret
+            secret = self.config.webapp_token_secret
             user_id = decrypt_uid_for_webapp(euid, secret)
 
         except Exception as ex:
@@ -121,7 +122,8 @@ def serve(config, handler):
     - None
     """
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    service_pb2_grpc.add_NotificationDeliveryServicer_to_server(NotificationService(handler), server)
+    service = NotificationService(config, handler)
+    service_pb2_grpc.add_NotificationDeliveryServicer_to_server(service, server)
     server.add_insecure_port(f'[::]:{config.notification_bot_port}')
     server.start()
     logger.info(f'Notification gRPC Server started at {config.notification_bot_port}')

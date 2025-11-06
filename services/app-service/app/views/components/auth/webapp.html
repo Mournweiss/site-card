@@ -6,6 +6,7 @@
     <title>WebApp Authorization</title>
     <link rel="stylesheet" href="/assets/common.css">
     <link rel="stylesheet" href="/assets/auth-base.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -13,7 +14,12 @@
     <form id="authForm" class="auth-box" autocomplete="off">
         <h2 style="text-align:center;">WebApp Authorization</h2>
         <div class="auth-msg" id="formMsg"></div>
-        <input type="password" id="adminKey" name="admin_key" placeholder="Enter admin key" required autocomplete="off" autofocus />
+        <div class="auth-field-group">
+            <input type="password" id="adminKey" name="admin_key" placeholder="Enter admin key" required autocomplete="off" autofocus />
+            <button type="button" id="toggleAdminKey" class="eye-toggle" aria-label="Show/hide key">
+                <i id="eyeIcon" class="bi bi-eye"></i>
+            </button>
+        </div>
         <input type="hidden" id="initData" name="init_data" />
         <button class="sitecard-btn" type="submit">Authorize</button>
     </form>

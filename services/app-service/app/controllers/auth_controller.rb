@@ -114,7 +114,7 @@ class AuthController < BaseController
     #
     # Returns: nil
     def handle_webapp_post(req, res)
-        fields = req.query
+        fields = req.params
         euid   = fields['euid']
         token  = fields['token']
         admin_key = fields['admin_key']
@@ -198,8 +198,9 @@ class AuthController < BaseController
     #
     # Returns: Boolean - true if matches ENV['ADMIN_KEY']
     def verify_admin_key(key)
-        config_key = config.admin_key || ''
-        secure_compare(config_key, key)
+        config_key = config.admin_key.to_s.strip.gsub(/\s+/, "")
+        user_key = key.to_s.strip.gsub(/\s+/, "")
+        secure_compare(config_key, user_key)
     end
 
     # Secure bytewise compare.

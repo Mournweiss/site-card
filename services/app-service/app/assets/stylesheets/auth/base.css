@@ -20,6 +20,9 @@
     max-width: 350px;
     width: 100%;
     box-shadow: 0 4px 24px var(--color-shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .auth-box h2 {
@@ -36,7 +39,8 @@
 }
 
 /* Input fields: border, background, inherit palette, spacing */
-.auth-box input[type="password"] {
+.auth-box input[type="password"],
+.auth-box input[type="text"] {
     width: 100%;
     padding: 0.7em;
     margin-bottom: 1em;
@@ -48,11 +52,15 @@
 
 .auth-box .sitecard-btn {
     width: 100%;
-    margin-top: 0.2em;
+    margin: 0 auto 0.3em auto;
+    display: block;
 }
 
 /* Feedback message blocks for auth state */
-.auth-msg {
+.auth-msg,
+.auth-error,
+.auth-success {
+    font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
     text-align: center;
     margin-bottom: 1em;
 }
@@ -61,4 +69,48 @@
 }
 .auth-success {
     color: var(--color-success);
+}
+
+.auth-field-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 1em;
+    width: 100%;
+    position: relative;
+}
+.auth-field-group input[type="password"],
+.auth-field-group input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0;
+    padding-right: 2.25em;
+}
+.auth-field-group .eye-toggle {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    cursor: pointer;
+    position: absolute;
+    right: 0.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    height: 2em;
+    width: 2em;
+    padding: 0;
+    z-index: 10;
+}
+.auth-field-group .eye-toggle:active,
+.auth-field-group .eye-toggle:focus {
+    outline: none;
+    box-shadow: none;
+}
+.auth-field-group .bi {
+    font-size: 1.3em;
+    color: var(--color-border);
+    pointer-events: none;
+    transition: color 0.18s;
 }

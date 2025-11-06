@@ -21,7 +21,7 @@ function parseSearchParams() {
     return params;
 }
 
-// List of required fields for authorization flow
+// List of required fields for authorization flow: euid, token (from URL), admin_key (input)
 const REQUIRED_FIELDS = ["euid", "token", "admin_key"];
 
 // Extract parameters from URL
@@ -45,9 +45,18 @@ const form = document.getElementById("authForm");
 const submitBtn = form.querySelector('button[type="submit"]');
 // Admin key password input (required)
 const adminKeyInput = form.querySelector('[name="admin_key"]');
+const toggleBtn = document.getElementById("toggleAdminKey");
+const eyeIcon = document.getElementById("eyeIcon");
+if (toggleBtn && adminKeyInput && eyeIcon) {
+    toggleBtn.addEventListener("click", function () {
+        const showing = adminKeyInput.getAttribute("type") === "password";
+        adminKeyInput.setAttribute("type", showing ? "text" : "password");
+        eyeIcon.className = showing ? "bi bi-eye-slash" : "bi bi-eye";
+    });
+}
 
 /**
- * Updates the enabled/disabled state of the form elements (admin key input and submit button)
+ * Updates the enabled/disabled state of the form elements
  * depending on the presence of valid euid and token parameters.
  * Adds a user-facing message if parameters are missing or invalid.
  *
@@ -56,11 +65,13 @@ const adminKeyInput = form.querySelector('[name="admin_key"]');
 function updateFormState() {
     const hasEuid = !!params["euid"] && params["euid"].length >= 8;
     const hasToken = !!params["token"] && params["token"].length >= 8;
-    adminKeyInput.disabled = !(hasEuid && hasToken);
     submitBtn.disabled = !(hasEuid && hasToken);
     if (!(hasEuid && hasToken)) {
         document.getElementById("formMsg").innerHTML =
-            '<span class="auth-error">Open this page via Telegram WebApp link only</span>';
+            '<span class="auth-error">Open this page via Telegram WebApp link only.</span>';
+        submitBtn.classList.add("disabled");
+    } else {
+        submitBtn.classList.remove("disabled");
     }
 }
 
@@ -82,7 +93,7 @@ form.onsubmit = async e => {
     const admin_key = adminKeyInput.value;
     if (!euid || euid.length < 8 || !token || token.length < 8) return;
     if (!admin_key || admin_key.length < 4) {
-        document.getElementById("formMsg").innerHTML = `<span class='auth-error'>Admin key required<\/span>`;
+        document.getElementById("formMsg").innerHTML = `<span class='auth-error'>Admin key required.<\/span>`;
         return;
     }
     let data = new FormData(form);

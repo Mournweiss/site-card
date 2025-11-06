@@ -7,14 +7,15 @@ Main entrypoint for notification-bot, initializes config, handlers, Telegram app
 """
 import logging
 import threading
+import asyncio
+import atexit
 from src.config import Config
 from src.errors import NotificationException
 from src.clients import NotificationUserRepository
 from src.handlers import UserAuthManager, user_auth_manager as global_user_auth_manager
 from src.bot import build_application
 from src.api import serve as serve_grpc
-import atexit
-
+from src.handlers import NotificationHandler
 
 def main():
     """
@@ -49,12 +50,10 @@ def main():
     # Build and register Telegram app, data and notification handler
     application = build_application(config, global_user_auth_manager)
 
-    from src.handlers import NotificationHandler
     handler = NotificationHandler(application, global_user_auth_manager)
     application.bot_data["notification_handler"] = handler
 
     # Start notification worker as job
-    import asyncio
     application.job_queue.run_once(lambda ctx: asyncio.create_task(handler.start_worker()), 0)
 
     # Run gRPC server
