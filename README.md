@@ -82,11 +82,12 @@ This project uses the [userdata/](userdata/) directory (Docker volume) to suppor
 
 -   `PRIVATE_KEY_PATH` — Absolute path to the admin's private key (default: /certs/private_key.der).
 -   `PUBLIC_KEY_PATH` — Absolute path to the admin's public key (default: /certs/public_key.pem)
+-   `WEBAPP_SECRET_PATH` — Absolute path to DER private key file used for JWT/WebApp token signing/validation (default: /certs/webapp_secret.der).
 -   `KEYS_ENCRYPTION` — Algorithm for admin keypair generation; must match platform requirements (default: ML-KEM-512).
--   `DOMAIN` — Public domain (for links and Telegram WebApp integration)
--   `NOTIFICATION_BOT_TOKEN` — Telegram Bot token from @BotFather
--   `DEBUG` — Enable debug output (`true`/`false`)
--   `PROJECT_NAME` — Project identifier, used as prefix for names of all services and orchestration objects (containers, networks, volumes) in the stack (default: site-card)
--   `NGINX_PORT` — Host port for nginx/main site (default: 8080)
--   `RACKUP_PORT` — Internal Ruby backend port (default: 9292)
--   `NOTIFICATION_BOT_PORT` — gRPC port for notification bot microservice (default: 50051)
+-   `DOMAIN` — Public domain (for links and Telegram WebApp integration).
+-   `NOTIFICATION_BOT_TOKEN` — Telegram Bot token from @BotFather.
+-   `DEBUG` — Enable debug output (`true`/`false`).
+-   `PROJECT_NAME` — Project identifier, used as prefix for names of all services and orchestration objects (containers, networks, volumes) in the stack (default: site-card).
+-   `NGINX_PORT` — Host port for nginx/main site (default: 8080).
+-   `RACKUP_PORT` — Internal Ruby backend port (default: 9292).
+-   `NOTIFICATION_BOT_PORT` — gRPC port for notification bot microservice (default: 50051).

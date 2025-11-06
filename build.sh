@@ -275,21 +275,27 @@ generate_webapp_token_secret() {
         info "NO_KEYGEN set; JWT/WebApp token secret generation skipped, using existing value"
         return 0
     fi
-    info "Generating secure WEBAPP_TOKEN_SECRET (JWT/WebApp)..."
-    DER_SECRET_PATH=$(./keygen/generate_key.sh -f DER -k "$KEYS_ENCRYPTION" 2>/dev/null | grep '.der' | head -1 | xargs)
-    if [ ! -f "$DER_SECRET_PATH" ]; then
-        error "Could not generate DER-secret for WEBAPP_TOKEN_SECRET, $DER_SECRET_PATH not found"
+    WEBAPP_SECRET_PATH=$(grep '^WEBAPP_SECRET_PATH=' .env | cut -d'=' -f2- | cut -d'#' -f1 | xargs)
+    if [ -z "$WEBAPP_SECRET_PATH" ]; then
+        error "WEBAPP_SECRET_PATH variable must be set in .env for WebApp token secret."
     fi
-    WEBAPP_TOKEN_SECRET_BASE64=$(base64 < "$DER_SECRET_PATH" | tr -d '\n')
-    if [ -z "$WEBAPP_TOKEN_SECRET_BASE64" ]; then
-        error "WEBAPP_TOKEN_SECRET could not be created, DER file empty or conversion failed"
+    LOCAL_SECRET_PATH="$WEBAPP_SECRET_PATH"
+    if [[ "$WEBAPP_SECRET_PATH" = /* ]]; then LOCAL_SECRET_PATH="${WEBAPP_SECRET_PATH#/}"; fi
+    mkdir -p "$(dirname "$LOCAL_SECRET_PATH")"
+    info "Generating secure DER key for JWT/WebApp at $LOCAL_SECRET_PATH..."
+    set +e
+    KEYGEN_OUTPUT=$(./keygen/generate_key.sh -f DER -k "$KEYS_ENCRYPTION" 2>&1)
+    EXIT_CODE=$?
+    set -e
+    DER_SECRET_PATH=$(echo "$KEYGEN_OUTPUT" | grep '.der' | head -1 | xargs)
+    if [ $EXIT_CODE -ne 0 ] || [ ! -f "$DER_SECRET_PATH" ]; then
+        error "Failed to generate DER-secret for JWT/WebApp: $DER_SECRET_PATH (code: $EXIT_CODE, details: $KEYGEN_OUTPUT)"
     fi
-    if grep -q '^WEBAPP_TOKEN_SECRET=' .env; then
-        sed -i "s|^WEBAPP_TOKEN_SECRET=.*|WEBAPP_TOKEN_SECRET=$WEBAPP_TOKEN_SECRET_BASE64|" .env
-    else
-        echo "WEBAPP_TOKEN_SECRET=$WEBAPP_TOKEN_SECRET_BASE64" >> .env
+    mv "$DER_SECRET_PATH" "$LOCAL_SECRET_PATH"
+    if [ ! -f "$LOCAL_SECRET_PATH" ]; then
+        error "Secret DER file was not moved to target: $LOCAL_SECRET_PATH."
     fi
-    success "WEBAPP_TOKEN_SECRET generated"
+    success "WebApp DER secret saved at $LOCAL_SECRET_PATH."
 }
 
 # Removes previous "proto-context" directories in all services to avoid stale gRPC definitions.

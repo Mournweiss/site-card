@@ -71,11 +71,10 @@ class Config:
         pg_user = os.environ.get("PGUSER", "postgres")
         pg_password = os.environ.get("PGPASSWORD", "postgres")
         pg_database = os.environ.get("PGDATABASE", "sitecard")
-        webapp_token_secret = os.environ.get("WEBAPP_TOKEN_SECRET", "exampledevsecret")
+        webapp_secret_path = os.environ.get("WEBAPP_SECRET_PATH")
 
-        if not webapp_token_secret:
-            missing.append("WEBAPP_TOKEN_SECRET")
-
+        if not webapp_secret_path:
+            missing.append("WEBAPP_SECRET_PATH")
         if not pg_host:
             missing.append("PGHOST")
 
@@ -97,6 +96,13 @@ class Config:
 
         except Exception as e:
             raise RuntimeError(f"Failed to read private key from {private_key_path}: {e}")
+
+        try:
+            with open(webapp_secret_path, "rb") as f:
+                webapp_token_secret = base64.b64encode(f.read()).decode('ascii').replace('\n','')
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to read WebApp secret key from {webapp_secret_path}: {e}")
 
         return Config(
             admin_key=admin_key,
