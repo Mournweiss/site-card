@@ -43,7 +43,6 @@ const form = document.getElementById("authForm");
 });
 
 const submitBtn = form.querySelector('button[type="submit"]');
-// Admin key password input (required)
 const adminKeyInput = form.querySelector('[name="admin_key"]');
 const toggleBtn = document.getElementById("toggleAdminKey");
 const eyeIcon = document.getElementById("eyeIcon");
@@ -56,7 +55,7 @@ if (toggleBtn && adminKeyInput && eyeIcon) {
 }
 
 /**
- * Updates the enabled/disabled state of the form elements
+ * Updates the enabled/disabled state of the form elements (admin key input and submit button)
  * depending on the presence of valid euid and token parameters.
  * Adds a user-facing message if parameters are missing or invalid.
  *
@@ -105,9 +104,29 @@ form.onsubmit = async e => {
             body: data,
         });
         let text = await resp.text();
-        document.getElementById("formMsg").innerHTML = text.includes("success")
+        const isSuccess = text.includes("success");
+        document.getElementById("formMsg").innerHTML = isSuccess
             ? '<span class="auth-success">Authorization successful!</span>'
             : '<span class="auth-error">' + text.replace(/<[^>]*>?/gm, "") + "</span>";
+
+        if (isSuccess) {
+            submitBtn.disabled = true;
+            adminKeyInput.disabled = true;
+            submitBtn.style.display = "none";
+            if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.close === "function") {
+                setTimeout(() => {
+                    window.Telegram.WebApp.close();
+                }, 1250);
+            } else {
+                const fallback = document.createElement("div");
+                fallback.className = "auth-msg-fallback";
+                fallback.textContent = "You are now authorized. You may close this window";
+                document.getElementById("formMsg").appendChild(fallback);
+                if (typeof window.Telegram === "undefined" || typeof window.Telegram.WebApp === "undefined") {
+                    console.info("Telegram.WebApp API not detected. Not in WebView?");
+                }
+            }
+        }
     } catch (err) {
         document.getElementById("formMsg").textContent = "Error: " + (err.message || err);
     }

@@ -102,6 +102,25 @@ class NotificationHandler:
             self.application.create_task(self.deliver_worker())
             self._worker_started = True
 
+    async def send_success_auth_notification(self, user_id: int):
+        """
+        Sends a notification message to the user about successful authorization only once (on first auth). SRP: must not include business logic for authorization.
+
+        Parameters:
+            user_id (int): Telegram user ID
+
+        Returns: None
+        """
+        logger = get_logger("success_auth_notification")
+        message = "You have successfully authorized.\nYou will now receive notifications from SiteCard."
+
+        try:
+            await self.application.bot.send_message(user_id, message)
+            logger.info("Sent WebApp success message to user", extra={"user_id": user_id})
+
+        except Exception as ex:
+            logger.warning("Failed to deliver success auth notification", extra={"user_id": user_id, "error": str(ex)})
+
     @staticmethod
     def _render_message(name, email, body):
         """

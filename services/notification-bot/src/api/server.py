@@ -8,6 +8,7 @@ Implements NotificationDeliveryServicer from service_pb2_grpc.
 """
 
 import grpc
+import grpc.aio
 import logging
 import traceback
 from concurrent import futures
@@ -20,7 +21,8 @@ logger = logging.getLogger(__name__)
 
 class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
     """
-    Implements NotificationDeliveryServicer endpoints for notification-bot.
+    Main gRPC API implementation for notification-bot business logic.
+    Exposes async endpoints for Telegram WebApp user authorization and contact message delivery.
     """
 
     def __init__(self, config, handler):
@@ -39,23 +41,22 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
         if not hasattr(handler, "user_auth_manager") or handler.user_auth_manager is None:
             logger.error("NotificationService initialized with handler lacking user_auth_manager")
 
-    def AuthorizeWebappUser(self, request, context):
+    async def AuthorizeWebappUser(self, request, context):
         """
-        gRPC endpoint to authorize a Telegram WebApp user.
-        Sets INVALID_ARGUMENT if user_id not present; returns result OK or with error_message.
+        Handles gRPC WebApp user authorization request from app-service.
+        Decrypts user_id, optionally sends success notification, and registers authorization.
 
         Parameters:
-        - request: WebappUserAuthRequest - incoming request from client
-        - context: grpc.ServicerContext - for error status/settings
+        - request: WebappUserAuthRequest (protobuf, includes `euid`)
+        - context: grpc.aio.ServicerContext
 
         Returns:
-        - WebappUserAuthResponse: RPC result
+        - WebappUserAuthResponse (protobuf): success/error status and error_message if failed
         """
         euid = getattr(request, 'euid', None)
 
         if not euid:
-            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return service_pb2.WebappUserAuthResponse(success=False, error_message="Missing euid (encrypted user_id)")
+            await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Missing euid (encrypted user_id)")
 
         try:
             secret = self.config.webapp_token_secret
@@ -64,29 +65,40 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
 
         except Exception as ex:
             logger.warning(f"Failed to decrypt euid for auth: {ex}\n" + traceback.format_exc())
-            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return service_pb2.WebappUserAuthResponse(success=False, error_message="Invalid euid or decryption failed: " + str(ex))
+            await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Invalid euid or decryption failed: " + str(ex))
 
         try:
-            logger.info(f"Authorizing user...")
-            self.handler.user_auth_manager.authorize(int(user_id))
+            auth_manager = self.handler.user_auth_manager
+            already_auth = auth_manager.is_authorized(int(user_id))
+
+            # Call notification for first successful authorization
+            if not already_auth:
+
+                try:
+                    await self.handler.send_success_auth_notification(int(user_id))
+
+                except Exception as nerr:
+                    logger.warning(f"Failed to send Telegram success notification: {nerr}", extra={"user_id": user_id})
+
+            auth_manager.authorize(int(user_id))
+            logger.info("User authorized via WebApp (feedback sent if first auth)", extra={"user_id": user_id})
             return service_pb2.WebappUserAuthResponse(success=True, error_message="")
 
         except Exception as ex:
             logger.error(f"Exception in user authorization: {ex}\n" + traceback.format_exc())
-            context.set_code(grpc.StatusCode.UNKNOWN)
-            return service_pb2.WebappUserAuthResponse(success=False, error_message="Authorization exception: " + str(ex))
+            await context.abort(grpc.StatusCode.UNKNOWN, "Authorization exception: " + str(ex))
 
-    def DeliverContactMessage(self, request, context):
+    async def DeliverContactMessage(self, request, context):
         """
-        gRPC endpoint to send a user contact message for notification delivery.
+        Handles gRPC contact message delivery from app-service (site visitor/user).
+        Validates request and enqueues delivery to all authorized Telegram users.
 
         Parameters:
-        - request: ContactMessageRequest - gRPC input message
-        - context: grpc.ServicerContext
+        - request: ContactMessageRequest (protobuf) — includes `name`, `email`, `body`
+        - context: grpc.aio.ServicerContext
 
         Returns:
-        - ContactMessageResponse: success/error
+        - ContactMessageResponse (protobuf): success or error status with error_message
         """
         name = getattr(request, 'name', None)
         email = getattr(request, 'email', None)
@@ -94,9 +106,7 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
         logger.info(f"gRPC DeliverContactMessage called", extra={"contact_name": name, "contact_email": email})
 
         if not (name and email and body):
-            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            context.set_details("Missing required fields (name, email, body)")
-            return service_pb2.ContactMessageResponse(success=False, error_message="Missing required fields (name, email, body)")
+            await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Missing required fields (name, email, body)")
 
         try:
             self.handler.deliver_contact_message(name, email, body)
@@ -105,33 +115,28 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
 
         except NotificationException as e:
             logger.error(f"Business error while delivering contact message: {e}", exc_info=True)
-            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            context.set_details(str(e))
-            return service_pb2.ContactMessageResponse(success=False, error_message=str(e))
+            await context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(e))
 
         except Exception as ex:
             logger.error(f"Internal error in DeliverContactMessage: {ex}", exc_info=True)
-            context.set_code(grpc.StatusCode.INTERNAL)
-            context.set_details("Internal error")
-            return service_pb2.ContactMessageResponse(success=False, error_message="Internal server error")
+            await context.abort(grpc.StatusCode.INTERNAL, "Internal server error")
 
-
-def serve(config, handler):
+async def serve(config, handler):
     """
-    Entrypoint for gRPC server; binds and serves NotificationService on configured port.
-    Call blocks until termination and logs endpoint info.
+    Entrypoint for async gRPC server; binds and serves NotificationService using asyncio event loop.
 
     Parameters:
-    - config: object - contains notification_bot_port attribute
-    - handler: object - passed to NotificationService (domain/logic providers)
+    - config: Config (contains environment, port, etc)
+    - handler: NotificationHandler (business logic, delivery, user tracking)
 
     Returns:
-    - None
+    - None (runs gRPC server until termination)
     """
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server = grpc.aio.server()
     service = NotificationService(config, handler)
     service_pb2_grpc.add_NotificationDeliveryServicer_to_server(service, server)
     server.add_insecure_port(f'[::]:{config.notification_bot_port}')
-    server.start()
-    logger.info(f'Notification gRPC Server started at {config.notification_bot_port}')
-    server.wait_for_termination()
+    logger.info(f'Async Notification gRPC Server starting at {config.notification_bot_port}')
+    await server.start()
+    logger.info(f'Async Notification gRPC Server started at {config.notification_bot_port}')
+    await server.wait_for_termination()

@@ -14,7 +14,7 @@ from src.errors import NotificationException
 from src.clients import NotificationUserRepository
 from src.handlers import UserAuthManager, user_auth_manager as global_user_auth_manager
 from src.bot import build_application
-from src.api import serve as serve_grpc
+from src.api import serve
 from src.handlers import NotificationHandler
 
 def main():
@@ -56,8 +56,11 @@ def main():
     # Start notification worker as job
     application.job_queue.run_once(lambda ctx: asyncio.create_task(handler.start_worker()), 0)
 
-    # Run gRPC server
-    grpc_thread = threading.Thread(target=serve_grpc, args=(config, handler), daemon=True)
+    # Run async gRPC server
+    def grpc_target():
+        asyncio.run(serve(config, handler))
+
+    grpc_thread = threading.Thread(target=grpc_target, daemon=True)
     grpc_thread.start()
 
     application.run_polling()
