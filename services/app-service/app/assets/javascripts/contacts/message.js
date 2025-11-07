@@ -19,6 +19,30 @@ async function createMessagePopupMarkup() {
     return temp.firstElementChild;
 }
 
+const DRAFT_KEY = "contactsMessageDraft";
+
+function loadDraft() {
+    try {
+        const str = sessionStorage.getItem(DRAFT_KEY);
+        if (!str) return null;
+        return JSON.parse(str);
+    } catch (e) {
+        return null;
+    }
+}
+
+function saveDraft(draft) {
+    try {
+        sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch (e) {}
+}
+
+function clearDraft() {
+    try {
+        sessionStorage.removeItem(DRAFT_KEY);
+    } catch (e) {}
+}
+
 /**
  * Opens the message popup form, wires up close and form submit handlers.
  * Handles validation, AJAX message sending and UI status/error feedback.
@@ -35,9 +59,27 @@ async function showMessagePopup() {
     const closeBtn = document.querySelector(".popup-close");
     closeBtn.addEventListener("click", closePopup);
 
-    // Find inserted form within popup for binding submit handler
     const insertedForm = document.querySelector("#popup-modal form");
     if (insertedForm) {
+        // Restore draft if present
+        const draft = loadDraft();
+        if (draft) {
+            if (draft.name) insertedForm.elements["name"].value = draft.name;
+            if (draft.email) insertedForm.elements["email"].value = draft.email;
+            if (draft.body) insertedForm.elements["body"].value = draft.body;
+        }
+        const updateDraft = () => {
+            saveDraft({
+                name: insertedForm.elements["name"].value,
+                email: insertedForm.elements["email"].value,
+                body: insertedForm.elements["body"].value,
+            });
+        };
+        insertedForm.elements["name"].addEventListener("input", updateDraft);
+        insertedForm.elements["email"].addEventListener("input", updateDraft);
+        insertedForm.elements["body"].addEventListener("input", updateDraft);
+
+        // Submit
         insertedForm.addEventListener("submit", async function (e) {
             e.preventDefault();
 
@@ -76,12 +118,14 @@ async function showMessagePopup() {
                 }
                 successDiv.textContent = "Message sent successfully!";
                 insertedForm.reset();
+                clearDraft();
             } catch (err) {
                 errorDiv.textContent = err.message || "Error occurred";
             } finally {
                 loadingDiv.style.display = "none";
             }
         });
+        insertedForm.addEventListener("reset", clearDraft);
     }
 }
 
