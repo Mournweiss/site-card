@@ -140,26 +140,50 @@ async function showQRPopup(url) {
 
     const copyBtn = document.getElementById("qr-copy-btn");
     copyBtn.addEventListener("click", async function () {
+        let blobFailed = false;
         try {
-            qrCanvas.toBlob(async function (blob) {
-                if (!blob) return;
-                try {
-                    await navigator.clipboard.write([new window.ClipboardItem({ "image/png": blob })]);
-                    const oldText = copyBtn.textContent;
-                    copyBtn.textContent = "Copied!";
-                    copyBtn.disabled = true;
-                    setTimeout(() => {
-                        copyBtn.textContent = oldText;
-                        copyBtn.disabled = false;
-                    }, 1600);
-                } catch (err) {
-                    copyBtn.textContent = "Error";
-                    setTimeout(() => (copyBtn.textContent = "Copy"), 1800);
-                }
-            }, "image/png");
+            // Clipboard API
+            if (navigator.clipboard && window.ClipboardItem) {
+                await new Promise((resolve, reject) => {
+                    qrCanvas.toBlob(async function (blob) {
+                        if (!blob) {
+                            blobFailed = true;
+                            return reject();
+                        }
+                        try {
+                            await navigator.clipboard.write([new window.ClipboardItem({ "image/png": blob })]);
+                            const oldText = copyBtn.textContent;
+                            copyBtn.textContent = "Copied!";
+                            copyBtn.disabled = true;
+                            setTimeout(() => {
+                                copyBtn.textContent = oldText;
+                                copyBtn.disabled = false;
+                            }, 1600);
+                            resolve();
+                        } catch (err) {
+                            reject(err);
+                        }
+                    }, "image/png");
+                });
+                if (!blobFailed) return;
+            }
+            throw new Error("ClipboardAPI unavailable");
         } catch (e) {
-            copyBtn.textContent = "Error";
-            setTimeout(() => (copyBtn.textContent = "Copy"), 1800);
+            // Fallback: save-as/download image
+            try {
+                const url = qrCanvas.toDataURL("image/png");
+                const tmpA = document.createElement("a");
+                tmpA.href = url;
+                tmpA.download = "sitecard-qr.png";
+                document.body.appendChild(tmpA);
+                tmpA.click();
+                setTimeout(() => document.body.removeChild(tmpA), 64);
+                copyBtn.textContent = "Download started";
+                setTimeout(() => (copyBtn.textContent = "Copy"), 1600);
+            } catch {
+                copyBtn.textContent = "Failed";
+                setTimeout(() => (copyBtn.textContent = "Copy"), 1800);
+            }
         }
     });
 }
