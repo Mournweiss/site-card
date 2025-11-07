@@ -42,22 +42,51 @@ def main():
     global_user_auth_manager = UserAuthManager(user_repo)
 
     def close_repo():
-        """Ensures DB connection is closed on process exit."""
+        """
+        Ensures DB connection is closed on process exit (atexit handler).
+
+        Parameters:
+        - None
+
+        Returns:
+        - None
+        """
         user_repo.close()
 
     atexit.register(close_repo)
 
     # Build and register Telegram app, data and notification handler
     application = build_application(config, global_user_auth_manager)
-
     handler = NotificationHandler(application, global_user_auth_manager)
     application.bot_data["notification_handler"] = handler
 
-    # Start notification worker as job
-    application.job_queue.run_once(lambda ctx: asyncio.create_task(handler.start_worker()), 0)
+    # Run delivery worker
+    async def startup_callback(app):
+        """
+        Starts background delivery worker after Telegram Application event loop is running.
+
+        Parameters:
+        - app: telegram.ext.Application
+
+        Returns:
+        - None
+        """
+        handler = app.bot_data["notification_handler"]
+        await handler.start_worker()
+
+    application.post_init = startup_callback
 
     # Run async gRPC server
     def grpc_target():
+        """
+        Runs async gRPC notification server in a separate thread using asyncio event loop.
+
+        Parameters:
+        - None
+
+        Returns:
+        - None
+        """
         asyncio.run(serve(config, handler))
 
     grpc_thread = threading.Thread(target=grpc_target, daemon=True)

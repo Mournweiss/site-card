@@ -73,10 +73,13 @@ class NotificationHandler:
         """
         logger = get_logger("telegram_notify_worker")
 
+        logger.info("delivery worker started")
+
         while True:
 
             try:
                 uid, msg = self.send_queue.get_nowait()
+                logger.info(f"delivery worker got message for user", extra={"notify_user_id": uid})
 
                 try:
                     await self.application.bot.send_message(uid, msg, parse_mode='HTML')
@@ -104,7 +107,7 @@ class NotificationHandler:
 
     async def send_success_auth_notification(self, user_id: int):
         """
-        Sends a notification message to the user about successful authorization only once (on first auth). SRP: must not include business logic for authorization.
+        Sends a notification message to the user about successful authorization.
 
         Parameters:
             user_id (int): Telegram user ID
@@ -116,7 +119,7 @@ class NotificationHandler:
 
         try:
             await self.application.bot.send_message(user_id, message)
-            logger.info("Sent WebApp success message to user")
+            logger.info("Sent WebApp success auth message")
 
         except Exception as ex:
             logger.warning("Failed to deliver success auth notification", extra={"error": str(ex)})
