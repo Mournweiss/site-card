@@ -34,8 +34,7 @@ async def logout_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(CONFIRM_LOGOUT_TEXT, reply_markup=reply_markup)
-    logger.info("Sent logout confirmation query", extra={"log_user_id": update.effective_user.id})
-
+    logger.info("Sent logout confirmation query")
 
 def build_logout_callback_handler():
     """
@@ -61,14 +60,14 @@ def build_logout_callback_handler():
         """
         query = update.callback_query
         user_id = query.from_user.id
-        logger.info(f"Received logout callback", extra={"log_user_id": user_id, "callback_data": query.data})
+        logger.info(f"Received logout callback", extra={"callback_data": query.data})
         user_auth_manager = context.bot_data.get("user_auth_manager")
         await query.answer()
 
         if query.data == "logout_yes":
 
             if not user_auth_manager:
-                logger.error("UserAuthManager missing in context. Cannot logout (callback).", extra={"log_user_id": user_id})
+                logger.error("UserAuthManager missing in context, cannot logout")
                 await query.edit_message_text("Internal error: Authorization manager unavailable. Contact admin.")
                 return
 
@@ -76,11 +75,11 @@ def build_logout_callback_handler():
 
                 if user_auth_manager.is_authorized(user_id):
                     user_auth_manager.unauthorize(user_id)
-                    logger.info("User logged out via callback", extra={"log_user_id": user_id})
+                    logger.info("User logged out via callback")
                     await query.edit_message_text(SUCCESS_LOGOUT_TEXT, parse_mode="HTML")
 
                 else:
-                    logger.info("Logout via callback but user was not authorized", extra={"log_user_id": user_id})
+                    logger.info("Logout via callback but user was not authorized")
                     await query.edit_message_text(ALREADY_LOGGED_OUT_TEXT)
 
             except Exception as ex:
@@ -88,7 +87,7 @@ def build_logout_callback_handler():
                 await query.edit_message_text(ERROR_LOGOUT_TEXT)
 
         elif query.data == "logout_no":
-            logger.info("Logout cancelled by user via callback", extra={"log_user_id": user_id})
+            logger.info("Logout cancelled by user via callback")
             await query.edit_message_text(CANCEL_LOGOUT_TEXT, parse_mode="HTML")
 
     return CallbackQueryHandler(logout_callback, pattern="^logout_(yes|no)$")

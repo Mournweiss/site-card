@@ -80,10 +80,10 @@ class NotificationHandler:
 
                 try:
                     await self.application.bot.send_message(uid, msg, parse_mode='HTML')
-                    logger.info("Notification sent in worker", extra={"notify_user_id": uid})
+                    logger.info("Notification sent in worker")
 
                 except Exception as ex:
-                    logger.warning("Failed to deliver notification in worker", extra={"notify_user_id": uid, "notify_error": str(ex)})
+                    logger.warning("Failed to deliver notification in worker", extra={"notify_error": str(ex)})
 
             except Empty:
                 await asyncio.sleep(poll_interval)
@@ -116,10 +116,10 @@ class NotificationHandler:
 
         try:
             await self.application.bot.send_message(user_id, message)
-            logger.info("Sent WebApp success message to user", extra={"user_id": user_id})
+            logger.info("Sent WebApp success message to user")
 
         except Exception as ex:
-            logger.warning("Failed to deliver success auth notification", extra={"user_id": user_id, "error": str(ex)})
+            logger.warning("Failed to deliver success auth notification", extra={"error": str(ex)})
 
     @staticmethod
     def _render_message(name, email, body):

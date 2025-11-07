@@ -78,10 +78,10 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
                     await self.handler.send_success_auth_notification(int(user_id))
 
                 except Exception as nerr:
-                    logger.warning(f"Failed to send Telegram success notification: {nerr}", extra={"user_id": user_id})
+                    logger.warning(f"Failed to send Telegram success notification: {nerr}")
 
             auth_manager.authorize(int(user_id))
-            logger.info("User authorized via WebApp (feedback sent if first auth)", extra={"user_id": user_id})
+            logger.info("User authorized via WebApp")
             return service_pb2.WebappUserAuthResponse(success=True, error_message="")
 
         except Exception as ex:
@@ -136,7 +136,6 @@ async def serve(config, handler):
     service = NotificationService(config, handler)
     service_pb2_grpc.add_NotificationDeliveryServicer_to_server(service, server)
     server.add_insecure_port(f'[::]:{config.notification_bot_port}')
-    logger.info(f'Async Notification gRPC Server starting at {config.notification_bot_port}')
     await server.start()
-    logger.info(f'Async Notification gRPC Server started at {config.notification_bot_port}')
+    logger.info(f'Notification gRPC Server started at {config.notification_bot_port}')
     await server.wait_for_termination()

@@ -26,9 +26,9 @@ async def status_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_auth_manager = context.bot_data.get("user_auth_manager")
 
     if user_auth_manager and user_auth_manager.is_authorized(user_id):
-        logger.info("/status check: user is authorized", extra={"log_user_id": user_id})
+        logger.info("/status check: user is authorized")
         await update.message.reply_text("You are currently authorized to receive notifications.")
 
     else:
-        logger.info("/status check: user is not authorized", extra={"log_user_id": user_id})
+        logger.info("/status check: user is not authorized")
         await update.message.reply_text("You are not authorized. Use /start to authorize.")

@@ -33,7 +33,6 @@ async def about_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Returns:
     - None
     """
-    user_id = update.effective_user.id
-    logger.info("/about requested", extra={"log_user_id": user_id})
+    logger.info("/about requested")
     await update.message.reply_text(ABOUT_TEXT, parse_mode='Markdown')
     return None

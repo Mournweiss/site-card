@@ -121,13 +121,13 @@ class AuthController < BaseController
         logger.info("WebApp auth received", {euid: euid&.slice(0,12), token_length: token&.length, admin_key_given: !admin_key.to_s.strip.empty?})
         unless euid && euid.length > 8 && token && token.length > 8 && admin_key && admin_key.length >= 4
             res.status = 400
-            res.body = "Missing or invalid parameters (euid, token, admin_key required)."
+            res.body = "Missing or invalid parameters (euid, token, admin_key required)"
             logger.warn("WebApp auth: Missing or invalid params", {euid_present: !euid.nil?, token_present: !token.nil?, admin_key_present: !admin_key.to_s.strip.empty?})
             return
         end
         unless verify_admin_key(admin_key)
             res.status = 401
-            res.body = "Invalid admin key."
+            res.body = "Invalid admin key"
             logger.warn("WebApp admin_key invalid", {euid: euid&.slice(0,12), admin_key_length: admin_key.length})
             return
         end
