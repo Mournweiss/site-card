@@ -43,3 +43,19 @@
 .avatar-hidden {
     display: none;
 }
+
+@media (max-width: 700px) {
+    .avatar-img,
+    .avatar-fallback {
+        width: min(387px, calc(92vw - 24px)) !important;
+        height: min(387px, calc(92vw - 24px)) !important;
+    }
+    .avatar-image-wrapper {
+        width: min(387px, calc(92vw - 24px)) !important;
+        height: min(387px, calc(92vw - 24px)) !important;
+        flex: 0 0 min(387px, calc(92vw - 24px)) !important;
+    }
+    .avatar-fallback {
+        font-size: calc(0.31 * min(387px, 92vw - 24px)) !important;
+    }
+}

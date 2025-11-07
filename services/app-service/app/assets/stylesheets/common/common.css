@@ -109,16 +109,3 @@ body {
     text-decoration: none !important;
     box-shadow: none;
 }
-/* Responsive adjustments to .sitecard-btn width for small screens */
-@media (max-width: 700px) {
-    .sitecard-btn {
-        min-width: 120px;
-        font-size: clamp(0.74em, 2.7vw, 1em); /* allow smaller font for mobile */
-    }
-}
-@media (max-width: 545px) {
-    .sitecard-btn {
-        min-width: 90px;
-        font-size: clamp(0.65em, 3vw, 0.93em); /* ensure legibility but allow even smaller size */
-    }
-}

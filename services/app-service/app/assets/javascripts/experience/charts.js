@@ -50,6 +50,17 @@
         },
     };
 
+    function getChartSize() {
+        if (window.innerWidth <= 600) {
+            const w = Math.min(window.innerWidth * 0.92, 440);
+            const h = Math.round(w * 0.8);
+            const font = Math.max(10, Math.round(w / 37));
+            return { w, h, font };
+        }
+        if (window.innerWidth <= 900) return { w: 520, h: 370, font: 11 };
+        return { w: 1161, h: 845, font: 14 };
+    }
+    let radarChart = null;
     /**
      * Renders the radar chart on target canvas if data and Chart.js present.
      * Chart will visually represent experience/skills by area.
@@ -59,11 +70,24 @@
     function renderRadar() {
         var radarCtx = document.getElementById("about-experience-radar");
         if (radarCtx && window.Chart && radarData && radarData.labels && radarData.datasets) {
-            radarCtx.width = 1161; // force fixed size for consistent render
-            radarCtx.height = 845;
-            new Chart(radarCtx, { type: "radar", data: radarData, options: radarOptions });
+            const sz = getChartSize();
+            radarCtx.width = sz.w;
+            radarCtx.height = sz.h;
+            const options = JSON.parse(JSON.stringify(radarOptions));
+            options.scales.r.pointLabels.font.size = sz.font;
+            options.scales.r.ticks.font = { size: Math.max(9, sz.font - 2) };
+            if (radarChart) radarChart.destroy();
+            radarChart = new Chart(radarCtx, { type: "radar", data: radarData, options });
         }
     }
+
+    // Responsive resize handler with debounced redraw
+    let resizeTimeout;
+    function handleResize() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(renderRadar, 120);
+    }
+    window.addEventListener("resize", handleResize);
 
     // Load Chart.js and render the chart once DOM and library are ready
     loadChartJs(function () {

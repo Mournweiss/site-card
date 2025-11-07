@@ -62,10 +62,10 @@
 }
 
 @media (max-width: 900px) {
-    /* Switch card to vertical stack; reduce/min reset min sizes */
     .avatar-card {
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         padding: 1.2rem 0.3rem 2rem 0.3rem;
         gap: 1.2rem !important;
         min-width: unset;
@@ -78,7 +78,7 @@
         margin-left: 0;
     }
     .avatar-section {
-        min-height: 500px; /* shrink on mobile */
+        min-height: 500px;
     }
     .avatar-actions {
         flex-direction: column;
@@ -88,11 +88,17 @@
         margin-top: 10px;
     }
     .avatar-btn {
-        min-width: 140px; /* wider tap target */
+        min-width: 140px;
     }
     .avatar-ring {
-        margin-bottom: 24px;
+        margin-bottom: 18px;
         margin-right: 0;
+        margin-left: 0;
+        align-self: center;
+        justify-content: center;
+    }
+    .avatar-image-wrapper {
+        margin: 0 auto;
     }
 }
 
@@ -113,6 +119,29 @@
         min-width: unset;
         padding-left: 0 !important;
         padding-right: 0 !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .avatar-card {
+        width: 100vw;
+        margin: 0 auto;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem !important;
+    }
+    .avatar-ring {
+        margin-bottom: 10px;
+        margin-right: 0;
+        margin-left: 0;
+        align-self: center;
+    }
+    .avatar-image-wrapper {
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .avatar-info {
         max-width: 95vw;
@@ -128,11 +157,8 @@
     .avatar-actions {
         flex-direction: column;
         gap: 0.7rem;
-        width: 98vw;
         align-items: center;
         justify-content: center;
-        margin-left: 0;
-        margin-right: 0;
         box-sizing: border-box;
     }
 }

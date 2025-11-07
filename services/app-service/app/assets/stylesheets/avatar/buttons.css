@@ -15,14 +15,31 @@
     justify-content: flex-start;
 }
 
-/* On small screens, group buttons vertically, reduce gaps */
-@media (max-width: 700px) {
+@media (max-width: 900px) {
     .avatar-actions {
-        flex-direction: row;
-        gap: 0.76rem;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+        justify-content: center;
+        margin-top: 10px;
         width: 100%;
-        justify-content: flex-start;
-        margin-top: 12px;
+    }
+}
+@media (max-width: 600px) {
+    .avatar-actions {
+        display: flex;
+        flex-direction: column;
         align-items: center;
+        justify-content: center;
+        gap: 0.48rem;
+        width: 100vw;
+        max-width: 340px;
+        margin: 0 auto;
+        margin-top: 6px;
+    }
+    .avatar-actions .sitecard-btn {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
