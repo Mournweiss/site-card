@@ -113,12 +113,18 @@
         min-width: unset !important;
         box-sizing: border-box;
     }
+    .avatar-section,
+    .avatar-card {
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        min-width: unset !important;
+        box-sizing: border-box;
+    }
     .avatar-section {
         width: 100vw;
         overflow-x: hidden;
         min-width: unset;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -138,10 +144,10 @@
         align-self: center;
     }
     .avatar-image-wrapper {
+        width: 100%;
+        max-width: 340px;
         margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        box-sizing: border-box;
     }
     .avatar-info {
         max-width: 95vw;
@@ -160,5 +166,6 @@
         align-items: center;
         justify-content: center;
         box-sizing: border-box;
+        margin-top: 20px;
     }
 }

@@ -83,7 +83,11 @@
 
     // Responsive resize handler with debounced redraw
     let resizeTimeout;
+    let lastRadarWidth = window.innerWidth;
     function handleResize() {
+        const curW = window.innerWidth;
+        if (curW === lastRadarWidth) return;
+        lastRadarWidth = curW;
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(renderRadar, 120);
     }
