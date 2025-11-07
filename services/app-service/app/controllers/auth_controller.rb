@@ -139,16 +139,16 @@ class AuthController < BaseController
             if grpc_resp.success
                 logger.info("WebApp user authorized via gRPC", {euid: euid&.slice(0,12)})
                 res.status = 200
-                res.body = '<div class="success">WebApp authorization successful!</div>'
+                res.body = '<div class="success">Authorization successful!</div>'
             else
                 logger.warn("User gRPC authorization failed: #{grpc_resp.error_message}", {euid: euid&.slice(0,12)})
                 res.status = 401
-                res.body = grpc_resp.error_message || 'gRPC authorization failed.'
+                res.body = "<div class=\"auth-error\">" + CGI.escapeHTML(grpc_resp.error_message || 'gRPC authorization failed') + "</div>"
             end
         rescue => e
             logger.error("Notification-bot gRPC error: #{e.message}", {euid: euid&.slice(0,12)})
             res.status = 502
-            res.body = 'Notification service unavailable.'
+            res.body = '<div class="auth-error">Notification service unavailable</div>'
         end
     end
 
