@@ -9,7 +9,7 @@ import time
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup, WebAppInfo
 from telegram.ext import ContextTypes
 from src.logger import get_logger
-from src.handlers import generate_login_token, get_webapp_url, encrypt_uid_for_webapp
+from src.handlers import generate_login_token, get_webapp_url, encrypt_uid
 
 logger = get_logger("cmd.start")
 
@@ -26,7 +26,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     user_id = update.effective_user.id
     config = context.bot_data.get("config")
-    euid = encrypt_uid_for_webapp(user_id, config.webapp_token_secret)
+    euid = encrypt_uid(user_id, config.webapp_token_secret)
     token = generate_login_token(euid, config.webapp_token_secret)
     webapp_url = get_webapp_url(config.domain, euid, token, config.webapp_token_secret)
     logger.info("/start issued WebApp button", extra={"webapp_url": webapp_url})

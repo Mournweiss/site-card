@@ -15,7 +15,7 @@ from concurrent import futures
 from . import service_pb2
 from . import service_pb2_grpc
 from ..errors import NotificationException
-from ..handlers import user_auth_manager, decrypt_uid_for_webapp
+from ..handlers import user_auth_manager, decrypt_uid
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ class NotificationService(service_pb2_grpc.NotificationDeliveryServicer):
         try:
             secret = self.config.webapp_token_secret
             logger.info(f"Decrypting euid: {euid}")   
-            user_id = decrypt_uid_for_webapp(euid, secret)
+            user_id = decrypt_uid(euid, secret)
 
         except Exception as ex:
             logger.warning(f"Failed to decrypt euid for auth: {ex}\n" + traceback.format_exc())

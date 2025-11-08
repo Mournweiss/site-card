@@ -6,13 +6,13 @@ from .notification import NotificationHandler
 from .auth import (
     UserAuthManager, user_auth_manager,
     generate_login_token, validate_login_token,
-    encrypt_uid_for_webapp, decrypt_uid_for_webapp,
+    encrypt_uid, decrypt_uid,
     get_webapp_url
 )
 
 __all__ = [
     "NotificationHandler", "UserAuthManager", "user_auth_manager",
     "generate_login_token", "validate_login_token",
-    "encrypt_uid_for_webapp", "decrypt_uid_for_webapp",
+    "encrypt_uid", "decrypt_uid",
     "get_webapp_url"
 ]

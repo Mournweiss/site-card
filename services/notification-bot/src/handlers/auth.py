@@ -19,7 +19,7 @@ from urllib.parse import urlencode
 
 class UserAuthManager:
     """
-    Abstraction for Telegram user authorization. As of 2025-11-07, registration for the bot is strictly based on user_id (int/str); username is ignored for all WebApp and standard flows.
+    Abstraction for Telegram user authorization.
     """
 
     def __init__(self, user_repo):
@@ -48,7 +48,7 @@ class UserAuthManager:
 
     def authorize(self, user_id: int):
         """
-        Adds user to authorized set by user_id only. Username is deprecated and ignored (2025-11-07).
+        Adds user to authorized set by user_id only.
 
         Parameters:
         - user_id: int
@@ -127,9 +127,9 @@ def validate_login_token(token: str, user_id: str, secret: str) -> bool:
     except Exception as e:
         return False
 
-def decrypt_uid_for_webapp(euid: str, secret: str) -> str:
+def decrypt_uid(euid: str, secret: str) -> str:
     """
-    Decrypts encrypted user_id (euid, as produced by encrypt_uid_for_webapp) using AES-256-GCM.
+    Decrypts encrypted user_id (euid, as produced by encrypt_uid) using AES-256-GCM.
 
     Parameters:
     - euid: str - base64url-encoded string (iv + ciphertext + tag, 12 + N + 16 bytes)
@@ -142,7 +142,7 @@ def decrypt_uid_for_webapp(euid: str, secret: str) -> str:
     - ValueError: on invalid data or decryption failure
 
     Example:
-    - decrypt_uid_for_webapp(euid, secret)
+    - decrypt_uid(euid, secret)
     """
     try:
         data = base64.urlsafe_b64decode(euid.encode("utf-8"))
@@ -167,7 +167,7 @@ def decrypt_uid_for_webapp(euid: str, secret: str) -> str:
     except Exception as ex:
         raise ValueError("Failed to decrypt user_id from euid: %s" % ex)
 
-def encrypt_uid_for_webapp(user_id: str, secret: str) -> str:
+def encrypt_uid(user_id: str, secret: str) -> str:
     """
     Encrypts a user_id (string) for secure WebApp flows using AES-256-GCM.
 
@@ -179,7 +179,7 @@ def encrypt_uid_for_webapp(user_id: str, secret: str) -> str:
     - str: Encrypted, base64url-encoded euid (iv + ciphertext + tag)
 
     Example:
-    - encrypt_uid_for_webapp("12345", secret)
+    - encrypt_uid("12345", secret)
     """
     raw = str(user_id).encode('utf-8')
     key = base64.b64decode(secret)[:32]
