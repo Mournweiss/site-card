@@ -64,5 +64,6 @@ After deployment and startup, the SiteCard app-service features a dynamic, multi
 
 ## Environment Variables
 
--   `NGINX_PORT` — nginx listen port (default: 8080)
--   `RACKUP_PORT` — Ruby backend port (default: 9292)
+-   `NGINX_HTTPS_PORT` — Port for NGINX HTTPS using in PROD_MODE (default: 9393).
+-   `NGINX_HTTP_PORT` — Port for NGINX HTTP using in DEV_MODE (default: 9292).
+-   `RACKUP_PORT` — Internal Ruby backend port (default: 9191).

@@ -68,6 +68,16 @@ SiteCard is a micro-service, container-ready web platform for creating interacti
     - Main site (HTTP): [http://localhost:9292](http://localhost:9292)
     - Telegram Bot: as specified by `NOTIFICATION_BOT_TOKEN`.
 
+### Deployment Modes
+
+SiteCard supports two deployment modes based on SSL certificate and DOMAIN configuration:
+
+-   **DEV_MODE** (local HTTP): If the project does not find valid SSL certificates and key file in the `certs/` directory, it automatically runs in development mode, exposing the main site via local HTTP on the port specified by `NGINX_HTTP_PORT` (default: 9292). This mode is intended for local testing and development only.
+
+-   **PROD_MODE** (global HTTPS): If valid SSL certificate chain files and a private key are present in the `certs/` directory, and the `DOMAIN` variable is properly configured, the platform runs securely in production mode, serving the site globally over HTTPS on the port specified by `NGINX_HTTPS_PORT` (default: 9393).
+
+> **Note:** Mode selection is performed automatically at project startup, no manual intervention is required beyond managing the certificate/key files and configuration.
+
 ## User Data Volume
 
 This project uses the [userdata/](userdata/) directory (Docker volume) to support runtime file updates without rebuilding containers, enabling dynamic management of:
@@ -88,7 +98,7 @@ This project uses the [userdata/](userdata/) directory (Docker volume) to suppor
 -   `NOTIFICATION_BOT_TOKEN` — Telegram Bot token from @BotFather.
 -   `DEBUG` — Enable debug output (`true`/`false`).
 -   `PROJECT_NAME` — Project identifier, used as prefix for names of all services and orchestration objects (containers, networks, volumes) in the stack (default: site-card).
--   `NGINX_HTTPS_PORT` — Port for NGINX HTTPS (default: 9393).
--   `NGINX_HTTP_PORT` — Port for NGINX HTTP (default: 9292).
+-   `NGINX_HTTPS_PORT` — Port for NGINX HTTPS using in PROD_MODE (default: 9393).
+-   `NGINX_HTTP_PORT` — Port for NGINX HTTP using in DEV_MODE (default: 9292).
 -   `RACKUP_PORT` — Internal Ruby backend port (default: 9191).
 -   `NOTIFICATION_BOT_PORT` — gRPC port for notification bot microservice (default: 50051).
