@@ -37,12 +37,14 @@ class PublicController < BaseController
     # Returns: nil
     def handle_request(req, res)
         path = req.path_info
-        if path.start_with?('/public/component/')
+        if req.get? && path == '/'
+            render_home(res)
+        elsif path.start_with?('/public/component/')
             handle_component(req, res)
-        elsif path == '/api/message' && req.post?
+        elsif req.post? && path == '/api/message'
             handle_message(req, res)
         else
-            render_home(res)
+            serve_404(res)
         end
     end
 
@@ -63,9 +65,7 @@ class PublicController < BaseController
             res['Content-Type'] = 'text/html; charset=utf-8'
             res.body = html
         rescue => e
-            res.status = 404
-            res['Content-Type'] = 'text/plain; charset=utf-8'
-            res.body = 'Component not found'
+            serve_404(res)
         end
     end
 
@@ -114,6 +114,18 @@ class PublicController < BaseController
         res.status = 200
         res['Content-Type'] = 'text/html; charset=utf-8'
         res.body = html
+    end
+
+    # Renders and returns the custom 404 page.
+    #
+    # Parameters:
+    # - res: WEBrick::HTTPResponse
+    #
+    # Returns: nil
+    def serve_404(res)
+        res.status = 404
+        res['Content-Type'] = 'text/html; charset=utf-8'
+        res.body = ErrorHandler.instance_method(:render_error_template).bind(ErrorHandler).call('public/404.html')
     end
 
     # Responds with JSON body and code. Sets correct content-type.

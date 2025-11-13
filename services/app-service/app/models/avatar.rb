@@ -49,7 +49,8 @@ class Avatar
     # - DataConsistencyError for other data/logic errors
     def self.fetch(conn)
         begin
-            res = conn.exec("SELECT * FROM #{TABLE} LIMIT 1")
+            res = conn.exec("SELECT * FROM #{TABLE} LIMIT 1") rescue nil
+            return nil unless res && res.respond_to?(:ntuples)
             res.ntuples > 0 ? Avatar.new(res[0]) : nil
         rescue PG::Error => e
             raise BDError.new("DB fetch failed (Avatar): #{e.message}", context: {class: 'Avatar', method: 'fetch', original: e})
